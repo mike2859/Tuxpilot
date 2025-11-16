@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{11806EA5-A4CC-4B52-B245-6744CC90AEEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tuxpilot.Core", "src\Tuxpilot.Core\Tuxpilot.Core.csproj", "{989B2A58-07B6-4B63-8F36-D2CA13FE7F2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tuxpilot.ApplicationCore", "src\Tuxpilot.ApplicationCore\Tuxpilot.ApplicationCore.csproj", "{A3D886A8-B660-4C1D-9122-2ECFCFD47DFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tuxpilot.Infrastructure", "src\Tuxpilot.Infrastructure\Tuxpilot.Infrastructure.csproj", "{3A7D2557-E2D6-4377-A2F6-E95F3058DD76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tuxpilot.UI", "src\Tuxpilot.UI\Tuxpilot.UI.csproj", "{D146EC25-686A-4299-A2AB-17A1FBC2EB60}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{989B2A58-07B6-4B63-8F36-D2CA13FE7F2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{989B2A58-07B6-4B63-8F36-D2CA13FE7F2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{989B2A58-07B6-4B63-8F36-D2CA13FE7F2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{989B2A58-07B6-4B63-8F36-D2CA13FE7F2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3D886A8-B660-4C1D-9122-2ECFCFD47DFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3D886A8-B660-4C1D-9122-2ECFCFD47DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3D886A8-B660-4C1D-9122-2ECFCFD47DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3D886A8-B660-4C1D-9122-2ECFCFD47DFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A7D2557-E2D6-4377-A2F6-E95F3058DD76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A7D2557-E2D6-4377-A2F6-E95F3058DD76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A7D2557-E2D6-4377-A2F6-E95F3058DD76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A7D2557-E2D6-4377-A2F6-E95F3058DD76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D146EC25-686A-4299-A2AB-17A1FBC2EB60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D146EC25-686A-4299-A2AB-17A1FBC2EB60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D146EC25-686A-4299-A2AB-17A1FBC2EB60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D146EC25-686A-4299-A2AB-17A1FBC2EB60}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{989B2A58-07B6-4B63-8F36-D2CA13FE7F2E} = {11806EA5-A4CC-4B52-B245-6744CC90AEEA}
+		{A3D886A8-B660-4C1D-9122-2ECFCFD47DFC} = {11806EA5-A4CC-4B52-B245-6744CC90AEEA}
+		{3A7D2557-E2D6-4377-A2F6-E95F3058DD76} = {11806EA5-A4CC-4B52-B245-6744CC90AEEA}
+		{D146EC25-686A-4299-A2AB-17A1FBC2EB60} = {11806EA5-A4CC-4B52-B245-6744CC90AEEA}
+	EndGlobalSection
+EndGlobal
