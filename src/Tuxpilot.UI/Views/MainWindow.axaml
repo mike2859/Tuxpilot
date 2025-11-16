@@ -7,14 +7,183 @@
         x:Class="Tuxpilot.UI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Tuxpilot.UI">
+        Title="Tuxpilot"
+        Width="900" Height="650"
+        MinWidth="800" MinHeight="500">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+   
+    <Grid Background="#F9FAFB">
+        
+        <!-- Loading indicator -->
+        <StackPanel VerticalAlignment="Center" 
+                   HorizontalAlignment="Center"
+                   IsVisible="{Binding ChargementEnCours}">
+            <TextBlock Text="🐧" FontSize="64" HorizontalAlignment="Center"/>
+            <TextBlock Text="Chargement..." 
+                      FontSize="18" 
+                      Margin="0,20,0,0"
+                      HorizontalAlignment="Center"/>
+        </StackPanel>
+        
+        <!-- Contenu principal -->
+        <ScrollViewer IsVisible="{Binding !ChargementEnCours}">
+            <StackPanel Margin="40" Spacing="24">
+                
+                <!-- Header avec logo -->
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <TextBlock Text="🐧" FontSize="56"/>
+                    <StackPanel VerticalAlignment="Center" Spacing="4">
+                        <TextBlock Text="Tuxpilot" 
+                                  FontSize="32" 
+                                  FontWeight="Bold"/>
+                        <TextBlock Text="{Binding MessageStatut}" 
+                                  FontSize="14"
+                                  Foreground="#6B7280"/>
+                    </StackPanel>
+                </StackPanel>
+                
+                <!-- Carte informations système -->
+                <Border Background="White"
+                        CornerRadius="16"
+                        Padding="32"
+                        BoxShadow="0 1 3 #40000000"
+                        IsVisible="{Binding InfoSysteme, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <StackPanel Spacing="20">
+                        
+                        <TextBlock Text="📊 Informations système" 
+                                  FontSize="20" 
+                                  FontWeight="SemiBold"/>
+                        
+                        <!-- Grille d'infos -->
+                        <Grid ColumnDefinitions="200,*" 
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                            
+                            <!-- Distribution -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" 
+                                      Text="Distribution :" 
+                                      FontWeight="Medium"
+                                      Foreground="#374151"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" 
+                                      Text="{Binding InfoSysteme.Distribution}"
+                                      FontWeight="SemiBold"
+                                      Foreground="#111827"/>
+                            
+                            <!-- Kernel -->
+                            <TextBlock Grid.Row="1" Grid.Column="0" 
+                                      Text="Kernel :" 
+                                      FontWeight="Medium"
+                                      Foreground="#374151"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" 
+                                      Text="{Binding InfoSysteme.VersionKernel}"
+                                      Foreground="#111827"/>
+                            
+                            <!-- Gestionnaire de paquets -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" 
+                                      Text="Gestionnaire :" 
+                                      FontWeight="Medium"
+                                      Foreground="#374151"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" 
+                                      Text="{Binding InfoSysteme.GestionnairePaquets}"
+                                      Foreground="#111827"/>
+                            
+                            <!-- RAM -->
+                            <TextBlock Grid.Row="3" Grid.Column="0" 
+                                      Text="Mémoire RAM :" 
+                                      FontWeight="Medium"
+                                      Foreground="#374151"/>
+                            <StackPanel Grid.Row="3" Grid.Column="1" Spacing="8">
+                                <TextBlock>
+                                    <Run Text="{Binding InfoSysteme.RamUtiliseeMB, StringFormat={}{0:N0}}"/>
+                                    <Run Text=" MB / "/>
+                                    <Run Text="{Binding InfoSysteme.RamTotaleMB, StringFormat={}{0:N0}}"/>
+                                    <Run Text=" MB "/>
+                                    <Run Text="(" FontWeight="SemiBold"/>
+                                    <Run Text="{Binding InfoSysteme.PourcentageRam, StringFormat={}{0:F1}}" FontWeight="SemiBold"/>
+                                    <Run Text="%)" FontWeight="SemiBold"/>
+                                </TextBlock>
+                                <ProgressBar Value="{Binding InfoSysteme.PourcentageRam}" 
+                                            Maximum="100"
+                                            Height="8"
+                                            Foreground="#3B82F6"/>
+                            </StackPanel>
+                            
+                            <!-- CPU -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" 
+                                      Text="Utilisation CPU :" 
+                                      FontWeight="Medium"
+                                      Foreground="#374151"/>
+                            <StackPanel Grid.Row="4" Grid.Column="1" Spacing="8">
+                                <TextBlock>
+                                    <Run Text="{Binding InfoSysteme.PourcentageCpu, StringFormat={}{0:F1}}" FontWeight="SemiBold"/>
+                                    <Run Text=" %"/>
+                                </TextBlock>
+                                <ProgressBar Value="{Binding InfoSysteme.PourcentageCpu}" 
+                                            Maximum="100"
+                                            Height="8"
+                                            Foreground="#10B981"/>
+                            </StackPanel>
+                            
+                            <!-- Disque -->
+                            <TextBlock Grid.Row="5" Grid.Column="0" 
+                                      Text="Disque système :" 
+                                      FontWeight="Medium"
+                                      Foreground="#374151"/>
+                            <StackPanel Grid.Row="5" Grid.Column="1" Spacing="8">
+                                <TextBlock>
+                                    <Run Text="{Binding InfoSysteme.PourcentageDisque, StringFormat={}{0:F1}}" FontWeight="SemiBold"/>
+                                    <Run Text=" % utilisé"/>
+                                </TextBlock>
+                                <ProgressBar Value="{Binding InfoSysteme.PourcentageDisque}" 
+                                            Maximum="100"
+                                            Height="8"
+                                            Foreground="#F59E0B"/>
+                            </StackPanel>
+                            
+                            <!-- Statut global -->
+                            <TextBlock Grid.Row="6" Grid.Column="0" 
+                                      Text="Statut global :" 
+                                      FontWeight="Medium"
+                                      Foreground="#374151"/>
+                            <Border Grid.Row="6" Grid.Column="1"
+                                   Background="#ECFDF5"
+                                   CornerRadius="8"
+                                   Padding="12,6"
+                                   HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding MessageStatut}" 
+                                          FontSize="13"
+                                          FontWeight="SemiBold"
+                                          Foreground="#065F46"/>
+                            </Border>
+                            
+                        </Grid>
+                        
+                    </StackPanel>
+                </Border>
+                
+                <!-- Message de bienvenue -->
+                <Border Background="#EFF6FF"
+                        CornerRadius="12"
+                        Padding="24"
+                        BorderBrush="#BFDBFE"
+                        BorderThickness="1">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="👋 Bienvenue sur Tuxpilot !" 
+                                  FontSize="16" 
+                                  FontWeight="SemiBold"
+                                  Foreground="#1E40AF"/>
+                        <TextBlock Text="Votre assistant Linux est prêt à vous aider à maintenir votre système en bonne santé." 
+                                  FontSize="14"
+                                  Foreground="#1E40AF"
+                                  TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+    </Grid>
 </Window>
