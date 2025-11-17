@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Tuxpilot.UI.ViewModels.Constants;
 
 namespace Tuxpilot.UI.ViewModels;
 
@@ -56,35 +57,34 @@ public partial class SystemInfoViewModel : ObservableObject
     /// </summary>
     public string DiskUsageText => $"{DiskPercent:F1}%";
     
-    // ✨ NOUVELLES PROPRIÉTÉS pour les couleurs
-    
+
     /// <summary>
     /// Couleur de la barre RAM selon le pourcentage
     /// </summary>
     public string RamColor => RamPercent switch
     {
-        >= 85 => "#EF4444",  // Rouge si >= 85%
-        >= 70 => "#F59E0B",  // Orange si >= 70%
-        _ => "#10B981"       // Vert si < 70%
+        >= SystemConstants.HealthThresholds.Critical => SystemConstants.Colors.Critical,
+        >= SystemConstants.HealthThresholds.Warning => SystemConstants.Colors.Warning,
+        _ => SystemConstants.Colors.Success
     };
-    
+
     /// <summary>
     /// Couleur de la barre CPU selon le pourcentage
     /// </summary>
     public string CpuColor => CpuPercent switch
     {
-        >= 85 => "#EF4444",  // Rouge
-        >= 70 => "#F59E0B",  // Orange
-        _ => "#10B981"       // Vert
+        >= SystemConstants.HealthThresholds.Critical => SystemConstants.Colors.Critical,
+        >= SystemConstants.HealthThresholds.Warning => SystemConstants.Colors.Warning,
+        _ => SystemConstants.Colors.Success
     };
-    
+
     /// <summary>
     /// Couleur de la barre Disque selon le pourcentage
     /// </summary>
     public string DiskColor => DiskPercent switch
     {
-        >= 85 => "#EF4444",  // Rouge
-        >= 70 => "#F59E0B",  // Orange
-        _ => "#10B981"       // Vert
+        >= SystemConstants.HealthThresholds.Critical => SystemConstants.Colors.Critical,
+        >= SystemConstants.HealthThresholds.Warning => SystemConstants.Colors.Warning,
+        _ => SystemConstants.Colors.Success
     };
 }

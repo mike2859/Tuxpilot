@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tuxpilot.Core.Interfaces.Services;
+using Tuxpilot.UI.ViewModels.Extensions;
 
 namespace Tuxpilot.UI.ViewModels;
 
@@ -77,22 +78,7 @@ public partial class DashboardViewModel : ViewModelBase
             StatusMessage = "Chargement des informations système...";
           
             var info = await _serviceSysteme.ObtenirInfoSystemeAsync();
-
-            // Mapper vers le ViewModel
-            SystemInfo = new SystemInfoViewModel
-            {
-                Distribution = info.Distribution,
-                KernelVersion = info.VersionKernel,
-                CpuModel = info.CpuModel,      
-                CpuCores = info.CpuCores,     
-                CpuThreads = info.CpuThreads,  
-                TotalRamMB = info.RamTotaleMB,
-                UsedRamMB = info.RamUtiliseeMB,
-                RamPercent = info.PourcentageRam,
-                CpuPercent = info.PourcentageCpu,
-                DiskPercent = info.PourcentageDisque,
-                PackageManager = info.GestionnairePaquets
-            };
+            SystemInfo = info.ToViewModel();
             
             var statut = info.ObtenirStatut();
             StatusMessage = statut switch
