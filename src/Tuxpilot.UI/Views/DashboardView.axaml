@@ -8,23 +8,49 @@
         <vm:DashboardViewModel/>
     </Design.DataContext>
 
-   <ScrollViewer>
+    
+  <ScrollViewer>
         <StackPanel Margin="32" Spacing="24">
             
-            <!-- Header -->
-            <StackPanel Spacing="8">
-                <TextBlock Text="Tableau de bord" 
-                          FontSize="28" 
-                          FontWeight="Bold"/>
-                <TextBlock Text="Vue d'ensemble de votre système Linux" 
-                          FontSize="14"
-                          Foreground="Gray"/>
+            <!-- 🐧 Header avec logo -->
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <TextBlock Text="🐧" FontSize="48" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center" Spacing="4">
+                    <TextBlock Text="TuxCopilot" 
+                              FontSize="28" 
+                              FontWeight="Bold"/>
+                    <TextBlock Text="Assistant Linux pour débutants et collectivités" 
+                              FontSize="13" 
+                              Foreground="Gray"/>
+                </StackPanel>
             </StackPanel>
             
             <!-- Indicateur de chargement -->
             <ProgressBar IsIndeterminate="True"
                         IsVisible="{Binding IsLoading}"
                         Height="4"/>
+            
+            
+            <!-- Info dernière mise à jour -->
+            <Border Background="#F0F9FF"
+                    CornerRadius="8"
+                    Padding="12,10"
+                    BorderBrush="#BAE6FD"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="🔄"
+                               FontSize="16"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TimeSinceLastRefresh}"
+                               FontSize="13"
+                               Foreground="#0369A1"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="• Actualisation automatique toutes les 10s"
+                               FontSize="12"
+                               Foreground="#64748B"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
             
             <!-- Informations système -->
             <Border Background="White"
@@ -45,7 +71,8 @@
                                   Foreground="Gray"/>
                         <TextBlock Text="{Binding SystemInfo.Distribution}"
                                   FontSize="16"
-                                  FontWeight="Medium"/>
+                                  FontWeight="Medium"
+                                  Foreground="#111827"/>
                     </StackPanel>
                     
                     <!-- Kernel -->
@@ -55,7 +82,8 @@
                                   Foreground="Gray"/>
                         <TextBlock Text="{Binding SystemInfo.KernelVersion}"
                                   FontSize="16"
-                                  FontWeight="Medium"/>
+                                  FontWeight="Medium"
+                                  Foreground="#111827"/>
                     </StackPanel>
                     
                     <!-- Gestionnaire de paquets -->
@@ -65,9 +93,26 @@
                                   Foreground="Gray"/>
                         <TextBlock Text="{Binding SystemInfo.PackageManager}"
                                   FontSize="16"
-                                  FontWeight="Medium"/>
+                                  FontWeight="Medium"
+                                  Foreground="#111827"/>
                     </StackPanel>
                     
+                    <!-- Processeur -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Processeur" 
+                                   FontSize="13"
+                                   Foreground="Gray"/>
+                        <TextBlock Text="{Binding SystemInfo.CpuModel}"
+                                   FontSize="16"
+                                   FontWeight="Medium"
+                                   Foreground="#111827"/>
+                        <TextBlock FontSize="13" Foreground="Gray">
+                            <Run Text="{Binding SystemInfo.CpuCores}"/>
+                            <Run Text=" cœurs • "/>
+                            <Run Text="{Binding SystemInfo.CpuThreads}"/>
+                            <Run Text=" threads"/>
+                        </TextBlock>
+                    </StackPanel>
                 </StackPanel>
             </Border>
             
@@ -83,58 +128,64 @@
                               FontSize="18" 
                               FontWeight="SemiBold"/>
                     
-                    <!-- RAM -->
+                    <!-- RAM avec couleur dynamique -->
                     <StackPanel Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <TextBlock Grid.Column="0"
                                       Text="Mémoire RAM" 
                                       FontSize="14"
-                                      FontWeight="Medium"/>
+                                      FontWeight="Medium"
+                                      Foreground="Gray"/>
                             <TextBlock Grid.Column="1" 
                                       Text="{Binding SystemInfo.RamUsageText}"
                                       FontSize="14"
-                                      Foreground="#3B82F6"/>
+                                      Foreground="{Binding SystemInfo.RamColor}"/>
                         </Grid>
                         <ProgressBar Value="{Binding SystemInfo.RamPercent}" 
                                     Maximum="100"
                                     Height="12"
-                                    CornerRadius="6"/>
+                                    CornerRadius="6"
+                                    Foreground="{Binding SystemInfo.RamColor}"/>
                     </StackPanel>
                     
-                    <!-- CPU -->
+                    <!-- CPU avec couleur dynamique -->
                     <StackPanel Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <TextBlock Grid.Column="0"
                                       Text="Processeur (CPU)" 
                                       FontSize="14"
-                                      FontWeight="Medium"/>
+                                      FontWeight="Medium"
+                                      Foreground="Gray"/>
                             <TextBlock Grid.Column="1" 
                                       Text="{Binding SystemInfo.CpuUsageText}"
                                       FontSize="14"
-                                      Foreground="#10B981"/>
+                                      Foreground="{Binding SystemInfo.CpuColor}"/>
                         </Grid>
                         <ProgressBar Value="{Binding SystemInfo.CpuPercent}" 
                                     Maximum="100"
                                     Height="12"
-                                    CornerRadius="6"/>
+                                    CornerRadius="6"
+                                    Foreground="{Binding SystemInfo.CpuColor}"/>
                     </StackPanel>
                     
-                    <!-- Disque -->
+                    <!-- Disque avec couleur dynamique -->
                     <StackPanel Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <TextBlock Grid.Column="0"
                                       Text="Espace disque" 
                                       FontSize="14"
-                                      FontWeight="Medium"/>
+                                      FontWeight="Medium"
+                                      Foreground="Gray"/>
                             <TextBlock Grid.Column="1" 
                                       Text="{Binding SystemInfo.DiskUsageText}"
                                       FontSize="14"
-                                      Foreground="#F59E0B"/>
+                                      Foreground="{Binding SystemInfo.DiskColor}"/>
                         </Grid>
                         <ProgressBar Value="{Binding SystemInfo.DiskPercent}" 
                                     Maximum="100"
                                     Height="12"
-                                    CornerRadius="6"/>
+                                    CornerRadius="6"
+                                    Foreground="{Binding SystemInfo.DiskColor}"/>
                     </StackPanel>
                     
                     <!-- Bouton actualiser -->
@@ -146,7 +197,8 @@
                             Background="#3B82F6"
                             Foreground="White"
                             BorderThickness="0"
-                            CornerRadius="8"/>
+                            CornerRadius="8"
+                            Cursor="Hand"/>
                     
                 </StackPanel>
             </Border>

@@ -54,6 +54,21 @@ public class SystemInfo
     public string GestionnairePaquets { get; set; } = string.Empty;
     
     /// <summary>
+    /// Modèle du processeur (ex: "Intel Core i9-14900HX")
+    /// </summary>
+    public string CpuModel { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Nombre de cœurs physiques
+    /// </summary>
+    public int CpuCores { get; set; }
+
+    /// <summary>
+    /// Nombre de threads logiques
+    /// </summary>
+    public int CpuThreads { get; set; }
+    
+    /// <summary>
     /// Évalue l'état de santé global du système
     /// </summary>
     public StatutSysteme ObtenirStatut()

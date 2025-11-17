@@ -16,11 +16,17 @@ def obtenir_info_systeme():
         memoire = psutil.virtual_memory()
         pourcentage_cpu = psutil.cpu_percent(interval=1)
         disque = psutil.disk_usage('/')
-        
+
         info = {
             "distribution": f"{distro.name()} {distro.version()}",
             "distributionId": distro.id(),
             "kernel": platform.release(),
+
+            # ✨ NOUVEAU : Infos CPU détaillées
+            "cpuModel": platform.processor(),  # Modèle du CPU
+            "cpuCores": psutil.cpu_count(logical=False),  # Cœurs physiques
+            "cpuThreads": psutil.cpu_count(logical=True),  # Threads logiques
+
             "ramTotaleMB": memoire.total // (1024 * 1024),
             "ramUtiliseeMB": memoire.used // (1024 * 1024),
             "ramLibreMB": memoire.available // (1024 * 1024),
@@ -29,9 +35,9 @@ def obtenir_info_systeme():
             "pourcentageDisque": disque.percent,
             "gestionnairePaquets": detecter_gestionnaire_paquets()
         }
-        
+
         return info
-        
+
     except Exception as e:
         return {"error": str(e)}
 

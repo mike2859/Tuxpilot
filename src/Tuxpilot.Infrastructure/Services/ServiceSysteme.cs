@@ -39,6 +39,9 @@ public class ServiceSysteme : IServiceSysteme
         {
             Distribution = json.Distribution,
             VersionKernel = json.Kernel,
+            CpuModel = json.CpuModel,
+            CpuCores = json.CpuCores,
+            CpuThreads = json.CpuThreads,
             RamTotaleMB = json.RamTotaleMB,
             RamUtiliseeMB = json.RamUtiliseeMB,
             RamLibreMB = json.RamLibreMB,
@@ -49,19 +52,5 @@ public class ServiceSysteme : IServiceSysteme
         };
     }
     
-    /// <summary>
-    /// Classe pour désérialiser le JSON du script Python
-    /// </summary>
-    private class SystemInfoJson
-    {
-        public string Distribution { get; set; } = string.Empty;
-        public string Kernel { get; set; } = string.Empty;
-        public long RamTotaleMB { get; set; }
-        public long RamUtiliseeMB { get; set; }
-        public long RamLibreMB { get; set; }
-        public double PourcentageRam { get; set; }
-        public double PourcentageCpu { get; set; }
-        public double PourcentageDisque { get; set; }
-        public string GestionnairePaquets { get; set; } = string.Empty;
-    }
+  
 }
