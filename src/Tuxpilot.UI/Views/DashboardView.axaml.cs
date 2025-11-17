@@ -10,6 +10,6 @@ public partial class DashboardView : UserControl
         AvaloniaXamlLoader.Load(this);
         
         // Créer le ViewModel
-        DataContext = new ViewModels.DashboardViewModel();
+        //DataContext = new ViewModels.DashboardViewModel();
     }
 }

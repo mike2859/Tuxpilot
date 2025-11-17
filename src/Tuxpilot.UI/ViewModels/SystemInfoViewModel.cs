@@ -24,13 +24,13 @@ public partial class SystemInfoViewModel : ObservableObject
     private double _ramPercent;
     
     [ObservableProperty]
-    private long _totalDiskGB;
-    
-    [ObservableProperty]
-    private long _usedDiskGB;
+    private double _cpuPercent;
     
     [ObservableProperty]
     private double _diskPercent;
+    
+    [ObservableProperty]
+    private string _packageManager = string.Empty;
     
     /// <summary>
     /// Texte formaté pour l'affichage de la RAM
@@ -38,7 +38,12 @@ public partial class SystemInfoViewModel : ObservableObject
     public string RamUsageText => $"{UsedRamMB / 1024:F1} GB / {TotalRamMB / 1024:F1} GB ({RamPercent:F1}%)";
     
     /// <summary>
-    /// Texte formaté pour l'affichage du disque
+    /// Texte formaté pour le CPU
     /// </summary>
-    public string DiskUsageText => $"{UsedDiskGB} GB / {TotalDiskGB} GB ({DiskPercent:F1}%)";
+    public string CpuUsageText => $"{CpuPercent:F1}%";
+    
+    /// <summary>
+    /// Texte formaté pour le disque
+    /// </summary>
+    public string DiskUsageText => $"{DiskPercent:F1}%";
 }

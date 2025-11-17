@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tuxpilot.Core.Interfaces.Services;
 
 namespace Tuxpilot.UI.ViewModels;
 
@@ -11,14 +12,20 @@ namespace Tuxpilot.UI.ViewModels;
 /// </summary>
 public partial class DashboardViewModel : ViewModelBase
 {
+    private readonly IServiceSysteme _serviceSysteme;
+
     [ObservableProperty]
     private SystemInfoViewModel _systemInfo = new();
     
     [ObservableProperty]
     private string? _statusMessage;
     
-    public DashboardViewModel()
-    {
+    [ObservableProperty]
+    private bool _isLoading;
+    public DashboardViewModel(IServiceSysteme serviceSysteme)
+    { 
+        _serviceSysteme = serviceSysteme;
+
         // Charger les données au démarrage
         _ = LoadSystemInfoAsync();
     }
@@ -30,32 +37,46 @@ public partial class DashboardViewModel : ViewModelBase
     {
         try
         {
+            IsLoading = true;
             StatusMessage = "Chargement des informations système...";
-            
-            // Simuler un chargement (à remplacer par le vrai service)
-            await Task.Delay(500);
-            
-            // TODO: Appeler le vrai service
-            // var info = await _systemService.GetSystemInfoAsync();
-            
-            // Données de test pour l'instant
+          
+            var info = await _serviceSysteme.ObtenirInfoSystemeAsync();
+
+            // Mapper vers le ViewModel
             SystemInfo = new SystemInfoViewModel
             {
-                Distribution = "Fedora 41 (Forty One)",
-                KernelVersion = "6.17.7-100.fc41.x86_64",
-                TotalRamMB = 62000,
-                UsedRamMB = 7000,
-                RamPercent = 11.3,
-                TotalDiskGB = 500,
-                UsedDiskGB = 150,
-                DiskPercent = 30
+                Distribution = info.Distribution,
+                KernelVersion = info.VersionKernel,
+                TotalRamMB = info.RamTotaleMB,
+                UsedRamMB = info.RamUtiliseeMB,
+                RamPercent = info.PourcentageRam,
+                CpuPercent = info.PourcentageCpu,
+                DiskPercent = info.PourcentageDisque,
+                PackageManager = info.GestionnairePaquets
             };
             
-            StatusMessage = "Système opérationnel ✅";
+            var statut = info.ObtenirStatut();
+            StatusMessage = statut switch
+            {
+                Core.Enums.StatutSysteme.Sain => "✅ Système en bon état",
+                Core.Enums.StatutSysteme.Avertissement => "⚠️ Attention : ressources élevées",
+                Core.Enums.StatutSysteme.Critique => "🔴 Critique : action nécessaire",
+                _ => "✅ Système opérationnel"
+            };
+            
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Erreur : {ex.Message}";
+            StatusMessage = $"❌ Erreur : {ex.Message}";
+            SystemInfo = new SystemInfoViewModel
+            {
+                Distribution = "Erreur de chargement",
+                KernelVersion = ex.Message
+            };
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
     

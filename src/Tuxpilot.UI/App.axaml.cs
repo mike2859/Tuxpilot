@@ -14,6 +14,8 @@ namespace Tuxpilot.UI;
 
 public partial class App : Application
 {
+    private ServiceProvider? _serviceProvider;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -24,13 +26,16 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Configuration Dependency Injection
-            var services = ConfigurerServices();
+            //var services = ConfigurerServices();
+            _serviceProvider = ConfigureServices();
             
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
             // Créer la fenêtre principale
-            var mainViewModel = services.GetRequiredService<MainWindowViewModel>();
+           // var mainViewModel = services.GetRequiredService<MainWindowViewModel>();
+           var mainViewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+
             desktop.MainWindow = new MainWindow
             {
                 DataContext = mainViewModel
@@ -44,7 +49,23 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
-
+    /// <summary>
+    /// Configure tous les services de l'application
+    /// </summary>
+    private static ServiceProvider ConfigureServices()
+    {
+        var services = new ServiceCollection();
+        
+        // Services Infrastructure
+        services.AddSingleton<ExecuteurScriptPython>();
+        services.AddSingleton<IServiceSysteme, ServiceSysteme>();
+        
+        // ViewModels
+        services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<DashboardViewModel>();
+        
+        return services.BuildServiceProvider();
+    }
     private void DisableAvaloniaDataAnnotationValidation()
     {
         // Get an array of plugins to remove

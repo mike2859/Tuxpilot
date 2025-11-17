@@ -8,7 +8,7 @@
         <vm:DashboardViewModel/>
     </Design.DataContext>
 
-    <ScrollViewer>
+   <ScrollViewer>
         <StackPanel Margin="32" Spacing="24">
             
             <!-- Header -->
@@ -21,70 +21,132 @@
                           Foreground="Gray"/>
             </StackPanel>
             
+            <!-- Indicateur de chargement -->
+            <ProgressBar IsIndeterminate="True"
+                        IsVisible="{Binding IsLoading}"
+                        Height="4"/>
+            
             <!-- Informations système -->
             <Border Background="White"
                     CornerRadius="12"
                     Padding="24"
                     BorderBrush="#E5E7EB"
                     BorderThickness="1">
-                <StackPanel Spacing="16">
+                <StackPanel Spacing="20">
                     
-                    <TextBlock Text="Informations système" 
+                    <TextBlock Text="ℹ️ Informations système" 
                               FontSize="18" 
                               FontWeight="SemiBold"/>
                     
                     <!-- Distribution -->
-                    <Grid ColumnDefinitions="150,*">
-                        <TextBlock Grid.Column="0" 
-                                  Text="Distribution :" 
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Distribution" 
+                                  FontSize="13"
+                                  Foreground="Gray"/>
+                        <TextBlock Text="{Binding SystemInfo.Distribution}"
+                                  FontSize="16"
                                   FontWeight="Medium"/>
-                        <TextBlock Grid.Column="1" 
-                                  Text="{Binding SystemInfo.Distribution}"/>
-                    </Grid>
+                    </StackPanel>
                     
                     <!-- Kernel -->
-                    <Grid ColumnDefinitions="150,*">
-                        <TextBlock Grid.Column="0" 
-                                  Text="Kernel :" 
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Kernel" 
+                                  FontSize="13"
+                                  Foreground="Gray"/>
+                        <TextBlock Text="{Binding SystemInfo.KernelVersion}"
+                                  FontSize="16"
                                   FontWeight="Medium"/>
-                        <TextBlock Grid.Column="1" 
-                                  Text="{Binding SystemInfo.KernelVersion}"/>
-                    </Grid>
+                    </StackPanel>
+                    
+                    <!-- Gestionnaire de paquets -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Gestionnaire de paquets" 
+                                  FontSize="13"
+                                  Foreground="Gray"/>
+                        <TextBlock Text="{Binding SystemInfo.PackageManager}"
+                                  FontSize="16"
+                                  FontWeight="Medium"/>
+                    </StackPanel>
+                    
+                </StackPanel>
+            </Border>
+            
+            <!-- Utilisation des ressources -->
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="24"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1">
+                <StackPanel Spacing="20">
+                    
+                    <TextBlock Text="📊 Utilisation des ressources" 
+                              FontSize="18" 
+                              FontWeight="SemiBold"/>
                     
                     <!-- RAM -->
                     <StackPanel Spacing="8">
-                        <Grid ColumnDefinitions="150,*">
-                            <TextBlock Grid.Column="0" 
-                                      Text="RAM :" 
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0"
+                                      Text="Mémoire RAM" 
+                                      FontSize="14"
                                       FontWeight="Medium"/>
                             <TextBlock Grid.Column="1" 
-                                      Text="{Binding SystemInfo.RamUsageText}"/>
+                                      Text="{Binding SystemInfo.RamUsageText}"
+                                      FontSize="14"
+                                      Foreground="#3B82F6"/>
                         </Grid>
                         <ProgressBar Value="{Binding SystemInfo.RamPercent}" 
                                     Maximum="100"
-                                    Height="8"/>
+                                    Height="12"
+                                    CornerRadius="6"/>
+                    </StackPanel>
+                    
+                    <!-- CPU -->
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0"
+                                      Text="Processeur (CPU)" 
+                                      FontSize="14"
+                                      FontWeight="Medium"/>
+                            <TextBlock Grid.Column="1" 
+                                      Text="{Binding SystemInfo.CpuUsageText}"
+                                      FontSize="14"
+                                      Foreground="#10B981"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding SystemInfo.CpuPercent}" 
+                                    Maximum="100"
+                                    Height="12"
+                                    CornerRadius="6"/>
                     </StackPanel>
                     
                     <!-- Disque -->
                     <StackPanel Spacing="8">
-                        <Grid ColumnDefinitions="150,*">
-                            <TextBlock Grid.Column="0" 
-                                      Text="Disque :" 
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0"
+                                      Text="Espace disque" 
+                                      FontSize="14"
                                       FontWeight="Medium"/>
                             <TextBlock Grid.Column="1" 
-                                      Text="{Binding SystemInfo.DiskUsageText}"/>
+                                      Text="{Binding SystemInfo.DiskUsageText}"
+                                      FontSize="14"
+                                      Foreground="#F59E0B"/>
                         </Grid>
                         <ProgressBar Value="{Binding SystemInfo.DiskPercent}" 
                                     Maximum="100"
-                                    Height="8"/>
+                                    Height="12"
+                                    CornerRadius="6"/>
                     </StackPanel>
                     
                     <!-- Bouton actualiser -->
                     <Button Content="🔄 Actualiser"
                             Command="{Binding RefreshCommand}"
                             HorizontalAlignment="Left"
-                            Padding="16,8"
-                            Margin="0,8,0,0"/>
+                            Padding="16,10"
+                            Margin="0,8,0,0"
+                            Background="#3B82F6"
+                            Foreground="White"
+                            BorderThickness="0"
+                            CornerRadius="8"/>
                     
                 </StackPanel>
             </Border>
@@ -94,9 +156,11 @@
                     CornerRadius="8"
                     Padding="16"
                     BorderBrush="#3B82F6"
-                    BorderThickness="1"
+                    BorderThickness="2"
                     IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                 <TextBlock Text="{Binding StatusMessage}" 
+                          FontSize="14"
+                          FontWeight="Medium"
                           Foreground="#1E40AF"/>
             </Border>
             
