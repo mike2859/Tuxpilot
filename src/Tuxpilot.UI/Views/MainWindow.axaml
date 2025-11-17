@@ -15,7 +15,7 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <!-- Styles pour les boutons de navigation -->
+     <!-- Styles pour les boutons de navigation -->
     <Window.Styles>
         <Style Selector="Button.nav-button">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -25,14 +25,21 @@
             <Setter Property="Foreground" Value="#6B7280"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
         </Style>
         
-        <Style Selector="Button.nav-button:pointerover">
+        <!-- IMPORTANT : Forcer les couleurs au survol -->
+        <Style Selector="Button.nav-button:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="#F3F4F6"/>
             <Setter Property="Foreground" Value="#111827"/>
         </Style>
+        
+        <Style Selector="Button.nav-button:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E5E7EB"/>
+            <Setter Property="Foreground" Value="#111827"/>
+        </Style>
     </Window.Styles>
-    
+
     <Grid ColumnDefinitions="240,*">
         
         <!-- Sidebar gauche -->
@@ -44,14 +51,14 @@
                 
                 <!-- Logo -->
                 <StackPanel Orientation="Horizontal" 
-                            Margin="20" 
-                            Spacing="12">
+                           Margin="20" 
+                           Spacing="12">
                     <TextBlock Text="🐧" FontSize="32"/>
                     <TextBlock Text="TuxCopilot" 
-                               FontSize="20" 
-                               FontWeight="Bold"
-                               Foreground="#111827"
-                               VerticalAlignment="Center"/>
+                              FontSize="20" 
+                              FontWeight="Bold"
+                              Foreground="#111827"
+                              VerticalAlignment="Center"/>
                 </StackPanel>
                 
                 <!-- Menu de navigation -->
