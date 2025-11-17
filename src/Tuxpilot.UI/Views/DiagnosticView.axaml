@@ -1,0 +1,9 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Tuxpilot.UI.Views.DiagnosticView">
+    <StackPanel Margin="40" Spacing="24">
+        <TextBlock Text="🩺 Diagnostic" FontSize="32" FontWeight="Bold"/>
+        <TextBlock Text="Fonctionnalité en cours de développement..." 
+                   FontSize="16" Foreground="Gray"/>
+    </StackPanel>
+</UserControl>

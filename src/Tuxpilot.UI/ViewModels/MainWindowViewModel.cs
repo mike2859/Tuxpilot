@@ -1,57 +1,58 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Tuxpilot.Core.Entities;
 using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
+using Tuxpilot.UI.Views;
 
 namespace Tuxpilot.UI.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly IServiceSysteme _serviceSysteme;
-    
     [ObservableProperty]
-    private SystemInfo? _infoSysteme;
+    private object? _currentView;
     
-    [ObservableProperty]
-    private string _messageStatut = "Chargement...";
-    
-    [ObservableProperty]
-    private bool _chargementEnCours = true;
-    
-    public MainWindowViewModel(IServiceSysteme serviceSysteme)
+    public MainWindowViewModel()
     {
-        _serviceSysteme = serviceSysteme;
-        
-        // Charger les infos au démarrage
-        _ = ChargerInfoSystemeAsync();
+        // Afficher le Dashboard par défaut
+        CurrentView = new DashboardView();
     }
     
-    private async Task ChargerInfoSystemeAsync()
+    /// <summary>
+    /// Commande pour naviguer vers le Dashboard
+    /// </summary>
+    [RelayCommand]
+    private void NavigateToDashboard()
     {
-        try
-        {
-            ChargementEnCours = true;
-            MessageStatut = "Détection du système en cours...";
-            
-            InfoSysteme = await _serviceSysteme.ObtenirInfoSystemeAsync();
-            
-            var statut = InfoSysteme.ObtenirStatut();
-            MessageStatut = statut switch
-            {
-                StatutSysteme.Sain => "✅ Système en bonne santé",
-                StatutSysteme.Avertissement => "⚠️ Attention requise",
-                StatutSysteme.Critique => "🔴 Action urgente nécessaire",
-                _ => "Système détecté"
-            };
-            
-            ChargementEnCours = false;
-        }
-        catch (Exception ex)
-        {
-            MessageStatut = $"❌ Erreur : {ex.Message}";
-            ChargementEnCours = false;
-        }
+        CurrentView = new DashboardView();
+    }
+    
+    /// <summary>
+    /// Commande pour naviguer vers les Mises à jour
+    /// </summary>
+    [RelayCommand]
+    private void NavigateToUpdates()
+    {
+        CurrentView = new MisesAJourView();
+    }
+    
+    /// <summary>
+    /// Commande pour naviguer vers le Nettoyage
+    /// </summary>
+    [RelayCommand]
+    private void NavigateToCleanup()
+    {
+        CurrentView = new NettoyageView();
+    }
+    
+    /// <summary>
+    /// Commande pour naviguer vers le Diagnostic
+    /// </summary>
+    [RelayCommand]
+    private void NavigateToDiagnostic()
+    {
+        CurrentView = new DiagnosticView();
     }
 }

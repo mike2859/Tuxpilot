@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             x:Class="Tuxpilot.UI.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+    <Design.DataContext>
+        <vm:DashboardViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="32" Spacing="24">
+            
+            <!-- Header -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Tableau de bord" 
+                          FontSize="28" 
+                          FontWeight="Bold"/>
+                <TextBlock Text="Vue d'ensemble de votre système Linux" 
+                          FontSize="14"
+                          Foreground="Gray"/>
+            </StackPanel>
+            
+            <!-- Informations système -->
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="24"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1">
+                <StackPanel Spacing="16">
+                    
+                    <TextBlock Text="Informations système" 
+                              FontSize="18" 
+                              FontWeight="SemiBold"/>
+                    
+                    <!-- Distribution -->
+                    <Grid ColumnDefinitions="150,*">
+                        <TextBlock Grid.Column="0" 
+                                  Text="Distribution :" 
+                                  FontWeight="Medium"/>
+                        <TextBlock Grid.Column="1" 
+                                  Text="{Binding SystemInfo.Distribution}"/>
+                    </Grid>
+                    
+                    <!-- Kernel -->
+                    <Grid ColumnDefinitions="150,*">
+                        <TextBlock Grid.Column="0" 
+                                  Text="Kernel :" 
+                                  FontWeight="Medium"/>
+                        <TextBlock Grid.Column="1" 
+                                  Text="{Binding SystemInfo.KernelVersion}"/>
+                    </Grid>
+                    
+                    <!-- RAM -->
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="150,*">
+                            <TextBlock Grid.Column="0" 
+                                      Text="RAM :" 
+                                      FontWeight="Medium"/>
+                            <TextBlock Grid.Column="1" 
+                                      Text="{Binding SystemInfo.RamUsageText}"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding SystemInfo.RamPercent}" 
+                                    Maximum="100"
+                                    Height="8"/>
+                    </StackPanel>
+                    
+                    <!-- Disque -->
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="150,*">
+                            <TextBlock Grid.Column="0" 
+                                      Text="Disque :" 
+                                      FontWeight="Medium"/>
+                            <TextBlock Grid.Column="1" 
+                                      Text="{Binding SystemInfo.DiskUsageText}"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding SystemInfo.DiskPercent}" 
+                                    Maximum="100"
+                                    Height="8"/>
+                    </StackPanel>
+                    
+                    <!-- Bouton actualiser -->
+                    <Button Content="🔄 Actualiser"
+                            Command="{Binding RefreshCommand}"
+                            HorizontalAlignment="Left"
+                            Padding="16,8"
+                            Margin="0,8,0,0"/>
+                    
+                </StackPanel>
+            </Border>
+            
+            <!-- Message de statut -->
+            <Border Background="#EFF6FF"
+                    CornerRadius="8"
+                    Padding="16"
+                    BorderBrush="#3B82F6"
+                    BorderThickness="1"
+                    IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding StatusMessage}" 
+                          Foreground="#1E40AF"/>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

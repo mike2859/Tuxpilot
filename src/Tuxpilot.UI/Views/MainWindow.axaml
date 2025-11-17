@@ -15,282 +15,73 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-   
-     <Grid ColumnDefinitions="260,*">
+    <!-- Styles pour les boutons de navigation -->
+    <Window.Styles>
+        <Style Selector="Button.nav-button">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
         
-        <!-- SIDEBAR -->
+        <Style Selector="Button.nav-button:pointerover">
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="Foreground" Value="#111827"/>
+        </Style>
+    </Window.Styles>
+    
+    <Grid ColumnDefinitions="240,*">
+        
+        <!-- Sidebar gauche -->
         <Border Grid.Column="0" 
                 Background="#FFFFFF"
                 BorderBrush="#E5E7EB" 
                 BorderThickness="0,0,1,0">
-            <Grid RowDefinitions="Auto,*,Auto">
+            <StackPanel>
                 
-                <!-- Logo et titre -->
-                <StackPanel Grid.Row="0" Margin="24,20">
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <TextBlock Text="🐧" FontSize="32" VerticalAlignment="Center"/>
-                        <TextBlock Text="Tuxpilot" 
-                                  FontSize="22" 
-                                  FontWeight="Bold"
-                                  VerticalAlignment="Center"/>
-                    </StackPanel>
-                    <TextBlock Text="Assistant Linux" 
-                              FontSize="12" 
-                              Foreground="Gray"
-                              Margin="0,4,0,0"/>
+                <!-- Logo -->
+                <StackPanel Orientation="Horizontal" 
+                            Margin="20" 
+                            Spacing="12">
+                    <TextBlock Text="🐧" FontSize="32"/>
+                    <TextBlock Text="TuxCopilot" 
+                               FontSize="20" 
+                               FontWeight="Bold"
+                               Foreground="#111827"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
                 
                 <!-- Menu de navigation -->
-                <StackPanel Grid.Row="1" Margin="12,20,12,0" Spacing="6">
+                <StackPanel Margin="0,20,0,0" Spacing="4">
                     
-                    <Border Background="#EFF6FF"
-                            CornerRadius="8"
-                            Padding="16,12">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="📊" FontSize="18"/>
-                            <TextBlock Text="Vue d'ensemble" 
-                                      VerticalAlignment="Center"
-                                      FontWeight="SemiBold"
-                                      Foreground="#3B82F6"/>
-                        </StackPanel>
-                    </Border>
+                    <Button Content="📊 Vue d'ensemble"
+                            Classes="nav-button"
+                            Command="{Binding NavigateToDashboardCommand}"/>
                     
-                    <Border Background="Transparent"
-                            CornerRadius="8"
-                            Padding="16,12">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="🔄" FontSize="18" Opacity="0.5"/>
-                            <TextBlock Text="Mises à jour" 
-                                      VerticalAlignment="Center"
-                                      Foreground="#6B7280"
-                                      Opacity="0.7"/>
-                        </StackPanel>
-                    </Border>
+                    <Button Content="🔄 Mises à jour"
+                            Classes="nav-button"
+                            Command="{Binding NavigateToUpdatesCommand}"/>
                     
-                    <Border Background="Transparent"
-                            CornerRadius="8"
-                            Padding="16,12">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="🧹" FontSize="18" Opacity="0.5"/>
-                            <TextBlock Text="Nettoyage" 
-                                      VerticalAlignment="Center"
-                                      Foreground="#6B7280"
-                                      Opacity="0.7"/>
-                        </StackPanel>
-                    </Border>
+                    <Button Content="🧹 Nettoyage"
+                            Classes="nav-button"
+                            Command="{Binding NavigateToCleanupCommand}"/>
                     
-                    <Border Background="Transparent"
-                            CornerRadius="8"
-                            Padding="16,12">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="🩺" FontSize="18" Opacity="0.5"/>
-                            <TextBlock Text="Diagnostic" 
-                                      VerticalAlignment="Center"
-                                      Foreground="#6B7280"
-                                      Opacity="0.7"/>
-                        </StackPanel>
-                    </Border>
+                    <Button Content="🩺 Diagnostic"
+                            Classes="nav-button"
+                            Command="{Binding NavigateToDiagnosticCommand}"/>
                     
                 </StackPanel>
                 
-                <!-- Info système (en bas) -->
-                <Border Grid.Row="2" 
-                       Background="#F9FAFB" 
-                       Padding="20"
-                       Margin="12,12,12,20"
-                       CornerRadius="8">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="{Binding InfoSysteme.Distribution}" 
-                                  FontWeight="SemiBold"
-                                  FontSize="13"
-                                  TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Text="{Binding InfoSysteme.VersionKernel}" 
-                                  FontSize="11"
-                                  Foreground="Gray"
-                                  TextTrimming="CharacterEllipsis"/>
-                        <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                            <Ellipse Width="8" Height="8" Fill="#10B981"/>
-                            <TextBlock Text="Système en ligne" 
-                                      FontSize="11"
-                                      Foreground="#10B981"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-                
-            </Grid>
+            </StackPanel>
         </Border>
         
-        <!-- CONTENU PRINCIPAL (ton dashboard actuel) -->
-        <Grid Grid.Column="1" Background="#F9FAFB">
-            
-            <!-- Loading indicator -->
-            <StackPanel VerticalAlignment="Center" 
-                       HorizontalAlignment="Center"
-                       IsVisible="{Binding ChargementEnCours}">
-                <TextBlock Text="🐧" FontSize="64" HorizontalAlignment="Center"/>
-                <TextBlock Text="Chargement..." 
-                          FontSize="18" 
-                          Margin="0,20,0,0"
-                          HorizontalAlignment="Center"/>
-            </StackPanel>
-            
-            <!-- Contenu principal -->
-            <ScrollViewer IsVisible="{Binding !ChargementEnCours}">
-                <StackPanel Margin="40" Spacing="24">
-                    
-                    <!-- Header -->
-                    <TextBlock Text="📊 Vue d'ensemble" 
-                              FontSize="32" 
-                              FontWeight="Bold"/>
-                    
-                    <!-- Carte informations système -->
-                    <Border Background="White"
-                            CornerRadius="16"
-                            Padding="32"
-                            IsVisible="{Binding InfoSysteme, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <StackPanel Spacing="20">
-                            
-                            <TextBlock Text="Informations système" 
-                                      FontSize="20" 
-                                      FontWeight="SemiBold"/>
-                            
-                            <!-- Grille d'infos -->
-                            <Grid ColumnDefinitions="200,*" 
-                                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-                                
-                                <!-- Distribution -->
-                                <TextBlock Grid.Row="0" Grid.Column="0" 
-                                          Text="Distribution :" 
-                                          FontWeight="Medium"
-                                          Foreground="#374151"
-                                          Margin="0,0,0,16"/>
-                                <TextBlock Grid.Row="0" Grid.Column="1" 
-                                          Text="{Binding InfoSysteme.Distribution}"
-                                          FontWeight="SemiBold"
-                                          Foreground="#111827"
-                                          Margin="0,0,0,16"/>
-                                
-                                <!-- Kernel -->
-                                <TextBlock Grid.Row="1" Grid.Column="0" 
-                                          Text="Kernel :" 
-                                          FontWeight="Medium"
-                                          Foreground="#374151"
-                                          Margin="0,0,0,16"/>
-                                <TextBlock Grid.Row="1" Grid.Column="1" 
-                                          Text="{Binding InfoSysteme.VersionKernel}"
-                                          Foreground="#111827"
-                                          Margin="0,0,0,16"/>
-                                
-                                <!-- Gestionnaire de paquets -->
-                                <TextBlock Grid.Row="2" Grid.Column="0" 
-                                          Text="Gestionnaire :" 
-                                          FontWeight="Medium"
-                                          Foreground="#374151"
-                                          Margin="0,0,0,16"/>
-                                <TextBlock Grid.Row="2" Grid.Column="1" 
-                                          Text="{Binding InfoSysteme.GestionnairePaquets}"
-                                          Foreground="#111827"
-                                          Margin="0,0,0,16"/>
-                                
-                                <!-- RAM -->
-                                <TextBlock Grid.Row="3" Grid.Column="0" 
-                                          Text="Mémoire RAM :" 
-                                          FontWeight="Medium"
-                                          Foreground="#374151"
-                                          Margin="0,0,0,16"/>
-                                <StackPanel Grid.Row="3" Grid.Column="1" Spacing="8" Margin="0,0,0,16">
-                                    <TextBlock>
-                                        <Run Text="{Binding InfoSysteme.RamUtiliseeMB, StringFormat={}{0:N0}}"/>
-                                        <Run Text=" MB / "/>
-                                        <Run Text="{Binding InfoSysteme.RamTotaleMB, StringFormat={}{0:N0}}"/>
-                                        <Run Text=" MB "/>
-                                        <Run Text="(" FontWeight="SemiBold"/>
-                                        <Run Text="{Binding InfoSysteme.PourcentageRam, StringFormat={}{0:F1}}" FontWeight="SemiBold"/>
-                                        <Run Text="%)" FontWeight="SemiBold"/>
-                                    </TextBlock>
-                                    <ProgressBar Value="{Binding InfoSysteme.PourcentageRam}" 
-                                                Maximum="100"
-                                                Height="8"
-                                                Foreground="#3B82F6"/>
-                                </StackPanel>
-                                
-                                <!-- CPU -->
-                                <TextBlock Grid.Row="4" Grid.Column="0" 
-                                          Text="Utilisation CPU :" 
-                                          FontWeight="Medium"
-                                          Foreground="#374151"
-                                          Margin="0,0,0,16"/>
-                                <StackPanel Grid.Row="4" Grid.Column="1" Spacing="8" Margin="0,0,0,16">
-                                    <TextBlock>
-                                        <Run Text="{Binding InfoSysteme.PourcentageCpu, StringFormat={}{0:F1}}" FontWeight="SemiBold"/>
-                                        <Run Text=" %"/>
-                                    </TextBlock>
-                                    <ProgressBar Value="{Binding InfoSysteme.PourcentageCpu}" 
-                                                Maximum="100"
-                                                Height="8"
-                                                Foreground="#10B981"/>
-                                </StackPanel>
-                                
-                                <!-- Disque -->
-                                <TextBlock Grid.Row="5" Grid.Column="0" 
-                                          Text="Disque système :" 
-                                          FontWeight="Medium"
-                                          Foreground="#374151"
-                                          Margin="0,0,0,16"/>
-                                <StackPanel Grid.Row="5" Grid.Column="1" Spacing="8" Margin="0,0,0,16">
-                                    <TextBlock>
-                                        <Run Text="{Binding InfoSysteme.PourcentageDisque, StringFormat={}{0:F1}}" FontWeight="SemiBold"/>
-                                        <Run Text=" % utilisé"/>
-                                    </TextBlock>
-                                    <ProgressBar Value="{Binding InfoSysteme.PourcentageDisque}" 
-                                                Maximum="100"
-                                                Height="8"
-                                                Foreground="#F59E0B"/>
-                                </StackPanel>
-                                
-                                <!-- Statut global -->
-                                <TextBlock Grid.Row="6" Grid.Column="0" 
-                                          Text="Statut global :" 
-                                          FontWeight="Medium"
-                                          Foreground="#374151"/>
-                                <Border Grid.Row="6" Grid.Column="1"
-                                       Background="#ECFDF5"
-                                       CornerRadius="8"
-                                       Padding="12,6"
-                                       HorizontalAlignment="Left">
-                                    <TextBlock Text="{Binding MessageStatut}" 
-                                              FontSize="13"
-                                              FontWeight="SemiBold"
-                                              Foreground="#065F46"/>
-                                </Border>
-                                
-                            </Grid>
-                            
-                        </StackPanel>
-                    </Border>
-                    
-                    <!-- Message de bienvenue -->
-                    <Border Background="#EFF6FF"
-                            CornerRadius="12"
-                            Padding="24"
-                            BorderBrush="#BFDBFE"
-                            BorderThickness="1">
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="👋 Bienvenue sur Tuxpilot !" 
-                                      FontSize="16" 
-                                      FontWeight="SemiBold"
-                                      Foreground="#1E40AF"/>
-                            <TextBlock Text="Votre assistant Linux est prêt à vous aider à maintenir votre système en bonne santé." 
-                                      FontSize="14"
-                                      Foreground="#1E40AF"
-                                      TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </Border>
-                    
-                </StackPanel>
-            </ScrollViewer>
-            
-        </Grid>
+        <!-- Contenu principal (UserControl dynamique) -->
+        <Border Grid.Column="1" Background="#F9FAFB">
+            <ContentControl Content="{Binding CurrentView}"/>
+        </Border>
         
     </Grid>
 </Window>
