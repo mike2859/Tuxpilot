@@ -49,7 +49,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToUpdates()
     {
-        CurrentView = new MisesAJourView();
+        var misesAJourViewModel = _serviceProvider.GetRequiredService<MisesAJourViewModel>();
+        var misesAJourView = new MisesAJourView
+        {
+            DataContext = misesAJourViewModel
+        };
+    
+        CurrentView = misesAJourView;
     }
     
     /// <summary>

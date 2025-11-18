@@ -59,10 +59,12 @@ public partial class App : Application
         // Services Infrastructure
         services.AddSingleton<ExecuteurScriptPython>();
         services.AddSingleton<IServiceSysteme, ServiceSysteme>();
+        services.AddSingleton<IServiceMisesAJour, ServiceMisesAJour>();
         
         // ViewModels
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<DashboardViewModel>();
+        services.AddTransient<MisesAJourViewModel>();  
         
         return services.BuildServiceProvider();
     }

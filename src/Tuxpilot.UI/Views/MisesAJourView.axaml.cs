@@ -9,6 +9,5 @@ public partial class MisesAJourView : UserControl
     public MisesAJourView()
     {
         AvaloniaXamlLoader.Load(this); 
-       // InitializeComponent();
     }
 }
