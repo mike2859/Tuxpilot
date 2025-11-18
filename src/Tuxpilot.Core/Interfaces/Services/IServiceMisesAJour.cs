@@ -12,4 +12,10 @@ public interface IServiceMisesAJour
     /// Vérifie les mises à jour disponibles
     /// </summary>
     Task<UpdateInfo> VerifierMisesAJourAsync();
+    
+    /// <summary>
+    /// Installe toutes les mises à jour disponibles
+    /// </summary>
+    /// <returns>True si l'installation a réussi, False sinon</returns>
+    Task<(bool Success, string Message)> InstallerMisesAJourAsync();
 }

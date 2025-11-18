@@ -33,6 +33,12 @@ public partial class MisesAJourViewModel : ViewModelBase
     [ObservableProperty]
     private DateTime _derniereMiseAJour = DateTime.Now;
     
+    [ObservableProperty]
+    private bool _isConfirmationVisible;
+
+    [ObservableProperty]
+    private bool _isSuccessVisible;
+    
     public MisesAJourViewModel(IServiceMisesAJour serviceMisesAJour)
     {
         _serviceMisesAJour = serviceMisesAJour;
@@ -129,12 +135,69 @@ public partial class MisesAJourViewModel : ViewModelBase
     
     /// <summary>
     /// Commande pour installer toutes les mises à jour
-    /// TODO: Implémenter l'installation
     /// </summary>
     [RelayCommand]
     private async Task InstallerToutAsync()
     {
-        // TODO: Implémenter plus tard
-        await Task.Delay(100);
+        // Impossible si aucune mise à jour
+        if (NombreMisesAJour == 0)
+            return;
+    
+        // Afficher le dialogue de confirmation
+        IsConfirmationVisible = true;
+    }
+
+    /// <summary>
+    /// Commande pour confirmer l'installation
+    /// </summary>
+    [RelayCommand]
+    private async Task ConfirmerInstallationAsync()
+    {
+        IsConfirmationVisible = false;
+    
+        try
+        {
+            IsLoading = true;
+            MessageErreur = "Installation en cours... Veuillez patienter.";
+            OnPropertyChanged(nameof(MessageStatut));
+        
+            var (success, message) = await _serviceMisesAJour.InstallerMisesAJourAsync();
+        
+            if (success)
+            {
+                MessageErreur = null;
+            
+                // Rafraîchir la liste des mises à jour
+                await VerifierMisesAJourAsync();
+            
+                // Afficher le succès
+                IsSuccessVisible = true;
+                await Task.Delay(3000); // Afficher 3 secondes
+                IsSuccessVisible = false;
+            }
+            else
+            {
+                MessageErreur = message;
+                OnPropertyChanged(nameof(MessageStatut));
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageErreur = $"Erreur : {ex.Message}";
+            OnPropertyChanged(nameof(MessageStatut));
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    /// <summary>
+    /// Commande pour annuler l'installation
+    /// </summary>
+    [RelayCommand]
+    private void AnnulerInstallation()
+    {
+        IsConfirmationVisible = false;
     }
 }

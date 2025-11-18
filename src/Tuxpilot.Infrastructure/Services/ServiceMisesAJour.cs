@@ -52,4 +52,31 @@ public class ServiceMisesAJour : IServiceMisesAJour
             };
         }
     } 
+    
+    public async Task<(bool Success, string Message)> InstallerMisesAJourAsync()
+    {
+        try
+        {
+            // Exécuter le script Python
+            var resultat = await _executeurScript.ExecuterAsync("install_updates.py");
+        
+            // Options de désérialisation
+            var options = new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true 
+            };
+        
+            // Désérialiser le résultat
+            var dto = JsonSerializer.Deserialize<InstallResultDto>(resultat, options);
+        
+            if (dto == null)
+                return (false, "Erreur lors de la désérialisation du résultat");
+        
+            return (dto.Success, dto.Message);
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Erreur lors de l'installation : {ex.Message}");
+        }
+    }
 }

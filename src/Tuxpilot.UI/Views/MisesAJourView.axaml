@@ -1,179 +1,306 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:Tuxpilot.UI.ViewModels"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
              x:Class="Tuxpilot.UI.Views.MisesAJourView"
              x:DataType="vm:MisesAJourViewModel">
 
-    
     <Design.DataContext>
         <vm:MisesAJourViewModel/>
     </Design.DataContext>
-    
-    
-    <ScrollViewer>
-        <StackPanel Margin="32" Spacing="24">
-            
-            <!-- Header -->
-            <StackPanel Spacing="8">
-                <TextBlock Text="🔄 Mises à jour" 
-                          FontSize="28" 
-                          FontWeight="Bold"/>
-                <TextBlock Text="Gérez les mises à jour de votre système Linux" 
-                          FontSize="14"
-                          Foreground="Gray"/>
-            </StackPanel>
-            
-            <!-- Indicateur de chargement -->
-            <ProgressBar IsIndeterminate="True"
-                        IsVisible="{Binding IsLoading}"
-                        Height="4"/>
-            
-            <!-- Message de statut -->
-            <Border CornerRadius="8"
-                    Padding="16"
-                    BorderThickness="2"
-                    Background="{Binding BackgroundColor}"
-                    BorderBrush="{Binding BorderColor}">
-               
+
+    <!-- 🆕 GRID pour permettre les overlays -->
+    <Grid>
+        
+        <!-- Contenu principal -->
+        <ScrollViewer>
+            <StackPanel Margin="32" Spacing="24">
                 
-                <Grid ColumnDefinitions="*,Auto">
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding MessageStatut}"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               VerticalAlignment="Center"
-                               Foreground="#111827"/>
-        
-                    <Button Grid.Column="1"
-                            Content="🔄 Vérifier"
-                            Command="{Binding VerifierMisesAJourCommand}"
-                            Padding="12,8"
-                            Margin="16,0,0,0"
-                            FontSize="13"
-                            Background="Transparent"
-                            BorderBrush="#D1D5DB"
-                            BorderThickness="1"
-                            CornerRadius="6"
-                            Cursor="Hand"/>
-                </Grid>
-            </Border>
-            
-            <!-- Liste des mises à jour -->
-          <Border Background="White"
-        CornerRadius="12"
-        Padding="24"
-        BorderBrush="#E5E7EB"
-        BorderThickness="1"
-        IsVisible="{Binding MisesAJourDisponibles}">
-    <DockPanel LastChildFill="True">
-        
-        <!-- Header avec bouton - DockPanel.Dock="Top" pour le fixer en haut -->
-        <Grid DockPanel.Dock="Top" 
-              ColumnDefinitions="*,Auto"
-              Margin="0,0,0,16">
-            <TextBlock Grid.Column="0"
-                      Text="📦 Paquets disponibles" 
-                      FontSize="18" 
-                      FontWeight="SemiBold"/>
-            
-            <Button Grid.Column="1"
-                    Content="⬆️ Tout installer"
-                    Command="{Binding InstallerToutCommand}"
-                    Padding="16,10"
-                    Background="#3B82F6"
-                    Foreground="White"
-                    BorderThickness="0"
-                    CornerRadius="8"
-                    Cursor="Hand"
-                    FontWeight="SemiBold"/>
-        </Grid>
-        
-        <!-- Liste scrollable - prend tout l'espace restant -->
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Paquets}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Background="#F9FAFB"
-                                CornerRadius="8"
-                                Padding="16"
-                                Margin="0,0,0,8">
-                            <Grid ColumnDefinitions="Auto,*,Auto">
-                                
-                                <!-- Icône -->
-                                <Border Grid.Column="0"
-                                        Width="40" Height="40"
-                                        CornerRadius="8"
-                                        Background="#DBEAFE"
-                                        VerticalAlignment="Center">
-                                    <TextBlock Text="📦" 
-                                              FontSize="20"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                                </Border>
-                                
-                                <!-- Infos -->
-                                <StackPanel Grid.Column="1" 
-                                           Margin="16,0,0,0"
-                                           VerticalAlignment="Center"
-                                           Spacing="4">
-                                    <TextBlock Text="{Binding Nom}" 
-                                              FontSize="14"
-                                              FontWeight="SemiBold"
-                                              Foreground="#111827"/>
-                                    <TextBlock Text="{Binding VersionText}" 
-                                              FontSize="12"
-                                              Foreground="#6B7280"/>
-                                    <TextBlock Text="{Binding Depot, StringFormat='Dépôt: {0}'}" 
-                                              FontSize="11"
-                                              Foreground="#9CA3AF"/>
-                                </StackPanel>
-                                
-                                <!-- Badge -->
-                                <Border Grid.Column="2"
-                                        Background="#DBEAFE"
-                                        CornerRadius="12"
-                                        Padding="10,6"
-                                        VerticalAlignment="Center"
-                                        Margin="16,0,0,0">
-                                    <TextBlock Text="Nouveau" 
-                                              FontSize="11"
-                                              FontWeight="SemiBold"
-                                              Foreground="#1E40AF"/>
-                                </Border>
-                                
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                <!-- Header -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="🔄 Mises à jour" 
+                              FontSize="28" 
+                              FontWeight="Bold"/>
+                    <TextBlock Text="Gérez les mises à jour de votre système Linux" 
+                              FontSize="14"
+                              Foreground="Gray"/>
+                </StackPanel>
+                
+                <!-- Indicateur de chargement -->
+                <ProgressBar IsIndeterminate="True"
+                            IsVisible="{Binding IsLoading}"
+                            Height="4"/>
+                
+                <!-- Message de statut -->
+                <Border CornerRadius="8"
+                        Padding="16"
+                        BorderThickness="2"
+                        Background="{Binding BackgroundColor}"
+                        BorderBrush="{Binding BorderColor}">
+                    
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0"
+                                  Text="{Binding MessageStatut}"
+                                  FontSize="16"
+                                  FontWeight="SemiBold"
+                                  VerticalAlignment="Center"
+                                  Foreground="#111827"/>
+                        
+                        <Button Grid.Column="1"
+                                Classes="btn-outline btn-sm"
+                                Content="🔄 Vérifier"
+                                Command="{Binding VerifierMisesAJourCommand}"
+                                Margin="16,0,0,0"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Liste des mises à jour -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        Padding="24"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        IsVisible="{Binding MisesAJourDisponibles}">
+                    <DockPanel LastChildFill="True">
+                        
+                        <!-- Header avec bouton -->
+                        <Grid DockPanel.Dock="Top" 
+                              ColumnDefinitions="*,Auto"
+                              Margin="0,0,0,16">
+                            <TextBlock Grid.Column="0"
+                                      Text="📦 Paquets disponibles" 
+                                      FontSize="18" 
+                                      FontWeight="SemiBold"/>
+                            
+                            <Button Grid.Column="1"
+                                    Classes="btn-primary"
+                                    Content="⬆️ Tout installer"
+                                    Command="{Binding InstallerToutCommand}"/>
+                        </Grid>
+                        
+                        <!-- Liste scrollable -->
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                     VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Paquets}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#F9FAFB"
+                                                CornerRadius="8"
+                                                Padding="16"
+                                                Margin="0,0,0,8">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                
+                                                <!-- Icône -->
+                                                <Border Grid.Column="0"
+                                                        Width="40" Height="40"
+                                                        CornerRadius="8"
+                                                        Background="#DBEAFE"
+                                                        VerticalAlignment="Center">
+                                                    <TextBlock Text="📦" 
+                                                              FontSize="20"
+                                                              HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                                </Border>
+                                                
+                                                <!-- Infos -->
+                                                <StackPanel Grid.Column="1" 
+                                                           Margin="16,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           Spacing="4">
+                                                    <TextBlock Text="{Binding Nom}" 
+                                                              FontSize="14"
+                                                              FontWeight="SemiBold"
+                                                              Foreground="#111827"/>
+                                                    <TextBlock Text="{Binding VersionText}" 
+                                                              FontSize="12"
+                                                              Foreground="#6B7280"/>
+                                                    <TextBlock Text="{Binding Depot, StringFormat='Dépôt: {0}'}" 
+                                                              FontSize="11"
+                                                              Foreground="#9CA3AF"/>
+                                                </StackPanel>
+                                                
+                                                <!-- Badge -->
+                                                <Border Grid.Column="2"
+                                                        Background="#DBEAFE"
+                                                        CornerRadius="12"
+                                                        Padding="10,6"
+                                                        VerticalAlignment="Center"
+                                                        Margin="16,0,0,0">
+                                                    <TextBlock Text="Nouveau" 
+                                                              FontSize="11"
+                                                              FontWeight="SemiBold"
+                                                              Foreground="#1E40AF"/>
+                                                </Border>
+                                                
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        
+                    </DockPanel>
+                </Border>
+                
+                <!-- Message si aucune mise à jour -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        Padding="48,32"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        IsVisible="{Binding !MisesAJourDisponibles}">
+                    <StackPanel Spacing="16" HorizontalAlignment="Center">
+                        <TextBlock Text="✅" 
+                                  FontSize="64"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Text="Aucune mise à jour disponible" 
+                                  FontSize="20"
+                                  FontWeight="SemiBold"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Text="Votre système est à jour !" 
+                                  FontSize="14"
+                                  Foreground="Gray"
+                                  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                
+            </StackPanel>
         </ScrollViewer>
         
-    </DockPanel>
-</Border>
-            
-            <!-- Message si aucune mise à jour -->
+        <!-- 🆕 DIALOGUE DE CONFIRMATION (overlay) -->
+        <Border IsVisible="{Binding IsConfirmationVisible}"
+                Background="#80000000"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
             <Border Background="White"
                     CornerRadius="12"
-                    Padding="48,32"
-                    BorderBrush="#E5E7EB"
-                    BorderThickness="1"
-                    IsVisible="{Binding !MisesAJourDisponibles}">
-                <StackPanel Spacing="16" HorizontalAlignment="Center">
-                    <TextBlock Text="✅" 
-                              FontSize="64"
-                              HorizontalAlignment="Center"/>
-                    <TextBlock Text="Aucune mise à jour disponible" 
-                              FontSize="20"
-                              FontWeight="SemiBold"
-                              HorizontalAlignment="Center"/>
-                    <TextBlock Text="Votre système est à jour !" 
-                              FontSize="14"
-                              Foreground="Gray"
-                              HorizontalAlignment="Center"/>
+                    Padding="32"
+                    MaxWidth="500"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BoxShadow="0 10 25 5 #40000000">
+                <StackPanel Spacing="20">
+                    
+                    <!-- Icône et titre -->
+                    <StackPanel Spacing="12" HorizontalAlignment="Center">
+                        <TextBlock Text="⚠️" 
+                                  FontSize="48"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Text="Confirmer l'installation" 
+                                  FontSize="22"
+                                  FontWeight="Bold"
+                                  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Message -->
+                    <TextBlock TextWrapping="Wrap"
+                              HorizontalAlignment="Center"
+                              TextAlignment="Center"
+                              Foreground="#374151">
+                        <Run Text="Vous êtes sur le point d'installer "/>
+                        <Run Text="{Binding NombreMisesAJour}" FontWeight="Bold"/>
+                        <Run Text=" mise(s) à jour."/>
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run Text="Cette opération nécessite des privilèges administrateur."/>
+                        <LineBreak/>
+                        <Run Text="Voulez-vous continuer ?"/>
+                    </TextBlock>
+                    
+                    <!-- Boutons -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
+                        <Button Grid.Column="0"
+                                Classes="btn-secondary"
+                                Content="❌ Annuler"
+                                Command="{Binding AnnulerInstallationCommand}"/>
+                        
+                        <Button Grid.Column="1"
+                                Classes="btn-primary"
+                                Content="✅ Installer"
+                                Command="{Binding ConfirmerInstallationCommand}"/>
+                    </Grid>
+                    
                 </StackPanel>
             </Border>
+        </Border>
+        
+      <!-- 🆕 DIALOGUE DE CONFIRMATION (overlay) -->
+<Border IsVisible="{Binding IsConfirmationVisible}"
+        Background="#80000000"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+    <Border Background="White"
+            CornerRadius="16"
+            Padding="40"
+            MaxWidth="500"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            BoxShadow="0 20 50 10 #60000000">
+        <StackPanel Spacing="24">
+            
+            <!-- Icône et titre -->
+            <StackPanel Spacing="16" HorizontalAlignment="Center">
+                <Border Width="80" Height="80"
+                        CornerRadius="40"
+                        Background="#FEF3C7"
+                        HorizontalAlignment="Center">
+                    <TextBlock Text="⚠️" 
+                              FontSize="48"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="Confirmer l'installation" 
+                          FontSize="24"
+                          FontWeight="Bold"
+                          HorizontalAlignment="Center"
+                          Foreground="#111827"/>
+            </StackPanel>
+            
+            <!-- Message -->
+            <StackPanel Spacing="12">
+                <TextBlock TextWrapping="Wrap"
+                          HorizontalAlignment="Center"
+                          TextAlignment="Center"
+                          FontSize="15"
+                          Foreground="#374151">
+                    <Run Text="Vous êtes sur le point d'installer "/>
+                    <Run Text="{Binding NombreMisesAJour}" FontWeight="Bold" Foreground="#F59E0B"/>
+                    <Run Text=" mise(s) à jour."/>
+                </TextBlock>
+                
+                <TextBlock Text="Cette opération nécessite des privilèges administrateur."
+                          TextWrapping="Wrap"
+                          HorizontalAlignment="Center"
+                          TextAlignment="Center"
+                          FontSize="13"
+                          Foreground="#6B7280"/>
+                
+                <TextBlock Text="Voulez-vous continuer ?"
+                          TextWrapping="Wrap"
+                          HorizontalAlignment="Center"
+                          TextAlignment="Center"
+                          FontSize="15"
+                          FontWeight="SemiBold"
+                          Foreground="#111827"
+                          Margin="0,8,0,0"/>
+            </StackPanel>
+            
+            <!-- Boutons avec styles fixes -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
+                <Button Grid.Column="0"
+                        Classes="btn-secondary"
+                        Content="❌ Annuler"
+                        Command="{Binding AnnulerInstallationCommand}"/>
+    
+                <Button Grid.Column="1"
+                        Classes="btn-primary"
+                        Content="✅ Installer"
+                        Command="{Binding ConfirmerInstallationCommand}"/>
+            </Grid>
             
         </StackPanel>
-    </ScrollViewer>
+    </Border>
+</Border>
+        
+    </Grid>
+    
 </UserControl>
