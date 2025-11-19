@@ -7,6 +7,7 @@ using Tuxpilot.Infrastructure.Extensions;
 namespace Tuxpilot.Infrastructure.Services;
 
 
+
 /// <summary>
 /// Implémentation du service de mises à jour
 /// </summary>
@@ -53,26 +54,54 @@ public class ServiceMisesAJour : IServiceMisesAJour
         }
     } 
     
-    public async Task<(bool Success, string Message)> InstallerMisesAJourAsync()
+    public async Task<(bool Success, string Message)> InstallerMisesAJourAsync(Action<string, string>? onLogReceived = null)
     {
         try
         {
-            // Exécuter le script Python
-            var resultat = await _executeurScript.ExecuterAsync("install_updates.py");
-        
-            // Options de désérialisation
-            var options = new JsonSerializerOptions 
-            { 
-                PropertyNameCaseInsensitive = true 
-            };
-        
-            // Désérialiser le résultat
-            var dto = JsonSerializer.Deserialize<InstallResultDto>(resultat, options);
-        
-            if (dto == null)
-                return (false, "Erreur lors de la désérialisation du résultat");
-        
-            return (dto.Success, dto.Message);
+            var success = false;
+            var finalMessage = "";
+            
+            // Exécuter le script avec streaming
+            await _executeurScript.ExecuterAvecStreamingAsync(
+                "install_updates.py",
+                (line) =>
+                {
+                    try
+                    {
+                        // Parser le JSON de chaque ligne
+                        var options = new JsonSerializerOptions 
+                        { 
+                            PropertyNameCaseInsensitive = true 
+                        };
+                        
+                        var log = JsonSerializer.Deserialize<InstallLogDto>(line, options);
+                        
+                        if (log != null)
+                        {
+                            // Appeler le callback si fourni
+                            onLogReceived?.Invoke(log.Type, log.Message);
+                            
+                            // Détecter la fin
+                            if (log.Type == "final_success")
+                            {
+                                success = true;
+                                finalMessage = log.Message;
+                            }
+                            else if (log.Type == "error")
+                            {
+                                finalMessage = log.Message;
+                            }
+                        }
+                    }
+                    catch (JsonException)
+                    {
+                        // Ligne non-JSON, on l'ignore ou on la passe telle quelle
+                        onLogReceived?.Invoke("info", line);
+                    }
+                }
+            );
+            
+            return (success, finalMessage.Length > 0 ? finalMessage : "Installation terminée");
         }
         catch (Exception ex)
         {

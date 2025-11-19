@@ -1,13 +1,17 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             xmlns:converters="using:Tuxpilot.UI.Converters"
              x:Class="Tuxpilot.UI.Views.MisesAJourView"
              x:DataType="vm:MisesAJourViewModel">
 
     <Design.DataContext>
         <vm:MisesAJourViewModel/>
     </Design.DataContext>
-
+    
+    <UserControl.Resources>
+        <converters:BoolToArrowConverter x:Key="BoolToArrowConverter"/>
+    </UserControl.Resources>
     <Grid>
         <!-- Contenu principal -->
         <ScrollViewer>
@@ -282,8 +286,121 @@
             
         </StackPanel>
     </Border>
+    
+    
+    
 </Border>
-        
+        <!-- 🆕 OVERLAY LOGS D'INSTALLATION -->
+<Border IsVisible="{Binding IsInstallingWithLogs}"
+        Background="#80000000"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+    <Border Background="White"
+            CornerRadius="16"
+            Padding="32"
+            MaxWidth="700"
+            MaxHeight="600"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            BoxShadow="0 20 50 10 #60000000">
+        <Grid RowDefinitions="Auto,Auto,*,Auto">
+            
+            <!-- Titre -->
+            <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,20">
+                <TextBlock Classes="text-h2"
+                          Text="⚙️ Installation en cours..."
+                          HorizontalAlignment="Center"/>
+                <TextBlock Classes="text-muted"
+                          Text="Veuillez patienter pendant l'installation des mises à jour"
+                          HorizontalAlignment="Center"
+                          TextAlignment="Center"/>
+            </StackPanel>
+            
+            <!-- Barre de progression -->
+            <Grid Grid.Row="1" Margin="0,0,0,16">
+                <ProgressBar Value="{Binding ProgressPercent}"
+                            Height="8"
+                            CornerRadius="4"
+                            Foreground="#3B82F6"
+                            Background="#E5E7EB"/>
+                <TextBlock Classes="text-sm"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Margin="0,16,0,0">
+                    <Run Text="{Binding PackagesInstalled}"/>
+                    <Run Text=" / "/>
+                    <Run Text="{Binding TotalPackages}"/>
+                    <Run Text=" paquets"/>
+                </TextBlock>
+            </Grid>
+            
+            <!-- Header console avec bouton expand/collapse -->
+            <Border Grid.Row="2"
+                    Background="#F9FAFB"
+                    CornerRadius="8"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    Padding="0">
+                <Grid RowDefinitions="Auto,*">
+                    
+                    <!-- Header cliquable -->
+                    <Button Grid.Row="0"
+                            Classes="btn-secondary"
+                            Command="{Binding ToggleLogsCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="12,8"
+                            Margin="0">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Classes="text-body"
+                                      Text="📜 Console"
+                                      FontWeight="SemiBold"/>
+                            <TextBlock Classes="text-body"
+                                      Text="{Binding IsLogsExpanded, Converter={StaticResource BoolToArrowConverter}}"
+                                      FontSize="12"/>
+                        </StackPanel>
+                    </Button>
+                    
+                    <!-- Zone de logs scrollable -->
+                    <ScrollViewer Grid.Row="1"
+                                 IsVisible="{Binding IsLogsExpanded}"
+                                 MaxHeight="300"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Padding="12">
+                        <ItemsControl ItemsSource="{Binding Logs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" 
+                                               Spacing="8"
+                                               Margin="0,2">
+                                        <TextBlock Text="{Binding Icon}"
+                                                  FontSize="14"
+                                                  VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Message}"
+                                                  FontSize="13"
+                                                  Foreground="{Binding Color}"
+                                                  TextWrapping="Wrap"
+                                                  VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    
+                </Grid>
+            </Border>
+            
+            <!-- Message info -->
+            <TextBlock Grid.Row="3"
+                      Classes="text-sm text-muted"
+                      Text="⏳ L'installation peut prendre plusieurs minutes selon votre connexion"
+                      HorizontalAlignment="Center"
+                      TextAlignment="Center"
+                      Margin="0,16,0,0"/>
+            
+        </Grid>
+    </Border>
+</Border>
     </Grid>
     
 </UserControl>

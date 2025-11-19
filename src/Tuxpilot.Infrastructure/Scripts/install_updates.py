@@ -1,199 +1,218 @@
 #!/usr/bin/env python3
 """
-Tuxpilot - Script d'installation des mises à jour
-Installe les mises à jour via DNF/APT avec gestion sudo
+Script d'installation des mises à jour système avec logs progressifs
+Utilise pkexec pour l'élévation de privilèges
 """
 
 import json
-import sys
 import subprocess
-import distro
+import sys
 import os
+from datetime import datetime
 
+def log_message(message, type="info"):
+    """Envoie un message de log au format JSON sur stdout"""
+    log = {
+        "type": type,
+        "message": message,
+        "timestamp": datetime.now().isoformat()
+    }
+    print(json.dumps(log, ensure_ascii=False), flush=True)
 
-def detecter_gestionnaire_paquets():
-    """Détecte le gestionnaire de paquets"""
-    import shutil
-
-    distro_id = distro.id()
-
-    if distro_id == 'fedora':
-        version = distro.version()
-        try:
-            version_num = int(version.split('.')[0])
-            if version_num >= 41 and shutil.which('dnf5'):
-                return 'dnf5'
-        except:
-            pass
+def detect_package_manager():
+    """Détecte le gestionnaire de paquets disponible"""
+    if os.path.exists('/usr/bin/dnf5'):
+        return 'dnf5'
+    elif os.path.exists('/usr/bin/dnf'):
         return 'dnf'
-    elif distro_id in ['rhel', 'centos', 'rocky', 'almalinux']:
-        return 'dnf'
-    elif distro_id in ['ubuntu', 'debian', 'linuxmint', 'pop']:
+    elif os.path.exists('/usr/bin/apt'):
         return 'apt'
-    else:
-        return 'unknown'
+    return None
 
-
-def installer_mises_a_jour():
-    """
-    Installe toutes les mises à jour disponibles
-    
-    Returns:
-        dict: Résultat de l'installation
-    """
+def install_with_dnf5():
+    """Installation avec DNF5"""
     try:
-        gestionnaire = detecter_gestionnaire_paquets()
+        log_message("🔍 Vérification des mises à jour disponibles...", "info")
 
-        # Vérifier si on est root
-        est_root = os.geteuid() == 0
+        # Commande d'installation avec pkexec
+        cmd = ['pkexec', 'dnf5', 'upgrade', '-y']
 
-        if gestionnaire == 'dnf5':
-            return installer_dnf5(est_root)
-        elif gestionnaire == 'dnf':
-            return installer_dnf(est_root)
-        elif gestionnaire == 'apt':
-            return installer_apt(est_root)
-        else:
-            return {
-                "success": False,
-                "gestionnaire": gestionnaire,
-                "message": f"Gestionnaire '{gestionnaire}' non supporté"
-            }
+        log_message("🔐 Demande d'authentification...", "info")
+        log_message("📦 Démarrage de l'installation...", "info")
 
-    except Exception as e:
-        return {
-            "success": False,
-            "gestionnaire": "unknown",
-            "message": f"Erreur: {str(e)}"
-        }
-
-
-def installer_dnf5(est_root):
-    """Installe les mises à jour avec DNF5"""
-    try:
-        # Construire la commande
-        if est_root:
-            commande = ['dnf5', 'upgrade', '-y']
-        else:
-            # Utiliser pkexec pour demander les privilèges
-            commande = ['pkexec', 'dnf5', 'upgrade', '-y']
-
-        # Exécuter l'installation
-        result = subprocess.run(
-            commande,
-            capture_output=True,
+        # Exécuter avec streaming
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             text=True,
-            timeout=300  # 5 minutes max
+            bufsize=1
         )
 
-        if result.returncode == 0:
-            return {
-                "success": True,
-                "gestionnaire": "dnf5",
-                "message": "Mises à jour installées avec succès"
-            }
-        else:
-            return {
-                "success": False,
-                "gestionnaire": "dnf5",
-                "message": f"Erreur lors de l'installation: {result.stderr}"
-            }
+        # Lire ligne par ligne
+        package_count = 0
+        for line in iter(process.stdout.readline, ''):
+            line = line.strip()
+            if not line:
+                continue
 
-    except subprocess.TimeoutExpired:
-        return {
-            "success": False,
-            "gestionnaire": "dnf5",
-            "message": "Timeout: l'installation a pris trop de temps"
-        }
+            # Détecter les étapes importantes
+            if 'Downloading' in line or 'Téléchargement' in line:
+                log_message(f"⬇️ {line}", "download")
+            elif 'Installing' in line or 'Installation' in line:
+                package_count += 1
+                log_message(f"📦 Installation en cours... ({package_count})", "install")
+            elif 'Installed' in line or 'Installé' in line:
+                log_message(f"✅ {line}", "success")
+            elif 'Complete' in line or 'Terminé' in line:
+                log_message(f"🎉 {line}", "success")
+            else:
+                # Autres messages
+                log_message(line, "info")
+
+        process.wait()
+
+        if process.returncode == 0:
+            log_message(f"✅ Installation terminée avec succès ! ({package_count} paquet(s))", "final_success")
+            return True
+        else:
+            log_message(f"❌ Erreur lors de l'installation (code: {process.returncode})", "error")
+            return False
+
+    except subprocess.CalledProcessError as e:
+        log_message(f"❌ Erreur : {str(e)}", "error")
+        return False
     except Exception as e:
-        return {
-            "success": False,
-            "gestionnaire": "dnf5",
-            "message": f"Erreur: {str(e)}"
-        }
+        log_message(f"❌ Erreur inattendue : {str(e)}", "error")
+        return False
 
-
-def installer_dnf(est_root):
-    """Installe les mises à jour avec DNF"""
+def install_with_dnf():
+    """Installation avec DNF classique"""
     try:
-        if est_root:
-            commande = ['dnf', 'upgrade', '-y']
-        else:
-            commande = ['pkexec', 'dnf', 'upgrade', '-y']
+        log_message("🔍 Vérification des mises à jour disponibles...", "info")
 
-        result = subprocess.run(
-            commande,
-            capture_output=True,
+        cmd = ['pkexec', 'dnf', 'upgrade', '-y']
+
+        log_message("🔐 Demande d'authentification...", "info")
+        log_message("📦 Démarrage de l'installation...", "info")
+
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             text=True,
-            timeout=300
+            bufsize=1
         )
 
-        if result.returncode == 0:
-            return {
-                "success": True,
-                "gestionnaire": "dnf",
-                "message": "Mises à jour installées avec succès"
-            }
+        package_count = 0
+        for line in iter(process.stdout.readline, ''):
+            line = line.strip()
+            if not line:
+                continue
+
+            if 'Downloading' in line:
+                log_message(f"⬇️ {line}", "download")
+            elif 'Installing' in line:
+                package_count += 1
+                log_message(f"📦 Installation en cours... ({package_count})", "install")
+            elif 'Installed' in line:
+                log_message(f"✅ {line}", "success")
+            elif 'Complete' in line:
+                log_message(f"🎉 {line}", "success")
+            else:
+                log_message(line, "info")
+
+        process.wait()
+
+        if process.returncode == 0:
+            log_message(f"✅ Installation terminée ! ({package_count} paquet(s))", "final_success")
+            return True
         else:
-            return {
-                "success": False,
-                "gestionnaire": "dnf",
-                "message": f"Erreur: {result.stderr}"
-            }
+            log_message(f"❌ Erreur (code: {process.returncode})", "error")
+            return False
 
     except Exception as e:
-        return {
-            "success": False,
-            "gestionnaire": "dnf",
-            "message": f"Erreur: {str(e)}"
-        }
+        log_message(f"❌ Erreur : {str(e)}", "error")
+        return False
 
-
-def installer_apt(est_root):
-    """Installe les mises à jour avec APT"""
+def install_with_apt():
+    """Installation avec APT"""
     try:
-        if est_root:
-            commande = ['apt-get', 'upgrade', '-y']
-        else:
-            commande = ['pkexec', 'apt-get', 'upgrade', '-y']
+        log_message("🔍 Vérification des mises à jour disponibles...", "info")
 
-        result = subprocess.run(
-            commande,
-            capture_output=True,
+        cmd = ['pkexec', 'apt', 'upgrade', '-y']
+
+        log_message("🔐 Demande d'authentification...", "info")
+        log_message("📦 Démarrage de l'installation...", "info")
+
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             text=True,
-            timeout=300
+            bufsize=1
         )
 
-        if result.returncode == 0:
-            return {
-                "success": True,
-                "gestionnaire": "apt",
-                "message": "Mises à jour installées avec succès"
-            }
+        package_count = 0
+        for line in iter(process.stdout.readline, ''):
+            line = line.strip()
+            if not line:
+                continue
+
+            if 'Get:' in line or 'Réception' in line:
+                log_message(f"⬇️ {line}", "download")
+            elif 'Unpacking' in line or 'Dépaquetage' in line:
+                package_count += 1
+                log_message(f"📦 Installation en cours... ({package_count})", "install")
+            elif 'Setting up' in line or 'Paramétrage' in line:
+                log_message(f"⚙️ {line}", "setup")
+            else:
+                log_message(line, "info")
+
+        process.wait()
+
+        if process.returncode == 0:
+            log_message(f"✅ Installation terminée ! ({package_count} paquet(s))", "final_success")
+            return True
         else:
-            return {
-                "success": False,
-                "gestionnaire": "apt",
-                "message": f"Erreur: {result.stderr}"
-            }
+            log_message(f"❌ Erreur (code: {process.returncode})", "error")
+            return False
 
     except Exception as e:
-        return {
-            "success": False,
-            "gestionnaire": "apt",
-            "message": f"Erreur: {str(e)}"
-        }
+        log_message(f"❌ Erreur : {str(e)}", "error")
+        return False
 
+def main():
+    """Point d'entrée principal"""
+    try:
+        # Détecter le gestionnaire de paquets
+        manager = detect_package_manager()
+
+        if not manager:
+            log_message("❌ Aucun gestionnaire de paquets détecté", "error")
+            sys.exit(1)
+
+        log_message(f"🔧 Gestionnaire détecté : {manager}", "info")
+
+        # Lancer l'installation selon le gestionnaire
+        if manager == 'dnf5':
+            success = install_with_dnf5()
+        elif manager == 'dnf':
+            success = install_with_dnf()
+        elif manager == 'apt':
+            success = install_with_apt()
+        else:
+            log_message(f"❌ Gestionnaire non supporté : {manager}", "error")
+            sys.exit(1)
+
+        sys.exit(0 if success else 1)
+
+    except KeyboardInterrupt:
+        log_message("⚠️ Installation annulée par l'utilisateur", "warning")
+        sys.exit(130)
+    except Exception as e:
+        log_message(f"❌ Erreur fatale : {str(e)}", "error")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    """Point d'entrée du script"""
-    try:
-        resultat = installer_mises_a_jour()
-        print(json.dumps(resultat, indent=2, ensure_ascii=False))
-        sys.exit(0 if resultat["success"] else 1)
-    except Exception as e:
-        print(json.dumps({
-            "success": False,
-            "message": str(e)
-        }), file=sys.stderr)
-        sys.exit(1)
+    main()

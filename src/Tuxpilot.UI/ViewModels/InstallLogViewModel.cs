@@ -1,0 +1,38 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Tuxpilot.UI.ViewModels;
+
+
+/// <summary>
+/// ViewModel pour un message de log d'installation
+/// </summary>
+public partial class InstallLogViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private string _message = string.Empty;
+    
+    [ObservableProperty]
+    private string _icon = "ℹ️";
+    
+    [ObservableProperty]
+    private string _color = "#374151";
+    
+    public InstallLogViewModel(string type, string message)
+    {
+        Message = message;
+        
+        // Définir l'icône et la couleur selon le type
+        (Icon, Color) = type switch
+        {
+            "info" => ("ℹ️", "#374151"),
+            "download" => ("⬇️", "#3B82F6"),
+            "install" => ("📦", "#8B5CF6"),
+            "setup" => ("⚙️", "#6366F1"),
+            "success" => ("✅", "#10B981"),
+            "final_success" => ("🎉", "#10B981"),
+            "error" => ("❌", "#EF4444"),
+            "warning" => ("⚠️", "#F59E0B"),
+            _ => ("•", "#6B7280")
+        };
+    }
+}

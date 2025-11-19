@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tuxpilot.Core.Interfaces.Services;
@@ -38,6 +39,26 @@ public partial class MisesAJourViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isSuccessVisible;
+    [ObservableProperty]
+    private bool _isInstallingWithLogs;
+
+    [ObservableProperty]
+    private bool _isLogsExpanded = true;
+
+    [ObservableProperty]
+    private ObservableCollection<InstallLogViewModel> _logs = new();
+
+    [ObservableProperty]
+    private int _packagesInstalled;
+
+    [ObservableProperty]
+    private int _totalPackages;
+
+    [ObservableProperty]
+    private double _progressPercent;
+    
+    
+    public ICommand ToggleLogsCommand => new RelayCommand(() => IsLogsExpanded = !IsLogsExpanded);
     
     public MisesAJourViewModel(IServiceMisesAJour serviceMisesAJour)
     {
@@ -99,6 +120,7 @@ public partial class MisesAJourViewModel : ViewModelBase
             // Mettre à jour les propriétés
             Gestionnaire = updateInfo.Gestionnaire;
             NombreMisesAJour = updateInfo.Nombre;
+            TotalPackages = updateInfo.Nombre; 
             MessageErreur = updateInfo.Erreur;
             
             // Mapper les paquets
@@ -148,49 +170,75 @@ public partial class MisesAJourViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Commande pour confirmer l'installation
-    /// </summary>
-    [RelayCommand]
-    private async Task ConfirmerInstallationAsync()
-    {
-        IsConfirmationVisible = false;
+/// Commande pour confirmer l'installation
+/// </summary>
+[RelayCommand]
+private async Task ConfirmerInstallationAsync()
+{
+    // Masquer la confirmation
+    IsConfirmationVisible = false;
     
-        try
-        {
-            IsLoading = true;
-            MessageErreur = "Installation en cours... Veuillez patienter.";
-            OnPropertyChanged(nameof(MessageStatut));
-        
-            var (success, message) = await _serviceMisesAJour.InstallerMisesAJourAsync();
-        
-            if (success)
+    // 🆕 Afficher la vue avec logs
+    IsInstallingWithLogs = true;
+    Logs.Clear();
+    PackagesInstalled = 0;
+    ProgressPercent = 0;
+    
+    try
+    {
+        // Installer avec callback pour les logs
+        var (success, message) = await _serviceMisesAJour.InstallerMisesAJourAsync(
+            onLogReceived: (type, msg) =>
             {
-                MessageErreur = null;
-            
-                // Rafraîchir la liste des mises à jour
-                await VerifierMisesAJourAsync();
-            
-                // Afficher le succès
-                IsSuccessVisible = true;
-                await Task.Delay(3000); // Afficher 3 secondes
-                IsSuccessVisible = false;
+                // Ajouter le log à la collection (sur le thread UI)
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    Logs.Add(new InstallLogViewModel(type, msg));
+                    
+                    // Mettre à jour la progression
+                    if (type == "install" || type == "success")
+                    {
+                        PackagesInstalled++;
+                        ProgressPercent = TotalPackages > 0 
+                            ? (double)PackagesInstalled / TotalPackages * 100 
+                            : 0;
+                    }
+                });
             }
-            else
-            {
-                MessageErreur = message;
-                OnPropertyChanged(nameof(MessageStatut));
-            }
-        }
-        catch (Exception ex)
+        );
+        
+        // Attendre 2 secondes pour voir le dernier message
+        await Task.Delay(2000);
+        
+        // Masquer les logs
+        IsInstallingWithLogs = false;
+        
+        if (success)
         {
-            MessageErreur = $"Erreur : {ex.Message}";
+            MessageErreur = null;
+            
+            // Afficher le message de succès
+            IsSuccessVisible = true;
+            await Task.Delay(3000);
+            IsSuccessVisible = false;
+
+            // Rafraîchir la liste
+            await VerifierMisesAJourAsync();
+        }
+        else
+        {
+            // En cas d'erreur
+            MessageErreur = message;
             OnPropertyChanged(nameof(MessageStatut));
-        }
-        finally
-        {
-            IsLoading = false;
         }
     }
+    catch (Exception ex)
+    {
+        MessageErreur = $"Erreur : {ex.Message}";
+        OnPropertyChanged(nameof(MessageStatut));
+        IsInstallingWithLogs = false;
+    }
+}
 
     /// <summary>
     /// Commande pour annuler l'installation

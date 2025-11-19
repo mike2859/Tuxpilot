@@ -17,5 +17,5 @@ public interface IServiceMisesAJour
     /// Installe toutes les mises à jour disponibles
     /// </summary>
     /// <returns>True si l'installation a réussi, False sinon</returns>
-    Task<(bool Success, string Message)> InstallerMisesAJourAsync();
+    Task<(bool Success, string Message)> InstallerMisesAJourAsync(Action<string, string>? onLogReceived = null);
 }
