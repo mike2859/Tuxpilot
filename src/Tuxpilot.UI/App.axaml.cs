@@ -26,29 +26,23 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Configuration Dependency Injection
-            //var services = ConfigurerServices();
             _serviceProvider = ConfigureServices();
             
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
+            
             // Créer la fenêtre principale
-           // var mainViewModel = services.GetRequiredService<MainWindowViewModel>();
-           var mainViewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+            var mainViewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
 
             desktop.MainWindow = new MainWindow
             {
                 DataContext = mainViewModel
             };
-            
-            // desktop.MainWindow = new MainWindow
-            // {
-            //     DataContext = new MainWindowViewModel(),
-            // };
         }
 
         base.OnFrameworkInitializationCompleted();
     }
+    
     /// <summary>
     /// Configure tous les services de l'application
     /// </summary>
@@ -60,14 +54,17 @@ public partial class App : Application
         services.AddSingleton<ExecuteurScriptPython>();
         services.AddSingleton<IServiceSysteme, ServiceSysteme>();
         services.AddSingleton<IServiceMisesAJour, ServiceMisesAJour>();
+        services.AddSingleton<IServiceNettoyage, ServiceNettoyage>();
         
         // ViewModels
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<DashboardViewModel>();
-        services.AddTransient<MisesAJourViewModel>();  
+        services.AddTransient<MisesAJourViewModel>();
+        services.AddTransient<NettoyageViewModel>();
         
         return services.BuildServiceProvider();
     }
+    
     private void DisableAvaloniaDataAnnotationValidation()
     {
         // Get an array of plugins to remove
@@ -79,19 +76,5 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
-    }
-      
-    private static ServiceProvider ConfigurerServices()
-    {
-        var services = new ServiceCollection();
-        
-        // Infrastructure
-        services.AddSingleton<ExecuteurScriptPython>();
-        services.AddSingleton<IServiceSysteme, ServiceSysteme>();
-        
-        // ViewModels
-        services.AddTransient<MainWindowViewModel>();
-        
-        return services.BuildServiceProvider();
     }
 }

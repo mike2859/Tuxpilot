@@ -64,7 +64,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToCleanup()
     {
-        CurrentView = new NettoyageView();
+        var nettoyageViewModel = _serviceProvider.GetRequiredService<NettoyageViewModel>();
+        var nettoyageView = new NettoyageView
+        {
+            DataContext = nettoyageViewModel
+        };
+    
+        CurrentView = nettoyageView;
     }
     
     /// <summary>
