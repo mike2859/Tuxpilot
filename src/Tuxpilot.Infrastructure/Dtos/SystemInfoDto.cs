@@ -1,14 +1,13 @@
-namespace Tuxpilot.Core.Entities;
+namespace Tuxpilot.Infrastructure.Dtos;
+
 
 /// <summary>
-/// Classe pour désérialiser le JSON du script Python
+/// DTO pour désérialiser le JSON du script Python system_info.py
 /// </summary>
-
-public class SystemInfoJson
+public class SystemInfoDto
 {
     public string Distribution { get; set; } = string.Empty;
     public string Kernel { get; set; } = string.Empty;
-        
     public string CpuModel { get; set; } = string.Empty;
     public int CpuCores { get; set; }
     public int CpuThreads { get; set; }

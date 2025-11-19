@@ -8,9 +8,7 @@
         <vm:MisesAJourViewModel/>
     </Design.DataContext>
 
-    <!-- 🆕 GRID pour permettre les overlays -->
     <Grid>
-        
         <!-- Contenu principal -->
         <ScrollViewer>
             <StackPanel Margin="32" Spacing="24">

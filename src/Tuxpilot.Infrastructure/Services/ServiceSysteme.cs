@@ -1,6 +1,8 @@
 using System.Text.Json;
 using Tuxpilot.Core.Entities;
 using Tuxpilot.Core.Interfaces.Services;
+using Tuxpilot.Infrastructure.Dtos;
+using Tuxpilot.Infrastructure.Extensions;
 
 namespace Tuxpilot.Infrastructure.Services;
 
@@ -29,27 +31,12 @@ public class ServiceSysteme : IServiceSysteme
         };
         
         // Désérialiser le JSON
-        var json = JsonSerializer.Deserialize<SystemInfoJson>(resultat, options);
+        var dto = JsonSerializer.Deserialize<SystemInfoDto>(resultat, options);
         
-        if (json == null)
+        if (dto == null)
             throw new Exception("Impossible de désérialiser les infos système");
-        
-        // Mapper vers l'entité du domaine
-        return new SystemInfo
-        {
-            Distribution = json.Distribution,
-            VersionKernel = json.Kernel,
-            CpuModel = json.CpuModel,
-            CpuCores = json.CpuCores,
-            CpuThreads = json.CpuThreads,
-            RamTotaleMB = json.RamTotaleMB,
-            RamUtiliseeMB = json.RamUtiliseeMB,
-            RamLibreMB = json.RamLibreMB,
-            PourcentageRam = json.PourcentageRam,
-            PourcentageCpu = json.PourcentageCpu,
-            PourcentageDisque = json.PourcentageDisque,
-            GestionnairePaquets = json.GestionnairePaquets
-        };
+
+        return dto.ToEntity();
     }
     
   
