@@ -1,9 +1,353 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Tuxpilot.UI.Views.DiagnosticView">
-    <StackPanel Margin="40" Spacing="24">
-        <TextBlock Text="🩺 Diagnostic" FontSize="32" FontWeight="Bold"/>
-        <TextBlock Text="Fonctionnalité en cours de développement..." 
-                   FontSize="16" Foreground="Gray"/>
-    </StackPanel>
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             x:Class="Tuxpilot.UI.Views.DiagnosticView"
+             x:DataType="vm:DiagnosticViewModel">
+
+    <Design.DataContext>
+        <vm:DiagnosticViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="32" Spacing="24">
+            
+            <!-- Header -->
+            <StackPanel Spacing="8">
+                <TextBlock Classes="text-h1"
+                          Text="🔍 Diagnostic"/>
+                <TextBlock Classes="text-muted"
+                          Text="Vérifiez l'état de santé de votre système Linux"/>
+            </StackPanel>
+            
+            <!-- Indicateur de chargement -->
+            <ProgressBar IsIndeterminate="True"
+                        IsVisible="{Binding IsLoading}"
+                        Height="4"/>
+            
+            <!-- Score de santé global -->
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="32"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    
+                    <!-- Cercle de score -->
+                    <Border Grid.Column="0"
+                            Width="120" Height="120"
+                            CornerRadius="60"
+                            Background="{Binding BackgroundColor}"
+                            BorderBrush="{Binding BorderColor}"
+                            BorderThickness="4">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding IconeSante}"
+                                      FontSize="40"
+                                      HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding ScoreTexte}"
+                                      FontSize="24"
+                                      FontWeight="Bold"
+                                      Foreground="{Binding CouleurSante}"
+                                      HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Message -->
+                    <StackPanel Grid.Column="1"
+                               Margin="24,0,0,0"
+                               VerticalAlignment="Center"
+                               Spacing="8">
+                        <TextBlock Classes="text-h2"
+                                  Text="État du système"/>
+                        <TextBlock Classes="text-body"
+                                  Text="{Binding MessageGlobal}"
+                                  FontSize="16"/>
+                    </StackPanel>
+                    
+                    <!-- Bouton actualiser -->
+                    <Button Grid.Column="2"
+                            Classes="btn-primary"
+                            Content="🔄 Analyser"
+                            Command="{Binding DiagnostiquerCommand}"
+                            VerticalAlignment="Center"/>
+                    
+                </Grid>
+            </Border>
+            
+            <!-- Grille des cartes -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="16">
+                
+                <!-- Espace disque -->
+                <Border Grid.Column="0" Grid.Row="0"
+                        Background="White"
+                        CornerRadius="12"
+                        Padding="24"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="4">
+                            <TextBlock Classes="text-h3"
+                                      Text="💾 Espace disque"/>
+                            <TextBlock Classes="text-muted"
+                                      Text="{Binding Disque.Partition}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Spacing="8">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <TextBlock Grid.Column="0"
+                                          Classes="text-muted"
+                                          Text="Taille"
+                                          Width="100"/>
+                                <TextBlock Grid.Column="1"
+                                          Classes="text-body"
+                                          Text="{Binding Disque.Taille}"
+                                          FontWeight="Medium"/>
+                            </Grid>
+                            
+                            <Grid ColumnDefinitions="Auto,*">
+                                <TextBlock Grid.Column="0"
+                                          Classes="text-muted"
+                                          Text="Utilisé"
+                                          Width="100"/>
+                                <TextBlock Grid.Column="1"
+                                          Classes="text-body"
+                                          Text="{Binding Disque.Utilise}"
+                                          FontWeight="Medium"/>
+                            </Grid>
+                            
+                            <Grid ColumnDefinitions="Auto,*">
+                                <TextBlock Grid.Column="0"
+                                          Classes="text-muted"
+                                          Text="Disponible"
+                                          Width="100"/>
+                                <TextBlock Grid.Column="1"
+                                          Classes="text-body"
+                                          Text="{Binding Disque.Disponible}"
+                                          FontWeight="Medium"/>
+                            </Grid>
+                        </StackPanel>
+                        
+                        <!-- Barre de progression -->
+                        <StackPanel Spacing="4">
+                            <ProgressBar Value="{Binding Disque.Pourcentage}"
+                                        Maximum="100"
+                                        Height="8"
+                                        CornerRadius="4"/>
+                            <TextBlock Classes="text-sm"
+                                      HorizontalAlignment="Right">
+                                <Run Text="{Binding Disque.Pourcentage}"/>
+                                <Run Text="%"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Services en erreur -->
+                <Border Grid.Column="1" Grid.Row="0"
+                        Background="White"
+                        CornerRadius="12"
+                        Padding="24"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="4">
+                            <TextBlock Classes="text-h3"
+                                      Text="⚙️ Services"/>
+                            <TextBlock Classes="text-muted">
+                                <Run Text="{Binding NombreServicesErreur}"/>
+                                <Run Text=" service(s) en erreur"/>
+                            </TextBlock>
+                        </StackPanel>
+                        
+                        <ScrollViewer MaxHeight="200" 
+                                     IsVisible="{Binding ServicesEnErreur}">
+                            <ItemsControl ItemsSource="{Binding Services}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#FEE2E2"
+                                                CornerRadius="6"
+                                                Padding="12"
+                                                Margin="0,0,0,8">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Classes="text-body"
+                                                          Text="{Binding Nom}"
+                                                          FontWeight="SemiBold"
+                                                          Foreground="#DC2626"/>
+                                                <TextBlock Classes="text-sm"
+                                                          Text="{Binding Description}"
+                                                          TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        
+                        <StackPanel IsVisible="{Binding !ServicesEnErreur}"
+                                   Spacing="8"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                            <TextBlock Text="✅"
+                                      FontSize="32"
+                                      HorizontalAlignment="Center"/>
+                            <TextBlock Classes="text-muted"
+                                      Text="Tous les services fonctionnent"
+                                      HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Top processus CPU -->
+                <Border Grid.Column="0" Grid.Row="1"
+                        Background="White"
+                        CornerRadius="12"
+                        Padding="24"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <TextBlock Classes="text-h3"
+                                  Text="📊 Top CPU"/>
+                        
+                        <ItemsControl ItemsSource="{Binding TopCpu}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#F9FAFB"
+                                            CornerRadius="6"
+                                            Padding="12"
+                                            Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="2">
+                                                <TextBlock Classes="text-body"
+                                                          Text="{Binding Nom}"
+                                                          FontWeight="Medium"
+                                                          TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Classes="text-sm">
+                                                    <Run Text="PID: "/>
+                                                    <Run Text="{Binding Pid}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Border Grid.Column="1"
+                                                    Background="#DBEAFE"
+                                                    CornerRadius="8"
+                                                    Padding="8,4"
+                                                    VerticalAlignment="Center">
+                                                <TextBlock Classes="text-sm"
+                                                          FontWeight="SemiBold"
+                                                          Foreground="#1E40AF">
+                                                    <Run Text="{Binding Cpu}"/>
+                                                    <Run Text="%"/>
+                                                </TextBlock>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Top processus RAM -->
+                <Border Grid.Column="1" Grid.Row="1"
+                        Background="White"
+                        CornerRadius="12"
+                        Padding="24"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <TextBlock Classes="text-h3"
+                                  Text="💾 Top RAM"/>
+                        
+                        <ItemsControl ItemsSource="{Binding TopRam}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#F9FAFB"
+                                            CornerRadius="6"
+                                            Padding="12"
+                                            Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="2">
+                                                <TextBlock Classes="text-body"
+                                                          Text="{Binding Nom}"
+                                                          FontWeight="Medium"
+                                                          TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Classes="text-sm">
+                                                    <Run Text="PID: "/>
+                                                    <Run Text="{Binding Pid}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Border Grid.Column="1"
+                                                    Background="#FEF3C7"
+                                                    CornerRadius="8"
+                                                    Padding="8,4"
+                                                    VerticalAlignment="Center">
+                                                <TextBlock Classes="text-sm"
+                                                          FontWeight="SemiBold"
+                                                          Foreground="#F59E0B">
+                                                    <Run Text="{Binding Ram}"/>
+                                                    <Run Text="%"/>
+                                                </TextBlock>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+                
+            </Grid>
+            
+            <!-- Logs récents -->
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="24"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    IsVisible="{Binding LogsPresents}">
+                <StackPanel Spacing="16">
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="text-h3"
+                                  Text="📋 Logs récents (24h)"/>
+                        <TextBlock Classes="text-muted">
+                            <Run Text="{Binding NombreLogs}"/>
+                            <Run Text=" erreur(s) détectée(s)"/>
+                        </TextBlock>
+                    </StackPanel>
+                    
+                    <ScrollViewer MaxHeight="300">
+                        <ItemsControl ItemsSource="{Binding Logs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#FEE2E2"
+                                            CornerRadius="6"
+                                            Padding="12"
+                                            Margin="0,0,0,8">
+                                        <StackPanel Spacing="4">
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <TextBlock Grid.Column="0"
+                                                          Classes="text-sm"
+                                                          Text="{Binding Timestamp}"
+                                                          Foreground="#6B7280"
+                                                          Width="150"/>
+                                                <TextBlock Grid.Column="1"
+                                                          Classes="text-sm"
+                                                          Text="{Binding Service}"
+                                                          FontWeight="SemiBold"
+                                                          Foreground="#DC2626"/>
+                                            </Grid>
+                                            <TextBlock Classes="text-sm"
+                                                      Text="{Binding Message}"
+                                                      TextWrapping="Wrap"
+                                                      Foreground="#374151"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+    
 </UserControl>

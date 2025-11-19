@@ -1,6 +1,176 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Tuxpilot.Core.Entities;
+using Tuxpilot.Core.Interfaces.Services;
+
 namespace Tuxpilot.UI.ViewModels;
 
-public class DiagnosticViewModel : ViewModelBase
+/// <summary>
+/// ViewModel pour la vue Diagnostic
+/// </summary>
+public partial class DiagnosticViewModel : ViewModelBase
 {
+    private readonly IServiceDiagnostic _serviceDiagnostic;
     
+    [ObservableProperty]
+    private int _scoreSante;
+    
+    [ObservableProperty]
+    private string _etatGlobal = string.Empty;
+    
+    [ObservableProperty]
+    private string _messageGlobal = string.Empty;
+    
+    [ObservableProperty]
+    private int _nombreServicesErreur;
+    
+    [ObservableProperty]
+    private ObservableCollection<ServiceInfo> _services = new();
+    
+    [ObservableProperty]
+    private int _nombreLogs;
+    
+    [ObservableProperty]
+    private ObservableCollection<LogEntry> _logs = new();
+    
+    [ObservableProperty]
+    private DiskInfo? _disque;
+    
+    [ObservableProperty]
+    private ObservableCollection<ProcessInfo> _topCpu = new();
+    
+    [ObservableProperty]
+    private ObservableCollection<ProcessInfo> _topRam = new();
+    
+    [ObservableProperty]
+    private bool _isLoading;
+    
+    [ObservableProperty]
+    private string? _messageErreur;
+    
+    public DiagnosticViewModel(IServiceDiagnostic serviceDiagnostic)
+    {
+        _serviceDiagnostic = serviceDiagnostic;
+        
+        // Charger les données au démarrage
+        _ = DiagnostiquerAsync();
+    }
+    
+    /// <summary>
+    /// Icône selon le score de santé
+    /// </summary>
+    public string IconeSante => ScoreSante switch
+    {
+        >= 80 => "✅",
+        >= 60 => "⚠️",
+        _ => "❌"
+    };
+    
+    /// <summary>
+    /// Couleur selon le score de santé
+    /// </summary>
+    public string CouleurSante => ScoreSante switch
+    {
+        >= 80 => "#10B981",
+        >= 60 => "#F59E0B",
+        _ => "#EF4444"
+    };
+    
+    /// <summary>
+    /// Couleur de fond du message
+    /// </summary>
+    public string BackgroundColor => ScoreSante switch
+    {
+        >= 80 => "#ECFDF5",
+        >= 60 => "#FEF3C7",
+        _ => "#FEE2E2"
+    };
+    
+    /// <summary>
+    /// Couleur de bordure du message
+    /// </summary>
+    public string BorderColor => ScoreSante switch
+    {
+        >= 80 => "#10B981",
+        >= 60 => "#F59E0B",
+        _ => "#EF4444"
+    };
+    
+    /// <summary>
+    /// Texte du score avec pourcentage
+    /// </summary>
+    public string ScoreTexte => $"{ScoreSante}%";
+    
+    /// <summary>
+    /// Indique si des services sont en erreur
+    /// </summary>
+    public bool ServicesEnErreur => NombreServicesErreur > 0;
+    
+    /// <summary>
+    /// Indique si des logs sont présents
+    /// </summary>
+    public bool LogsPresents => NombreLogs > 0;
+    
+    /// <summary>
+    /// Effectue le diagnostic
+    /// </summary>
+    [RelayCommand]
+    private async Task DiagnostiquerAsync()
+    {
+        try
+        {
+            IsLoading = true;
+            MessageErreur = null;
+            
+            var diagnostic = await _serviceDiagnostic.DiagnostiquerAsync();
+            
+            // Mettre à jour les propriétés
+            ScoreSante = diagnostic.ScoreSante;
+            EtatGlobal = diagnostic.EtatGlobal;
+            MessageGlobal = diagnostic.MessageGlobal;
+            NombreServicesErreur = diagnostic.NombreServicesErreur;
+            NombreLogs = diagnostic.NombreLogs;
+            Disque = diagnostic.Disque;
+            MessageErreur = diagnostic.Erreur;
+            
+            // Mettre à jour les collections
+            Services.Clear();
+            foreach (var service in diagnostic.Services)
+                Services.Add(service);
+            
+            Logs.Clear();
+            foreach (var log in diagnostic.Logs)
+                Logs.Add(log);
+            
+            TopCpu.Clear();
+            foreach (var proc in diagnostic.TopCpu)
+                TopCpu.Add(proc);
+            
+            TopRam.Clear();
+            foreach (var proc in diagnostic.TopRam)
+                TopRam.Add(proc);
+            
+            // Notifier les propriétés calculées
+            OnPropertyChanged(nameof(IconeSante));
+            OnPropertyChanged(nameof(CouleurSante));
+            OnPropertyChanged(nameof(BackgroundColor));
+            OnPropertyChanged(nameof(BorderColor));
+            OnPropertyChanged(nameof(ScoreTexte));
+            OnPropertyChanged(nameof(ServicesEnErreur));
+            OnPropertyChanged(nameof(LogsPresents));
+        }
+        catch (Exception ex)
+        {
+            MessageErreur = $"Erreur lors du diagnostic : {ex.Message}";
+            ScoreSante = 0;
+            MessageGlobal = "Erreur";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 }

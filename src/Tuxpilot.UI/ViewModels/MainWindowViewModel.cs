@@ -79,6 +79,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToDiagnostic()
     {
-        CurrentView = new DiagnosticView();
+        // Créer le ViewModel via DI
+        var diagnosticViewModel = _serviceProvider.GetRequiredService<DiagnosticViewModel>();
+        var diagnosticView = new DiagnosticView
+        {
+            DataContext = diagnosticViewModel
+        };
+    
+        CurrentView = diagnosticView;
     }
 }

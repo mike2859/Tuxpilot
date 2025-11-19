@@ -55,12 +55,15 @@ public partial class App : Application
         services.AddSingleton<IServiceSysteme, ServiceSysteme>();
         services.AddSingleton<IServiceMisesAJour, ServiceMisesAJour>();
         services.AddSingleton<IServiceNettoyage, ServiceNettoyage>();
+        services.AddSingleton<IServiceDiagnostic, ServiceDiagnostic>();  
+        
         
         // ViewModels
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<MisesAJourViewModel>();
         services.AddTransient<NettoyageViewModel>();
+        services.AddTransient<DiagnosticViewModel>();  
         
         return services.BuildServiceProvider();
     }
