@@ -362,11 +362,12 @@
                     </Button>
                     
                     <!-- Zone de logs scrollable -->
-                    <ScrollViewer Grid.Row="1"
-                                 IsVisible="{Binding IsLogsExpanded}"
-                                 MaxHeight="300"
-                                 VerticalScrollBarVisibility="Auto"
-                                 Padding="12">
+                    <ScrollViewer  x:Name="LogsScrollViewer"
+                                   Grid.Row="1"
+                                   IsVisible="{Binding IsLogsExpanded}"
+                                   MaxHeight="300"
+                                   VerticalScrollBarVisibility="Auto"
+                                   Padding="12">
                         <ItemsControl ItemsSource="{Binding Logs}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
