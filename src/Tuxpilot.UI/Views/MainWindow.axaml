@@ -80,6 +80,13 @@
                             Classes="nav-button"
                             Command="{Binding NavigateToDiagnosticCommand}"/>
                     
+                    <Button Classes="nav-button"
+                            Command="{Binding NavigateToAssistantCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="🤖" FontSize="18"/>
+                            <TextBlock Text="Assistant IA" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
                 
             </StackPanel>

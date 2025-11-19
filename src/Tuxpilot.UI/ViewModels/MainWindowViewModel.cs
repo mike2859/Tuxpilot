@@ -88,4 +88,10 @@ public partial class MainWindowViewModel : ViewModelBase
     
         CurrentView = diagnosticView;
     }
+    
+    [RelayCommand]
+    private void NavigateToAssistant()
+    {
+        CurrentView = _serviceProvider.GetRequiredService<AssistantIAViewModel>();
+    }
 }

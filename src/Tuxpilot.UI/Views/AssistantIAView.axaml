@@ -1,0 +1,160 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             xmlns:converters="using:Tuxpilot.UI.Converters"
+             x:Class="Tuxpilot.UI.Views.AssistantIAView"
+             x:DataType="vm:AssistantIAViewModel">
+
+    <Design.DataContext>
+        <vm:AssistantIAViewModel/>
+    </Design.DataContext>
+
+    <UserControl.Resources>
+        <converters:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
+        <converters:BoolToNameConverter x:Key="BoolToNameConverter"/>
+    </UserControl.Resources>
+    
+    <Grid RowDefinitions="Auto,*,Auto">
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="8" Margin="32,32,32,16">
+            <TextBlock Classes="text-h1"
+                      Text="🤖 Assistant IA"/>
+            <TextBlock Classes="text-muted"
+                      Text="Posez vos questions sur Linux, Fedora, et l'administration système"/>
+        </StackPanel>
+        
+        <!-- Zone de messages (chat) -->
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="12"
+                Margin="32,0,32,16"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1">
+            
+            <Grid RowDefinitions="Auto,*">
+                
+                <!-- Toolbar -->
+                <Border Grid.Row="0"
+                        Background="#F9FAFB"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="0,0,0,1"
+                        Padding="16,12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0"
+                                  Classes="text-body"
+                                  Text="💬 Conversation"
+                                  FontWeight="SemiBold"
+                                  VerticalAlignment="Center"/>
+                        
+                        <Button Grid.Column="1"
+                                Classes="btn-secondary btn-sm"
+                                Content="🗑️ Effacer"
+                                Command="{Binding EffacerHistoriqueCommand}"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Messages scrollable -->
+                <ScrollViewer Grid.Row="1"
+                             x:Name="MessagesScrollViewer"
+                             Padding="16"
+                             VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Messages}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{Binding BackgroundColor}"
+                                        CornerRadius="12"
+                                        Padding="16"
+                                        Margin="0,0,0,12"
+                                        MaxWidth="600"
+                                        HorizontalAlignment="{Binding IsUser, Converter={StaticResource BoolToAlignmentConverter}}">
+                                    <StackPanel Spacing="8">
+                                        <!-- Icône et nom -->
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{Binding Icone}"
+                                                      FontSize="16"/>
+                                            <TextBlock Classes="text-body"
+                                                      Text="{Binding IsUser, Converter={StaticResource BoolToNameConverter}}"
+                                                      FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                        
+                                        <!-- Message -->
+                                        <TextBlock Classes="text-body"
+                                                  Text="{Binding Texte}"
+                                                  TextWrapping="Wrap"
+                                                  Foreground="{Binding TextColor}"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                
+            </Grid>
+        </Border>
+        
+        <!-- Zone de saisie et boutons -->
+        <Grid Grid.Row="2"
+              Margin="32,0,32,32"
+              RowDefinitions="Auto,Auto">
+            
+            <!-- Questions rapides -->
+            <ScrollViewer Grid.Row="0"
+                         HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Disabled"
+                         Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Classes="btn-outline btn-sm"
+                            Content="💡 Comment installer des updates ?"
+                            Command="{Binding PoserQuestionRapideCommand}"
+                            CommandParameter="Comment installer des mises à jour sur Fedora ?"/>
+                    
+                    <Button Classes="btn-outline btn-sm"
+                            Content="❓ C'est quoi dnf5 ?"
+                            Command="{Binding PoserQuestionRapideCommand}"
+                            CommandParameter="Qu'est-ce que dnf5 et en quoi c'est différent de dnf ?"/>
+                    
+                    <Button Classes="btn-outline btn-sm"
+                            Content="📋 Voir les logs système"
+                            Command="{Binding PoserQuestionRapideCommand}"
+                            CommandParameter="Comment voir les logs système avec journalctl ?"/>
+                    
+                    <Button Classes="btn-outline btn-sm"
+                            Content="🧹 Nettoyer le cache"
+                            Command="{Binding PoserQuestionRapideCommand}"
+                            CommandParameter="Comment nettoyer le cache des paquets DNF ?"/>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Champ de saisie -->
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0"
+                         Text="{Binding QuestionUtilisateur}"
+                         Watermark="{Binding MessagePlaceholder}"
+                         Padding="16,12"
+                         CornerRadius="8"
+                         Background="White"
+                         BorderBrush="#D1D5DB"
+                         BorderThickness="1"
+                         FontSize="14">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Enter"
+                                    Command="{Binding EnvoyerQuestionCommand}"/>
+                    </TextBox.KeyBindings>
+                </TextBox>
+                
+                <Button Grid.Column="1"
+                        Classes="btn-primary"
+                        Content="➤ Envoyer"
+                        Command="{Binding EnvoyerQuestionCommand}"
+                        IsEnabled="{Binding !IsStreaming}"
+                        Margin="8,0,0,0"
+                        Padding="20,12"/>
+            </Grid>
+            
+        </Grid>
+        
+    </Grid>
+
+</UserControl>
