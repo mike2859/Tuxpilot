@@ -1,0 +1,101 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 🎯 TITRES -->
+    
+    <!-- Titre principal de page (h1) -->
+    <Style Selector="TextBlock.text-h1">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#111827"/>
+    </Style>
+    
+    <!-- Sous-titre de page (h2) -->
+    <Style Selector="TextBlock.text-h2">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#111827"/>
+    </Style>
+    
+    <!-- Titre de section (h3) -->
+    <Style Selector="TextBlock.text-h3">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#374151"/>
+    </Style>
+
+    <!-- 📝 TEXTE NORMAL -->
+    
+    <!-- Texte corps (body) -->
+    <Style Selector="TextBlock.text-body">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#374151"/>
+    </Style>
+    
+    <!-- Texte secondaire (muted) -->
+    <Style Selector="TextBlock.text-muted">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="#6B7280"/>
+    </Style>
+    
+    <!-- Texte petit (small) -->
+    <Style Selector="TextBlock.text-sm">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#9CA3AF"/>
+    </Style>
+
+    <!-- 🎨 LABELS -->
+    
+    <!-- Label de formulaire -->
+    <Style Selector="TextBlock.text-label">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="Gray"/>
+    </Style>
+    
+    <!-- Valeur de données -->
+    <Style Selector="TextBlock.text-value">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="#111827"/>
+    </Style>
+
+    <!-- 🔢 DONNÉES NUMÉRIQUES -->
+    
+    <!-- Statistique importante (grand nombre) -->
+    <Style Selector="TextBlock.text-stat">
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#111827"/>
+    </Style>
+    
+    <!-- Pourcentage/métrique -->
+    <Style Selector="TextBlock.text-metric">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#3B82F6"/>
+    </Style>
+
+    <!-- 🎯 COULEURS SÉMANTIQUES -->
+    
+    <!-- Texte succès (vert) -->
+    <Style Selector="TextBlock.text-success">
+        <Setter Property="Foreground" Value="#10B981"/>
+    </Style>
+    
+    <!-- Texte avertissement (orange) -->
+    <Style Selector="TextBlock.text-warning">
+        <Setter Property="Foreground" Value="#F59E0B"/>
+    </Style>
+    
+    <!-- Texte erreur (rouge) -->
+    <Style Selector="TextBlock.text-error">
+        <Setter Property="Foreground" Value="#EF4444"/>
+    </Style>
+    
+    <!-- Texte info (bleu) -->
+    <Style Selector="TextBlock.text-info">
+        <Setter Property="Foreground" Value="#3B82F6"/>
+    </Style>
+
+</Styles>

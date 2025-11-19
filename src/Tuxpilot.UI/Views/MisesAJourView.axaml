@@ -17,12 +17,10 @@
                 
                 <!-- Header -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="🔄 Mises à jour" 
-                              FontSize="28" 
-                              FontWeight="Bold"/>
-                    <TextBlock Text="Gérez les mises à jour de votre système Linux" 
-                              FontSize="14"
-                              Foreground="Gray"/>
+                    <TextBlock Classes="text-h1"
+                               Text="🔄 Mises à jour"/>
+                    <TextBlock Classes="text-muted"
+                               Text="Gérez les mises à jour de votre système Linux"/>
                 </StackPanel>
                 
                 <!-- Indicateur de chargement -->
@@ -39,11 +37,9 @@
                     
                     <Grid ColumnDefinitions="*,Auto">
                         <TextBlock Grid.Column="0"
-                                  Text="{Binding MessageStatut}"
-                                  FontSize="16"
-                                  FontWeight="SemiBold"
-                                  VerticalAlignment="Center"
-                                  Foreground="#111827"/>
+                                   Classes="text-h3"
+                                   Text="{Binding MessageStatut}"
+                                   VerticalAlignment="Center"/>
                         
                         <Button Grid.Column="1"
                                 Classes="btn-outline btn-sm"
@@ -67,9 +63,8 @@
                               ColumnDefinitions="*,Auto"
                               Margin="0,0,0,16">
                             <TextBlock Grid.Column="0"
-                                      Text="📦 Paquets disponibles" 
-                                      FontSize="18" 
-                                      FontWeight="SemiBold"/>
+                                       Classes="text-h2"
+                                       Text="📦 Paquets disponibles"/>
                             
                             <Button Grid.Column="1"
                                     Classes="btn-primary"
@@ -106,16 +101,13 @@
                                                            Margin="16,0,0,0"
                                                            VerticalAlignment="Center"
                                                            Spacing="4">
-                                                    <TextBlock Text="{Binding Nom}" 
-                                                              FontSize="14"
-                                                              FontWeight="SemiBold"
-                                                              Foreground="#111827"/>
-                                                    <TextBlock Text="{Binding VersionText}" 
-                                                              FontSize="12"
-                                                              Foreground="#6B7280"/>
-                                                    <TextBlock Text="{Binding Depot, StringFormat='Dépôt: {0}'}" 
-                                                              FontSize="11"
-                                                              Foreground="#9CA3AF"/>
+                                                    <TextBlock Classes="text-body"
+                                                               Text="{Binding Nom}"
+                                                               FontWeight="SemiBold"/>
+                                                    <TextBlock Classes="text-muted"
+                                                               Text="{Binding VersionText}"/>
+                                                    <TextBlock Classes="text-sm"
+                                                               Text="{Binding Depot, StringFormat='Dépôt: {0}'}"/>
                                                 </StackPanel>
                                                 
                                                 <!-- Badge -->
@@ -125,10 +117,9 @@
                                                         Padding="10,6"
                                                         VerticalAlignment="Center"
                                                         Margin="16,0,0,0">
-                                                    <TextBlock Text="Nouveau" 
-                                                              FontSize="11"
-                                                              FontWeight="SemiBold"
-                                                              Foreground="#1E40AF"/>
+                                                    <TextBlock Classes="text-sm text-info"
+                                                               Text="Nouveau"
+                                                               FontWeight="SemiBold"/>
                                                 </Border>
                                                 
                                             </Grid>
@@ -152,14 +143,12 @@
                         <TextBlock Text="✅" 
                                   FontSize="64"
                                   HorizontalAlignment="Center"/>
-                        <TextBlock Text="Aucune mise à jour disponible" 
-                                  FontSize="20"
-                                  FontWeight="SemiBold"
-                                  HorizontalAlignment="Center"/>
-                        <TextBlock Text="Votre système est à jour !" 
-                                  FontSize="14"
-                                  Foreground="Gray"
-                                  HorizontalAlignment="Center"/>
+                        <TextBlock Classes="text-h2"
+                                   Text="Aucune mise à jour disponible"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Classes="text-muted"
+                                   Text="Votre système est à jour !"
+                                   HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
                 
@@ -185,10 +174,9 @@
                         <TextBlock Text="⚠️" 
                                   FontSize="48"
                                   HorizontalAlignment="Center"/>
-                        <TextBlock Text="Confirmer l'installation" 
-                                  FontSize="22"
-                                  FontWeight="Bold"
-                                  HorizontalAlignment="Center"/>
+                        <TextBlock Classes="text-h1"
+                                   Text="Confirmer l'installation"
+                                   HorizontalAlignment="Center"/>
                     </StackPanel>
                     
                     <!-- Message -->
@@ -257,31 +245,28 @@
             
             <!-- Message -->
             <StackPanel Spacing="12">
-                <TextBlock TextWrapping="Wrap"
-                          HorizontalAlignment="Center"
-                          TextAlignment="Center"
-                          FontSize="15"
-                          Foreground="#374151">
+                <TextBlock Classes="text-body"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center">
                     <Run Text="Vous êtes sur le point d'installer "/>
                     <Run Text="{Binding NombreMisesAJour}" FontWeight="Bold" Foreground="#F59E0B"/>
                     <Run Text=" mise(s) à jour."/>
                 </TextBlock>
-                
-                <TextBlock Text="Cette opération nécessite des privilèges administrateur."
-                          TextWrapping="Wrap"
-                          HorizontalAlignment="Center"
-                          TextAlignment="Center"
-                          FontSize="13"
-                          Foreground="#6B7280"/>
-                
-                <TextBlock Text="Voulez-vous continuer ?"
-                          TextWrapping="Wrap"
-                          HorizontalAlignment="Center"
-                          TextAlignment="Center"
-                          FontSize="15"
-                          FontWeight="SemiBold"
-                          Foreground="#111827"
-                          Margin="0,8,0,0"/>
+
+                <TextBlock Classes="text-muted"
+                           Text="Cette opération nécessite des privilèges administrateur."
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"/>
+
+                <TextBlock Classes="text-body"
+                           Text="Voulez-vous continuer ?"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           FontWeight="SemiBold"
+                           Margin="0,8,0,0"/>
             </StackPanel>
             
             <!-- Boutons avec styles fixes -->

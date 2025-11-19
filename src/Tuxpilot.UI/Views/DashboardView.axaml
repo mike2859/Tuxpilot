@@ -16,12 +16,8 @@
             <StackPanel Orientation="Horizontal" Spacing="16">
                 <TextBlock Text="🐧" FontSize="48" VerticalAlignment="Center"/>
                 <StackPanel VerticalAlignment="Center" Spacing="4">
-                    <TextBlock Text="TuxCopilot" 
-                              FontSize="28" 
-                              FontWeight="Bold"/>
-                    <TextBlock Text="Assistant Linux pour débutants et collectivités" 
-                              FontSize="13" 
-                              Foreground="Gray"/>
+                    <TextBlock Classes="text-h1" Text="Tuxpilot"/>
+                    <TextBlock Classes="text-muted" Text="Assistant Linux pour débutants et collectivités"/>
                 </StackPanel>
             </StackPanel>
             
@@ -41,13 +37,11 @@
                     <TextBlock Text="🔄"
                                FontSize="16"
                                VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding TimeSinceLastRefresh}"
-                               FontSize="13"
-                               Foreground="#0369A1"
+                    <TextBlock Classes="text-sm text-info"
+                               Text="{Binding TimeSinceLastRefresh}"
                                VerticalAlignment="Center"/>
-                    <TextBlock Text="• Actualisation automatique toutes les 10s"
-                               FontSize="12"
-                               Foreground="#64748B"
+                    <TextBlock Classes="text-sm text-muted"
+                               Text="• Actualisation automatique toutes les 10s"
                                VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
@@ -66,47 +60,27 @@
                     
                     <!-- Distribution -->
                     <StackPanel Spacing="4">
-                        <TextBlock Text="Distribution" 
-                                  FontSize="13"
-                                  Foreground="Gray"/>
-                        <TextBlock Text="{Binding SystemInfo.Distribution}"
-                                  FontSize="16"
-                                  FontWeight="Medium"
-                                  Foreground="#111827"/>
+                        <TextBlock Classes="text-label" Text="Distribution"/>
+                        <TextBlock Classes="text-value" Text="{Binding SystemInfo.Distribution}"/>
                     </StackPanel>
                     
                     <!-- Kernel -->
                     <StackPanel Spacing="4">
-                        <TextBlock Text="Kernel" 
-                                  FontSize="13"
-                                  Foreground="Gray"/>
-                        <TextBlock Text="{Binding SystemInfo.KernelVersion}"
-                                  FontSize="16"
-                                  FontWeight="Medium"
-                                  Foreground="#111827"/>
+                        <TextBlock Classes="text-label" Text="Kernel"/>
+                        <TextBlock Classes="text-value" Text="{Binding SystemInfo.KernelVersion}"/>
                     </StackPanel>
                     
                     <!-- Gestionnaire de paquets -->
                     <StackPanel Spacing="4">
-                        <TextBlock Text="Gestionnaire de paquets" 
-                                  FontSize="13"
-                                  Foreground="Gray"/>
-                        <TextBlock Text="{Binding SystemInfo.PackageManager}"
-                                  FontSize="16"
-                                  FontWeight="Medium"
-                                  Foreground="#111827"/>
+                        <TextBlock Classes="text-label" Text="Gestionnaire de paquets"/>
+                        <TextBlock Classes="text-value" Text="{Binding SystemInfo.PackageManager}"/>
                     </StackPanel>
                     
                     <!-- Processeur -->
                     <StackPanel Spacing="4">
-                        <TextBlock Text="Processeur" 
-                                   FontSize="13"
-                                   Foreground="Gray"/>
-                        <TextBlock Text="{Binding SystemInfo.CpuModel}"
-                                   FontSize="16"
-                                   FontWeight="Medium"
-                                   Foreground="#111827"/>
-                        <TextBlock FontSize="13" Foreground="Gray">
+                        <TextBlock Classes="text-label" Text="Processeur"/>
+                        <TextBlock Classes="text-value" Text="{Binding SystemInfo.CpuModel}"/>
+                        <TextBlock Classes="text-muted">
                             <Run Text="{Binding SystemInfo.CpuCores}"/>
                             <Run Text=" cœurs • "/>
                             <Run Text="{Binding SystemInfo.CpuThreads}"/>
@@ -124,22 +98,16 @@
                     BorderThickness="1">
                 <StackPanel Spacing="20">
                     
-                    <TextBlock Text="📊 Utilisation des ressources" 
-                              FontSize="18" 
-                              FontWeight="SemiBold"/>
+                    <TextBlock Classes="text-h2" Text="📊 Utilisation des ressources"/>
                     
                     <!-- RAM avec couleur dynamique -->
                     <StackPanel Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0"
-                                      Text="Mémoire RAM" 
-                                      FontSize="14"
-                                      FontWeight="Medium"
-                                      Foreground="Gray"/>
-                            <TextBlock Grid.Column="1" 
-                                      Text="{Binding SystemInfo.RamUsageText}"
-                                      FontSize="14"
-                                      Foreground="{Binding SystemInfo.RamColor}"/>
+                            
+                            <TextBlock Grid.Column="0" Classes="text-body" Text="Mémoire RAM"/>
+                            <TextBlock Grid.Column="1" Classes="text-metric" 
+                                       Text="{Binding SystemInfo.RamUsageText}"
+                                       Foreground="{Binding SystemInfo.RamColor}"/>
                         </Grid>
                         <ProgressBar Value="{Binding SystemInfo.RamPercent}" 
                                     Maximum="100"
@@ -151,15 +119,10 @@
                     <!-- CPU avec couleur dynamique -->
                     <StackPanel Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0"
-                                      Text="Processeur (CPU)" 
-                                      FontSize="14"
-                                      FontWeight="Medium"
-                                      Foreground="Gray"/>
-                            <TextBlock Grid.Column="1" 
-                                      Text="{Binding SystemInfo.CpuUsageText}"
-                                      FontSize="14"
-                                      Foreground="{Binding SystemInfo.CpuColor}"/>
+                            <TextBlock Grid.Column="0" Classes="text-body" Text="Processeur (CPU)"/>
+                            <TextBlock Grid.Column="1" Classes="text-metric" 
+                                       Text="{Binding SystemInfo.CpuUsageText}"
+                                       Foreground="{Binding SystemInfo.CpuColor}"/>
                         </Grid>
                         <ProgressBar Value="{Binding SystemInfo.CpuPercent}" 
                                     Maximum="100"
@@ -171,15 +134,10 @@
                     <!-- Disque avec couleur dynamique -->
                     <StackPanel Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0"
-                                      Text="Espace disque" 
-                                      FontSize="14"
-                                      FontWeight="Medium"
-                                      Foreground="Gray"/>
-                            <TextBlock Grid.Column="1" 
-                                      Text="{Binding SystemInfo.DiskUsageText}"
-                                      FontSize="14"
-                                      Foreground="{Binding SystemInfo.DiskColor}"/>
+                            <TextBlock Grid.Column="0" Classes="text-body" Text="Espace disque"/>
+                            <TextBlock Grid.Column="1" Classes="text-metric" 
+                                       Text="{Binding SystemInfo.DiskUsageText}"
+                                       Foreground="{Binding SystemInfo.DiskColor}"/>
                         </Grid>
                         <ProgressBar Value="{Binding SystemInfo.DiskPercent}" 
                                     Maximum="100"
@@ -189,16 +147,11 @@
                     </StackPanel>
                     
                     <!-- Bouton actualiser -->
-                    <Button Content="🔄 Actualiser"
-                            Command="{Binding RefreshCommand}"
-                            HorizontalAlignment="Left"
-                            Padding="16,10"
-                            Margin="0,8,0,0"
-                            Background="#3B82F6"
-                            Foreground="White"
-                            BorderThickness="0"
-                            CornerRadius="8"
-                            Cursor="Hand"/>
+                    <Button Classes="btn-primary"
+                             Content="🔄 Actualiser"
+                             Command="{Binding RefreshCommand}"
+                             HorizontalAlignment="Left"
+                             Margin="0,8,0,0"/>
                     
                 </StackPanel>
             </Border>
@@ -210,10 +163,10 @@
                     BorderBrush="#3B82F6"
                     BorderThickness="2"
                     IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-                <TextBlock Text="{Binding StatusMessage}" 
-                          FontSize="14"
-                          FontWeight="Medium"
-                          Foreground="#1E40AF"/>
+                <TextBlock Classes="text-body" 
+                           Text="{Binding StatusMessage}" 
+                           FontWeight="Medium"
+                           Foreground="#1E40AF"/>
             </Border>
             
         </StackPanel>
