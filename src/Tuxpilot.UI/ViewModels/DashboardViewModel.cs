@@ -15,6 +15,7 @@ namespace Tuxpilot.UI.ViewModels;
 public partial class DashboardViewModel : ViewModelBase
 {
     private readonly IServiceSysteme _serviceSysteme;
+    private readonly IServiceAssistantIA _serviceIA; 
     private Timer? _refreshTimer;    
     private readonly Timer? _uiUpdateTimer;
     
@@ -33,9 +34,18 @@ public partial class DashboardViewModel : ViewModelBase
     [ObservableProperty]
     private bool _autoRefreshEnabled = true;
 
-    public DashboardViewModel(IServiceSysteme serviceSysteme)
+    [ObservableProperty]
+    private string _suggestionIA = string.Empty;
+    
+    [ObservableProperty]
+    private bool _hasSuggestion;
+    
+    [ObservableProperty]
+    private bool _isAnalyzing;
+    public DashboardViewModel(IServiceSysteme serviceSysteme,  IServiceAssistantIA serviceIA)
     { 
         _serviceSysteme = serviceSysteme;
+        _serviceIA = serviceIA;
 
         // Charger les données au démarrage
         _ = LoadSystemInfoAsync();
@@ -46,6 +56,9 @@ public partial class DashboardViewModel : ViewModelBase
             TimeSpan.FromSeconds(1),  // Première update après 1s
             TimeSpan.FromSeconds(1)   // Puis chaque seconde
         );
+        
+        _ = RefreshAsync();
+        _ = AnalyserSystemeAsync(); 
     }
     
     
@@ -116,6 +129,53 @@ public partial class DashboardViewModel : ViewModelBase
         {
             IsLoading = false;
         }
+    }
+    
+    /// <summary>
+    /// Analyse proactive du système
+    /// </summary>
+    [RelayCommand]
+    private async Task AnalyserSystemeAsync()
+    {
+        if (SystemInfo == null) return;
+
+        try
+        {
+            IsAnalyzing = true;
+    
+            // 🆕 Utiliser les propriétés correctes
+            var ramPercent = double.Parse(SystemInfo.RamUsageText.Replace("%", "").Replace(",", "."));
+            var cpuPercent = double.Parse(SystemInfo.CpuUsageText.Replace("%", "").Replace(",", "."));
+            var diskPercent = double.Parse(SystemInfo.DiskUsageText.Replace("%", "").Replace(",", "."));
+            
+            var suggestion = await _serviceIA.AnalyserSystemeAsync(
+                ramPercent,
+                cpuPercent,
+                diskPercent,
+                0
+            );
+    
+            SuggestionIA = suggestion;
+            HasSuggestion = !suggestion.Contains("✅") && !suggestion.Contains("bien");
+        }
+        catch (Exception ex)
+        {
+            SuggestionIA = $"❌ Erreur d'analyse : {ex.Message}";
+            HasSuggestion = false;
+        }
+        finally
+        {
+            IsAnalyzing = false;
+        }
+    }
+    
+    /// <summary>
+    /// Fermer la suggestion
+    /// </summary>
+    [RelayCommand]
+    private void FermerSuggestion()
+    {
+        HasSuggestion = false;
     }
     
     /// <summary>

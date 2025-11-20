@@ -11,8 +11,14 @@ public interface IServiceAssistantIA
     /// </summary>
     Task<string> DemanderAsync(string question);
     
-    /// <summary>
-    /// Envoie une question avec streaming de la réponse
-    /// </summary>
     Task DemanderAvecStreamingAsync(string question, Action<string> onTokenReceived);
+    
+    /// <summary>
+    /// 🆕 Analyse l'état système et génère des suggestions proactives
+    /// </summary>
+    Task<string> AnalyserSystemeAsync(
+        double pourcentageRam, 
+        double pourcentageCpu, 
+        double pourcentageDisque,
+        int nombreMisesAJour);
 }

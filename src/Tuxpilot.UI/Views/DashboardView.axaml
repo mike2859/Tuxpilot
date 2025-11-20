@@ -26,6 +26,54 @@
                         IsVisible="{Binding IsLoading}"
                         Height="4"/>
             
+            <!-- 🆕 SUGGESTION PROACTIVE IA -->
+            <Border Grid.Row="0"
+                    IsVisible="{Binding HasSuggestion}"
+                    Background="#DBEAFE"
+                    CornerRadius="12"
+                    Padding="20"
+                    Margin="32,16,32,16"
+                    BorderBrush="#3B82F6"
+                    BorderThickness="2">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+        
+                    <!-- Icône -->
+                    <Border Grid.Column="0"
+                            Width="48" Height="48"
+                            CornerRadius="24"
+                            Background="#3B82F6"
+                            VerticalAlignment="Top">
+                        <TextBlock Text="🤖" 
+                                   FontSize="24"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+        
+                    <!-- Message -->
+                    <StackPanel Grid.Column="1" 
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Spacing="8">
+                        <TextBlock Classes="text-h3"
+                                   Text="💡 Suggestion de l'IA"
+                                   Foreground="#1E40AF"/>
+                        <TextBlock Classes="text-body"
+                                   Text="{Binding SuggestionIA}"
+                                   TextWrapping="Wrap"
+                                   Foreground="#1E3A8A"/>
+                    </StackPanel>
+        
+                    <!-- Bouton fermer -->
+                    <Button Grid.Column="2"
+                            Classes="btn-secondary btn-sm"
+                            Content="✕"
+                            Command="{Binding FermerSuggestionCommand}"
+                            VerticalAlignment="Top"
+                            Width="32" Height="32"
+                            Padding="0"/>
+        
+                </Grid>
+            </Border>
             
             <!-- Info dernière mise à jour -->
             <Border Background="#F0F9FF"
@@ -153,6 +201,25 @@
                              HorizontalAlignment="Left"
                              Margin="0,8,0,0"/>
                     
+                    <!-- 🆕 Bouton Demander conseil -->
+                    <Button Classes="btn-primary"
+                            Content="💡 Demander conseil"
+                            Command="{Binding AnalyserSystemeCommand}"
+                            IsEnabled="{Binding !IsAnalyzing}"
+                            HorizontalAlignment="Left"
+                            Margin="12,8,0,0">
+                        <Button.Styles>
+                            <Style Selector="Button[IsEnabled=False]">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+                    <!-- Indicateur de chargement IA -->
+                    <TextBlock Classes="text-sm text-info"
+                               Text="🔄 Analyse en cours..."
+                               IsVisible="{Binding IsAnalyzing}"
+                               VerticalAlignment="Center"
+                               Margin="12,8,0,0"/>
                 </StackPanel>
             </Border>
             

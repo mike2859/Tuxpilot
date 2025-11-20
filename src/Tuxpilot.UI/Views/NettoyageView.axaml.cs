@@ -7,6 +7,6 @@ public partial class NettoyageView : UserControl
 {
     public NettoyageView()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 }

@@ -1,0 +1,64 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Tuxpilot.UI.ViewModels;
+
+/// <summary>
+/// ViewModel pour un service systemd
+/// </summary>
+public partial class ServiceViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private string _name = string.Empty;
+    
+    [ObservableProperty]
+    private string _status = string.Empty;
+    
+    [ObservableProperty]
+    private string _enabled = string.Empty;
+    
+    [ObservableProperty]
+    private string _unit = string.Empty;
+    
+    /// <summary>
+    /// Icône selon le statut
+    /// </summary>
+    public string StatusIcon => Status.ToLower() switch
+    {
+        "active" => "✅",
+        "inactive" => "⭕",
+        "failed" => "❌",
+        _ => "❓"
+    };
+    
+    /// <summary>
+    /// Couleur selon le statut
+    /// </summary>
+    public string StatusColor => Status.ToLower() switch
+    {
+        "active" => "#10B981",
+        "inactive" => "#6B7280",
+        "failed" => "#EF4444",
+        _ => "#9CA3AF"
+    };
+    
+    /// <summary>
+    /// Texte du statut formaté
+    /// </summary>
+    public string StatusText => Status switch
+    {
+        "active" => "Actif",
+        "inactive" => "Inactif",
+        "failed" => "Erreur",
+        _ => Status
+    };
+    
+    /// <summary>
+    /// Si le service démarre au boot
+    /// </summary>
+    public string EnabledText => Enabled switch
+    {
+        "enabled" => "🔄 Démarrage auto",
+        "disabled" => "Démarrage manuel",
+        _ => Enabled
+    };
+}

@@ -117,7 +117,56 @@ public class ServiceOllama : IServiceAssistantIA
             onTokenReceived($"\n\n❌ Erreur : {ex.Message}");
         }
     }
-    
+
+    public async Task<string> AnalyserSystemeAsync(
+        double pourcentageRam, 
+        double pourcentageCpu, 
+        double pourcentageDisque,
+        int nombreMisesAJour)
+    {
+        try
+        {
+            // Construire un prompt contextualisé
+            var prompt = $@"Tu es un assistant Linux expert. Analyse cet état système et donne 1 ou 2 suggestions COURTES et ACTIONNABLES en français.
+
+État actuel :
+- RAM utilisée : {pourcentageRam:F1}%
+- CPU utilisé : {pourcentageCpu:F1}%
+- Disque utilisé : {pourcentageDisque:F1}%
+- Mises à jour en attente : {nombreMisesAJour}
+
+Règles :
+- Si RAM > 80% : suggère de voir les processus gourmands
+- Si Disque > 85% : suggère le nettoyage
+- Si Mises à jour > 0 : suggère de les installer
+- Sinon : dis que tout va bien
+
+Réponds en 2-3 phrases MAX, avec des emojis. Soit concret et actionnable.";
+
+            var requestBody = new
+            {
+                model = _modele,
+                prompt = prompt,
+                stream = false
+            };
+        
+            var response = await _httpClient.PostAsJsonAsync(
+                $"{_urlOllama}/api/generate",
+                requestBody
+            );
+        
+            response.EnsureSuccessStatusCode();
+        
+            var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
+        
+            return result?.Response ?? "✅ Votre système fonctionne bien !";
+        }
+        catch (Exception ex)
+        {
+            return $"❌ Impossible d'analyser le système : {ex.Message}";
+        }
+    }
+
     // Classes pour désérialiser les réponses Ollama
     private class OllamaResponse
     {

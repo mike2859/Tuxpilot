@@ -94,4 +94,10 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         CurrentView = _serviceProvider.GetRequiredService<AssistantIAViewModel>();
     }
+    
+    [RelayCommand]
+    private void NavigateToServices()
+    {
+        CurrentView = _serviceProvider.GetRequiredService<ServicesViewModel>();
+    }
 }

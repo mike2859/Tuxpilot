@@ -57,6 +57,7 @@ public partial class App : Application
         services.AddSingleton<IServiceNettoyage, ServiceNettoyage>();
         services.AddSingleton<IServiceDiagnostic, ServiceDiagnostic>();  
         services.AddSingleton<IServiceAssistantIA, ServiceOllama>(); 
+        services.AddSingleton<IServiceGestionServices, ServiceGestionServices>();
         
         // ViewModels
         services.AddTransient<MainWindowViewModel>();
@@ -65,6 +66,7 @@ public partial class App : Application
         services.AddTransient<NettoyageViewModel>();
         services.AddTransient<DiagnosticViewModel>();  
         services.AddTransient<AssistantIAViewModel>(); 
+        services.AddTransient<ServicesViewModel>();
         
         return services.BuildServiceProvider();
     }
