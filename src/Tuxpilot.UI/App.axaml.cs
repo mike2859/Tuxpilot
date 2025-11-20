@@ -58,6 +58,7 @@ public partial class App : Application
         services.AddSingleton<IServiceDiagnostic, ServiceDiagnostic>();  
         services.AddSingleton<IServiceAssistantIA, ServiceOllama>(); 
         services.AddSingleton<IServiceGestionServices, ServiceGestionServices>();
+        services.AddSingleton<IServiceCommandes, ServiceCommandes>(); 
         
         // ViewModels
         services.AddTransient<MainWindowViewModel>();

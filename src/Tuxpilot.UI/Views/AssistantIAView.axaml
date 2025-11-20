@@ -61,32 +61,106 @@
                              VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Messages}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Background="{Binding BackgroundColor}"
-                                        CornerRadius="12"
-                                        Padding="16"
-                                        Margin="0,0,0,12"
-                                        MaxWidth="600"
-                                        HorizontalAlignment="{Binding IsUser, Converter={StaticResource BoolToAlignmentConverter}}">
-                                    <StackPanel Spacing="8">
-                                        <!-- Icône et nom -->
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{Binding Icone}"
-                                                      FontSize="16"/>
-                                            <TextBlock Classes="text-body"
-                                                      Text="{Binding IsUser, Converter={StaticResource BoolToNameConverter}}"
-                                                      FontWeight="SemiBold"/>
-                                        </StackPanel>
-                                        
-                                        <!-- Message -->
-                                        <TextBlock Classes="text-body"
-                                                  Text="{Binding Texte}"
-                                                  TextWrapping="Wrap"
-                                                  Foreground="{Binding TextColor}"/>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+    <DataTemplate>
+        <StackPanel Spacing="8" Margin="0,0,0,12">
+            
+            <!-- Message principal -->
+            <Border Background="{Binding BackgroundColor}"
+                    CornerRadius="12"
+                    Padding="16"
+                    MaxWidth="600"
+                    HorizontalAlignment="{Binding IsUser, Converter={StaticResource BoolToAlignmentConverter}}">
+                <StackPanel Spacing="8">
+                    <!-- Icône et nom -->
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{Binding Icone}"
+                                  FontSize="16"/>
+                        <TextBlock Classes="text-body"
+                                  Text="{Binding IsUser, Converter={StaticResource BoolToNameConverter}}"
+                                  FontWeight="SemiBold"/>
+                    </StackPanel>
+                    
+                    <!-- Message -->
+                    <TextBlock Classes="text-body"
+                              Text="{Binding Texte}"
+                              TextWrapping="Wrap"
+                              Foreground="{Binding TextColor}"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- 🆕 ENCART D'ACTION -->
+            <Border Background="#FEF3C7"
+                    CornerRadius="12"
+                    Padding="16"
+                    BorderBrush="#F59E0B"
+                    BorderThickness="2"
+                    MaxWidth="600"
+                    HorizontalAlignment="Left"
+                    IsVisible="{Binding HasAction}">
+                <StackPanel Spacing="12">
+                    
+                    <!-- Header -->
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="💡" FontSize="20"/>
+                        <TextBlock Classes="text-body"
+                                  Text="Je peux faire ça pour vous !"
+                                  FontWeight="Bold"
+                                  Foreground="#92400E"/>
+                    </StackPanel>
+                    
+                    <!-- Commande -->
+                    <Border Background="#FFFBEB"
+                            CornerRadius="8"
+                            Padding="12"
+                            BorderBrush="#FCD34D"
+                            BorderThickness="1">
+                        <StackPanel Spacing="4">
+                            <TextBlock Classes="text-sm"
+                                      Text="Commande :"
+                                      Foreground="#92400E"
+                                      FontWeight="SemiBold"/>
+                            <TextBlock Classes="text-body"
+                                      Text="{Binding Action.Command}"
+                                      FontFamily="monospace"
+                                      Foreground="#78350F"
+                                      TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Boutons -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8"
+                          IsVisible="{Binding !ActionExecuted}">
+                        <Button Grid.Column="0"
+                                Classes="btn-primary"
+                                Content="✅ Exécuter"
+                                Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).ExecuterActionCommand}"
+                                CommandParameter="{Binding}"
+                                HorizontalAlignment="Stretch"/>
+                        <Button Grid.Column="1"
+                                Classes="btn-secondary"
+                                Content="❌ Non merci"
+                                Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).RefuserActionCommand}"
+                                CommandParameter="{Binding}"
+                                HorizontalAlignment="Stretch"/>
+                    </Grid>
+                    
+                    <!-- Résultat -->
+                    <Border Background="#D1FAE5"
+                            CornerRadius="8"
+                            Padding="12"
+                            IsVisible="{Binding ActionExecuted}">
+                        <TextBlock Classes="text-body"
+                                  Text="{Binding ActionResult}"
+                                  Foreground="#065F46"
+                                  FontWeight="SemiBold"/>
+                    </Border>
+                    
+                </StackPanel>
+            </Border>
+            
+        </StackPanel>
+    </DataTemplate>
+</ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
                 

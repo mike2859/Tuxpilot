@@ -1,11 +1,14 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tuxpilot.Core.Interfaces.Services;
+using Tuxpilot.UI.Models;
 
 namespace Tuxpilot.UI.ViewModels;
+
 
 
 /// <summary>
@@ -14,6 +17,7 @@ namespace Tuxpilot.UI.ViewModels;
 public partial class AssistantIAViewModel : ViewModelBase
 {
     private readonly IServiceAssistantIA _serviceIA;
+    private readonly IServiceCommandes _serviceCommandes;
     
     [ObservableProperty]
     private ObservableCollection<ChatMessageViewModel> _messages = new();
@@ -28,11 +32,14 @@ public partial class AssistantIAViewModel : ViewModelBase
     private bool _isStreaming;
     
     [ObservableProperty]
-    private string _messagePlaceholder = "Posez une question sur Linux, Fedora, les commandes...";
+    private string _messagePlaceholder = "Posez une question ou demandez une action (ex: Installe VLC)";
     
-    public AssistantIAViewModel(IServiceAssistantIA serviceIA)
+    public AssistantIAViewModel(
+        IServiceAssistantIA serviceIA,
+        IServiceCommandes serviceCommandes)
     {
         _serviceIA = serviceIA;
+        _serviceCommandes = serviceCommandes;
         
         // Message de bienvenue
         Messages.Add(new ChatMessageViewModel(
@@ -42,25 +49,27 @@ public partial class AssistantIAViewModel : ViewModelBase
             "• Gestion des paquets (DNF, APT)\n" +
             "• Dépannage système\n" +
             "• Explications des concepts\n\n" +
+            "💡 NOUVEAU : Je peux aussi exécuter des actions pour vous !\n" +
+            "Exemples : 'Installe VLC', 'Supprime Firefox', 'Redémarre Apache'\n\n" +
             "Posez-moi vos questions !",
             isUser: false
         ));
     }
+    
     [RelayCommand]
     private async Task EnvoyerQuestionAsync()
     {
-        // Vérifier que la question n'est pas vide
         if (string.IsNullOrWhiteSpace(QuestionUtilisateur))
             return;
 
         var question = QuestionUtilisateur.Trim();
-
+        
         // Ajouter la question de l'utilisateur
         Messages.Add(new ChatMessageViewModel(question, isUser: true));
-
+        
         // Vider le champ de saisie
         QuestionUtilisateur = string.Empty;
-
+        
         // Message "En attente..."
         var messageIA = new ChatMessageViewModel("🔄 Génération de la réponse...", isUser: false);
         Messages.Add(messageIA);
@@ -69,11 +78,43 @@ public partial class AssistantIAViewModel : ViewModelBase
         {
             IsStreaming = true;
 
-            // 🆕 VERSION SIMPLE SANS STREAMING
+            // Demander à l'IA
             var reponse = await _serviceIA.DemanderAsync(question);
 
-            // Remplacer le message de chargement par la réponse
+            // Retirer le message de chargement
             Messages.Remove(messageIA);
+
+            // 🆕 DÉTECTER SI C'EST UNE ACTION
+            if (reponse.TrimStart().StartsWith("{"))
+            {
+                // Essayer de parser comme JSON
+                try
+                {
+                    var action = JsonSerializer.Deserialize<AssistantAction>(reponse);
+                    
+                    if (action != null && action.IsValid)
+                    {
+                        // C'est une action !
+                        var actionMessage = new ChatMessageViewModel(
+                            action.Explanation,
+                            isUser: false
+                        )
+                        {
+                            HasAction = true,
+                            Action = action
+                        };
+                        
+                        Messages.Add(actionMessage);
+                        return;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Pas du JSON valide, traiter comme texte normal
+                }
+            }
+
+            // Réponse texte normale
             Messages.Add(new ChatMessageViewModel(reponse, isUser: false));
         }
         catch (Exception ex)
@@ -87,21 +128,75 @@ public partial class AssistantIAViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Exécute l'action détectée par l'IA
+    /// </summary>
+    [RelayCommand]
+    private async Task ExecuterActionAsync(ChatMessageViewModel message)
+    {
+        if (message.Action == null || message.ActionExecuted)
+            return;
+
+        try
+        {
+            // Marquer comme exécuté
+            message.ActionExecuted = true;
+            
+            // Créer un message pour les logs
+            var logsMessage = new ChatMessageViewModel(
+                $"🔄 Exécution de : {message.Action.Command}\n\n",
+                isUser: false
+            );
+            Messages.Add(logsMessage);
+
+            // Exécuter avec streaming des logs
+            await _serviceCommandes.ExecuterCommandeAvecLogsAsync(
+                message.Action.Command,
+                log =>
+                {
+                    // Dispatcher pour UI thread
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    {
+                        logsMessage.Texte += log;
+                    });
+                },
+                message.Action.NeedsSudo
+            );
+
+            // Mettre à jour le résultat
+            message.ActionResult = "✅ Action terminée !";
+        }
+        catch (Exception ex)
+        {
+            message.ActionResult = $"❌ Erreur : {ex.Message}";
+        }
+    }
+    
+    /// <summary>
+    /// Refuse l'action proposée
+    /// </summary>
+    [RelayCommand]
+    private void RefuserAction(ChatMessageViewModel message)
+    {
+        if (message.Action == null)
+            return;
+    
+        // Marquer comme exécuté pour cacher les boutons
+        message.ActionExecuted = true;
+        message.ActionResult = "Action annulée par l'utilisateur";
+    }
+    
     [RelayCommand]
     private void EffacerHistorique()
     {
         Messages.Clear();
         
-        // Remettre le message de bienvenue
         Messages.Add(new ChatMessageViewModel(
             "👋 Historique effacé ! Posez-moi une nouvelle question.",
             isUser: false
         ));
     }
     
-    /// <summary>
-    /// Questions suggérées rapides
-    /// </summary>
     [RelayCommand]
     private void PoserQuestionRapide(string question)
     {
