@@ -23,37 +23,68 @@ public class ServiceOllama : IServiceAssistantIA
         };
     }
     
-    public async Task<string> DemanderAsync(string question)
+   public async Task<string> DemanderAsync(string question)
+{
+    try
     {
-        try
+        // 🆕 Nouveau prompt avec détection d'actions
+        var systemPrompt = @"Tu es un assistant Linux expert qui aide les utilisateurs francophones.
+
+IMPORTANT - DÉTECTION D'ACTIONS :
+Si l'utilisateur demande d'INSTALLER, SUPPRIMER, EXÉCUTER une commande, ou FAIRE quelque chose, tu dois répondre au format JSON suivant :
+
+{
+  ""type"": ""action"",
+  ""action"": ""install"" ou ""remove"" ou ""execute"",
+  ""command"": ""la commande complète"",
+  ""package"": ""nom du paquet si applicable"",
+  ""explanation"": ""Explication courte de ce qui sera fait"",
+  ""needsSudo"": true ou false
+}
+
+Exemples de requêtes ACTION :
+- ""Installe VLC"" → JSON avec action: install, command: ""dnf install vlc""
+- ""Comment installer VLC ?"" → JSON avec action: install
+- ""Supprime Firefox"" → JSON avec action: remove
+- ""Redémarre Apache"" → JSON avec action: execute, command: ""systemctl restart httpd""
+
+Exemples de requêtes NORMALES (pas JSON) :
+- ""C'est quoi VLC ?"" → Réponse texte normale
+- ""Comment fonctionne dnf ?"" → Réponse texte normale
+- ""Quelle est la différence entre..."" → Réponse texte normale
+
+Si la requête est une ACTION, réponds UNIQUEMENT avec le JSON, rien d'autre.
+Si c'est une question normale, réponds en texte comme d'habitude.";
+
+        var fullPrompt = $"{systemPrompt}\n\nQuestion de l'utilisateur : {question}";
+        
+        var requestBody = new
         {
-            var requestBody = new
-            {
-                model = _modele,
-                prompt = $"Tu es un assistant Linux expert qui aide les utilisateurs francophones. Réponds de manière claire et concise.\n\nQuestion: {question}",
-                stream = false
-            };
-            
-            var response = await _httpClient.PostAsJsonAsync(
-                $"{_urlOllama}/api/generate",
-                requestBody
-            );
-            
-            response.EnsureSuccessStatusCode();
-            
-            var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
-            
-            return result?.Response ?? "Désolé, je n'ai pas pu générer une réponse.";
-        }
-        catch (HttpRequestException ex)
-        {
-            return $"❌ Erreur de connexion à Ollama : {ex.Message}\n\nAssurez-vous qu'Ollama est démarré avec : ollama serve";
-        }
-        catch (Exception ex)
-        {
-            return $"❌ Erreur : {ex.Message}";
-        }
+            model = _modele,
+            prompt = fullPrompt,
+            stream = false
+        };
+        
+        var response = await _httpClient.PostAsJsonAsync(
+            $"{_urlOllama}/api/generate",
+            requestBody
+        );
+        
+        response.EnsureSuccessStatusCode();
+        
+        var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
+        
+        return result?.Response ?? "Désolé, je n'ai pas pu générer une réponse.";
     }
+    catch (HttpRequestException ex)
+    {
+        return $"❌ Erreur de connexion à Ollama : {ex.Message}\n\nAssurez-vous qu'Ollama est démarré avec : ollama serve";
+    }
+    catch (Exception ex)
+    {
+        return $"❌ Erreur : {ex.Message}";
+    }
+}
     
     public async Task DemanderAvecStreamingAsync(string question, Action<string> onTokenReceived)
     {

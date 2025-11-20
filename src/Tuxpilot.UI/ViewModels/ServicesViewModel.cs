@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
 
 namespace Tuxpilot.UI.ViewModels;
@@ -15,6 +16,7 @@ namespace Tuxpilot.UI.ViewModels;
 public partial class ServicesViewModel : ViewModelBase
 {
     private readonly IServiceGestionServices _serviceGestion;
+    private readonly IServiceHistorique _serviceHistorique;
     
     [ObservableProperty]
     private ObservableCollection<ServiceViewModel> _services = new();
@@ -37,9 +39,10 @@ public partial class ServicesViewModel : ViewModelBase
     [ObservableProperty]
     private string _messageStatut = string.Empty;
     
-    public ServicesViewModel(IServiceGestionServices serviceGestion)
+    public ServicesViewModel(IServiceGestionServices serviceGestion,  IServiceHistorique serviceHistorique)
     {
         _serviceGestion = serviceGestion;
+        _serviceHistorique = serviceHistorique;
         
         // Charger au démarrage
         _ = ChargerServicesAsync();
@@ -107,10 +110,21 @@ public partial class ServicesViewModel : ViewModelBase
             
             var logs = await _serviceGestion.ObtenirLogsAsync(ServiceSelectionne.Name, 100);
             Logs = logs;
+            
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.Service,
+                $"Commande ObtenirLogs exécutée : {Logs}",
+                true
+            );
         }
         catch (Exception ex)
         {
             Logs = $"❌ Erreur : {ex.Message}";
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.Service,
+                $"Échec ObtenirLogs : {Logs}",
+                false
+            );
         }
         finally
         {
@@ -135,6 +149,12 @@ public partial class ServicesViewModel : ViewModelBase
             
             MessageStatut = success ? $"✅ {message}" : $"❌ {message}";
             
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.Service,
+                $"Commande DemarrerServiceAsync exécutée : {MessageStatut}",
+                true
+            );
+            
             // Rafraîchir la liste
             await Task.Delay(1000);
             await ChargerServicesAsync();
@@ -142,6 +162,11 @@ public partial class ServicesViewModel : ViewModelBase
         catch (Exception ex)
         {
             MessageStatut = $"❌ Erreur : {ex.Message}";
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.Service,
+                $"Échec DemarrerServiceAsync : {MessageStatut}",
+                false
+            );
         }
         finally
         {

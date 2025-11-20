@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
 
 namespace Tuxpilot.UI.ViewModels;
@@ -13,6 +14,7 @@ namespace Tuxpilot.UI.ViewModels;
 public partial class NettoyageViewModel : ViewModelBase
 {
     private readonly IServiceNettoyage _serviceNettoyage;
+    private readonly IServiceHistorique _serviceHistorique;
     
     [ObservableProperty]
     private ObservableCollection<CleanupElementViewModel> _elements = new();
@@ -35,9 +37,10 @@ public partial class NettoyageViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isSuccessVisible;
     
-    public NettoyageViewModel(IServiceNettoyage serviceNettoyage)
+    public NettoyageViewModel(IServiceNettoyage serviceNettoyage, IServiceHistorique serviceHistorique)
     {
         _serviceNettoyage = serviceNettoyage;
+        _serviceHistorique = serviceHistorique;
         
         // Charger les données au démarrage
         _ = AnalyserAsync();
@@ -92,6 +95,12 @@ public partial class NettoyageViewModel : ViewModelBase
             
             var cleanupInfo = await _serviceNettoyage.AnalyserNettoyageAsync();
             
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.Clean,
+                $"Commande AnalyserNettoyageAsync exécutée : {cleanupInfo.NombreElements} élément(s)",
+                true
+            );
+            
             // Mettre à jour les propriétés
             Gestionnaire = cleanupInfo.Gestionnaire;
             TailleTotaleMB = cleanupInfo.TailleTotaleMB;
@@ -111,8 +120,14 @@ public partial class NettoyageViewModel : ViewModelBase
                     NombrePaquets = element.NombrePaquets,
                     Description = element.Description
                 });
+                
+                await _serviceHistorique.AjouterActionAsync(
+                    TypeAction.Clean,
+                    $"Element: {element.Nom} {element.Type}",
+                    true
+                );
             }
-            
+        
             // Notifier les propriétés calculées
             OnPropertyChanged(nameof(MessageStatut));
             OnPropertyChanged(nameof(ElementsDisponibles));
@@ -123,6 +138,11 @@ public partial class NettoyageViewModel : ViewModelBase
         {
             MessageErreur = $"Erreur lors de l'analyse : {ex.Message}";
             OnPropertyChanged(nameof(MessageStatut));
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.Clean,
+                $"Échec AnalyserNettoyageAsync : {MessageErreur}",
+                false
+            );
         }
         finally
         {

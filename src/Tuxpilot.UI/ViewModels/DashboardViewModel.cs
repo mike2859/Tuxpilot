@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -16,9 +17,13 @@ public partial class DashboardViewModel : ViewModelBase
 {
     private readonly IServiceSysteme _serviceSysteme;
     private readonly IServiceAssistantIA _serviceIA; 
+    private readonly IServiceHistorique _serviceHistorique; 
     private Timer? _refreshTimer;    
     private readonly Timer? _uiUpdateTimer;
     
+    [ObservableProperty]
+    private ObservableCollection<ActionHistorique> _dernieresActions = new();
+
     [ObservableProperty]
     private SystemInfoViewModel _systemInfo = new();
     
@@ -42,11 +47,14 @@ public partial class DashboardViewModel : ViewModelBase
     
     [ObservableProperty]
     private bool _isAnalyzing;
-    public DashboardViewModel(IServiceSysteme serviceSysteme,  IServiceAssistantIA serviceIA)
+    public DashboardViewModel(IServiceSysteme serviceSysteme,  IServiceAssistantIA serviceIA, IServiceHistorique serviceHistorique)
     { 
         _serviceSysteme = serviceSysteme;
         _serviceIA = serviceIA;
-
+        _serviceHistorique = serviceHistorique;
+        
+        _ = ChargerHistoriqueAsync(); 
+        
         // Charger les données au démarrage
         _ = LoadSystemInfoAsync();
         
@@ -166,6 +174,35 @@ public partial class DashboardViewModel : ViewModelBase
         finally
         {
             IsAnalyzing = false;
+        }
+    }
+    
+    /// <summary>
+    /// Charge les dernières actions de l'historique
+    /// </summary>
+    [RelayCommand]
+    private async Task ChargerHistoriqueAsync()
+    {
+        try
+        { 
+            Console.WriteLine("[DASHBOARD] Chargement de l'historique..."); // 🆕 DEBUG
+
+            var actions = await _serviceHistorique.ObtenirDernieresActionsAsync(5);
+            Console.WriteLine($"[DASHBOARD] {actions.Count} action(s) récupérée(s)"); // 🆕 DEBUG
+
+            DernieresActions.Clear();
+            foreach (var action in actions)
+            {
+                DernieresActions.Add(action);
+            }
+            Console.WriteLine($"[DASHBOARD] DernieresActions.Count = {DernieresActions.Count}"); // 🆕 DEBUG
+
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"[DASHBOARD] ❌ ERREUR : {ex.Message}"); // 🆕 DEBUG
+            Console.WriteLine($"[DASHBOARD] Stack : {ex.StackTrace}"); 
+            // Ignorer les erreurs
         }
     }
     

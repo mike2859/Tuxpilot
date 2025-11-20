@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="using:Tuxpilot.UI.Converters"
              xmlns:vm="using:Tuxpilot.UI.ViewModels"
              x:Class="Tuxpilot.UI.Views.DashboardView"
              x:DataType="vm:DashboardViewModel">
@@ -8,6 +9,10 @@
         <vm:DashboardViewModel/>
     </Design.DataContext>
 
+    <UserControl.Resources>
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+        <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
+    </UserControl.Resources>
     
   <ScrollViewer>
         <StackPanel Margin="32" Spacing="24">
@@ -93,6 +98,87 @@
                                VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
+            
+            <!-- 🆕 HISTORIQUE DES ACTIONS -->
+<Border Background="White"
+        CornerRadius="12"
+        Padding="20"
+        BorderBrush="#E5E7EB"
+        BorderThickness="1">
+    <StackPanel Spacing="16">
+        
+        <!-- Header -->
+        <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0"
+                      Classes="text-h3"
+                      Text="📋 Dernières actions"/>
+            <Button Grid.Column="1"
+                    Classes="btn-outline btn-sm"
+                    Content="🔄"
+                    Command="{Binding ChargerHistoriqueCommand}"
+                    ToolTip.Tip="Actualiser"/>
+        </Grid>
+        
+        <!-- Liste des actions -->
+        <ItemsControl ItemsSource="{Binding DernieresActions}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="#F9FAFB"
+                            CornerRadius="8"
+                            Padding="12"
+                            Margin="0,0,0,8">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            
+                            <!-- Icône -->
+                            <TextBlock Grid.Column="0"
+                                      Text="{Binding Icone}"
+                                      FontSize="20"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,12,0"/>
+                            
+                            <!-- Description -->
+                            <StackPanel Grid.Column="1" Spacing="4">
+                                <TextBlock Classes="text-body"
+                                          Text="{Binding Description}"
+                                          FontWeight="Medium"/>
+                                <TextBlock Classes="text-sm text-muted"
+                                          Text="{Binding DateFormatee}"/>
+                            </StackPanel>
+                            
+                            <!-- Statut -->
+                            <Border Grid.Column="2"
+                                    Background="{Binding Success, Converter={StaticResource BoolToColorConverter}}"
+                                    CornerRadius="12"
+                                    Padding="8,4"
+                                    VerticalAlignment="Center">
+                                <TextBlock Classes="text-sm"
+                                          Text="{Binding Success, Converter={StaticResource BoolToTextConverter}}"
+                                          Foreground="White"
+                                          FontWeight="SemiBold"/>
+                            </Border>
+                            
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+        <!-- Message si vide -->
+        <TextBlock Classes="text-muted"
+                  Text="Aucune action enregistrée pour le moment"
+                  HorizontalAlignment="Center"
+                  Margin="0,8,0,0">
+            <TextBlock.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="DernieresActions.Count"/>
+                    <Binding Source="0"/>
+                </MultiBinding>
+            </TextBlock.IsVisible>
+        </TextBlock>
+        
+    </StackPanel>
+</Border>
+
             
             <!-- Informations système -->
             <Border Background="White"

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
 
 namespace Tuxpilot.UI.ViewModels;
@@ -15,6 +16,7 @@ namespace Tuxpilot.UI.ViewModels;
 public partial class MisesAJourViewModel : ViewModelBase
 {
     private readonly IServiceMisesAJour _serviceMisesAJour;
+    private readonly IServiceHistorique _serviceHistorique; 
     
     [ObservableProperty]
     private ObservableCollection<PackageViewModel> _paquets = new();
@@ -60,9 +62,10 @@ public partial class MisesAJourViewModel : ViewModelBase
     
     public ICommand ToggleLogsCommand => new RelayCommand(() => IsLogsExpanded = !IsLogsExpanded);
     
-    public MisesAJourViewModel(IServiceMisesAJour serviceMisesAJour)
+    public MisesAJourViewModel(IServiceMisesAJour serviceMisesAJour, IServiceHistorique  serviceHistorique)
     {
         _serviceMisesAJour = serviceMisesAJour;
+        _serviceHistorique = serviceHistorique; 
         
         // Charger les mises à jour au démarrage
         _ = VerifierMisesAJourAsync();
@@ -210,6 +213,11 @@ private async Task ConfirmerInstallationAsync()
         // Attendre 2 secondes pour voir le dernier message
         await Task.Delay(2000);
         
+        await _serviceHistorique.AjouterActionAsync(
+            TypeAction.Update,
+            $"{PackagesInstalled} mise(s) à jour installée(s)",
+            true
+        );
         // Masquer les logs
         IsInstallingWithLogs = false;
         
@@ -237,6 +245,12 @@ private async Task ConfirmerInstallationAsync()
         MessageErreur = $"Erreur : {ex.Message}";
         OnPropertyChanged(nameof(MessageStatut));
         IsInstallingWithLogs = false;
+        
+        await _serviceHistorique.AjouterActionAsync(
+            TypeAction.Update,
+            "Échec de l'installation des mises à jour",
+            false
+        );
     }
 }
 

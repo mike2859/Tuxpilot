@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
 using Tuxpilot.UI.Models;
 
@@ -18,6 +19,7 @@ public partial class AssistantIAViewModel : ViewModelBase
 {
     private readonly IServiceAssistantIA _serviceIA;
     private readonly IServiceCommandes _serviceCommandes;
+    private readonly IServiceHistorique _serviceHistorique;
     
     [ObservableProperty]
     private ObservableCollection<ChatMessageViewModel> _messages = new();
@@ -36,10 +38,12 @@ public partial class AssistantIAViewModel : ViewModelBase
     
     public AssistantIAViewModel(
         IServiceAssistantIA serviceIA,
-        IServiceCommandes serviceCommandes)
+        IServiceCommandes serviceCommandes,
+        IServiceHistorique serviceHistorique)
     {
         _serviceIA = serviceIA;
         _serviceCommandes = serviceCommandes;
+        _serviceHistorique = serviceHistorique;
         
         // Message de bienvenue
         Messages.Add(new ChatMessageViewModel(
@@ -165,10 +169,22 @@ public partial class AssistantIAViewModel : ViewModelBase
 
             // Mettre à jour le résultat
             message.ActionResult = "✅ Action terminée !";
+            
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.AI,
+                $"Commande IA exécutée : {message.Action.Command}",
+                true
+            );
         }
         catch (Exception ex)
         {
             message.ActionResult = $"❌ Erreur : {ex.Message}";
+            
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.AI,
+                $"Échec commande IA : {message.Action.Command}",
+                false
+            );
         }
     }
     
