@@ -25,10 +25,10 @@
                         Height="4"/>
             
             <!-- Score de santé global -->
-            <Border Background="White"
+            <Border Background="{DynamicResource BackgroundPrimary}"
                     CornerRadius="12"
                     Padding="32"
-                    BorderBrush="#E5E7EB"
+                    BorderBrush="{DynamicResource BorderPrimary}"
                     BorderThickness="1">
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     
@@ -78,10 +78,10 @@
                 
                 <!-- Espace disque -->
                 <Border Grid.Column="0" Grid.Row="0"
-                        Background="White"
+                        Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="12"
                         Padding="24"
-                        BorderBrush="#E5E7EB"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1">
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="4">
@@ -143,10 +143,10 @@
                 
                 <!-- Services en erreur -->
                 <Border Grid.Column="1" Grid.Row="0"
-                        Background="White"
+                        Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="12"
                         Padding="24"
-                        BorderBrush="#E5E7EB"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1">
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="4">
@@ -198,10 +198,10 @@
                 
                 <!-- Top processus CPU -->
                 <Border Grid.Column="0" Grid.Row="1"
-                        Background="White"
+                        Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="12"
                         Padding="24"
-                        BorderBrush="#E5E7EB"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1">
                     <StackPanel Spacing="16">
                         <TextBlock Classes="text-h3"
@@ -210,7 +210,7 @@
                         <ItemsControl ItemsSource="{Binding TopCpu}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#F9FAFB"
+                                    <Border Background="{DynamicResource BackgroundSecondary}"
                                             CornerRadius="6"
                                             Padding="12"
                                             Margin="0,0,0,8">
@@ -247,10 +247,10 @@
                 
                 <!-- Top processus RAM -->
                 <Border Grid.Column="1" Grid.Row="1"
-                        Background="White"
+                        Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="12"
                         Padding="24"
-                        BorderBrush="#E5E7EB"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1">
                     <StackPanel Spacing="16">
                         <TextBlock Classes="text-h3"
@@ -259,7 +259,7 @@
                         <ItemsControl ItemsSource="{Binding TopRam}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#F9FAFB"
+                                    <Border Background="{DynamicResource BackgroundSecondary}"
                                             CornerRadius="6"
                                             Padding="12"
                                             Margin="0,0,0,8">
@@ -297,10 +297,10 @@
             </Grid>
             
             <!-- Logs récents -->
-            <Border Background="White"
+            <Border Background="{DynamicResource BackgroundPrimary}"
                     CornerRadius="12"
                     Padding="24"
-                    BorderBrush="#E5E7EB"
+                    BorderBrush="{DynamicResource BorderPrimary}"
                     BorderThickness="1"
                     IsVisible="{Binding LogsPresents}">
                 <StackPanel Spacing="16">
@@ -326,7 +326,7 @@
                                                 <TextBlock Grid.Column="0"
                                                           Classes="text-sm"
                                                           Text="{Binding Timestamp}"
-                                                          Foreground="#6B7280"
+                                                          Foreground="{DynamicResource TextSecondary}"
                                                           Width="150"/>
                                                 <TextBlock Grid.Column="1"
                                                           Classes="text-sm"

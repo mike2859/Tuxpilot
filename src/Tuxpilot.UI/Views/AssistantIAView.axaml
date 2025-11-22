@@ -26,18 +26,18 @@
         
         <!-- Zone de messages (chat) -->
         <Border Grid.Row="1"
-                Background="White"
+                Background="{DynamicResource BackgroundPrimary}"
                 CornerRadius="12"
                 Margin="32,0,32,16"
-                BorderBrush="#E5E7EB"
+                BorderBrush="{DynamicResource BorderPrimary}"
                 BorderThickness="1">
             
             <Grid RowDefinitions="Auto,*">
                 
                 <!-- Toolbar -->
                 <Border Grid.Row="0"
-                        Background="#F9FAFB"
-                        BorderBrush="#E5E7EB"
+                        Background="{DynamicResource BackgroundSecondary}"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="0,0,0,1"
                         Padding="16,12">
                     <Grid ColumnDefinitions="*,Auto">
@@ -208,8 +208,8 @@
                          Watermark="{Binding MessagePlaceholder}"
                          Padding="16,12"
                          CornerRadius="8"
-                         Background="White"
-                         BorderBrush="#D1D5DB"
+                         Background="{DynamicResource BackgroundPrimary}"
+                         BorderBrush="{DynamicResource BorderSecondary}"
                          BorderThickness="1"
                          FontSize="14">
                     <TextBox.KeyBindings>

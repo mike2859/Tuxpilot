@@ -13,13 +13,25 @@ namespace Tuxpilot.UI.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IServiceProvider _serviceProvider;
-
+    private readonly IServiceTheme _serviceTheme;
+    
     [ObservableProperty]
     private object? _currentView;
     
-    public MainWindowViewModel(IServiceProvider  serviceProvider)
+    [ObservableProperty]
+    private string _currentViewTitle = "Dashboard";
+
+    [ObservableProperty]
+    private bool _estThemeSombre;
+    
+    public string IconeTheme => EstThemeSombre ? "☀️" : "🌙";
+
+    public MainWindowViewModel(IServiceProvider  serviceProvider, IServiceTheme serviceTheme)
     {
         _serviceProvider = serviceProvider;
+        _serviceTheme = serviceTheme;
+        
+        EstThemeSombre = _serviceTheme.ThemeActuel == Theme.Dark;
         
         CurrentView = ObtenirDashboardViewModel();
     }
@@ -35,6 +47,28 @@ public partial class MainWindowViewModel : ViewModelBase
 
         return dashboardViewModel;
     }
+    
+    /// <summary>
+    /// Commande pour changer le thème
+    /// </summary>
+    [RelayCommand]
+    private void ChangerTheme()
+    {
+        var nouveauTheme = EstThemeSombre ? Theme.Light : Theme.Dark;
+    
+        _serviceTheme.ChangerTheme(nouveauTheme);
+        EstThemeSombre = nouveauTheme == Theme.Dark;
+    
+        // Appliquer le thème
+        if (App.Current is App app)
+        {
+            app.AppliquerTheme(nouveauTheme);
+        }
+    
+        // Notifier le changement d'icône
+        OnPropertyChanged(nameof(IconeTheme));
+    }
+    
     /// <summary>
     /// Commande pour naviguer vers le Dashboard
     /// </summary>

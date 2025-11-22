@@ -28,7 +28,7 @@
             </Grid>
             
             <!-- Message statut -->
-            <Border Background="#F3F4F6"
+            <Border Background="{DynamicResource BackgroundTertiary}"
                     CornerRadius="8"
                     Padding="12"
                     IsVisible="{Binding MessageStatut, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
@@ -43,9 +43,9 @@
             
             <!-- Liste des services (gauche) -->
             <Border Grid.Column="0"
-                    Background="White"
+                    Background="{DynamicResource BackgroundPrimary}"
                     CornerRadius="12"
-                    BorderBrush="#E5E7EB"
+                    BorderBrush="{DynamicResource BorderPrimary}"
                     BorderThickness="1"
                     Margin="0,0,8,0">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -105,9 +105,9 @@
             
            <!-- Détails du service (droite) -->
 <Border Grid.Column="1"
-        Background="White"
+        Background="{DynamicResource BackgroundPrimary}"
         CornerRadius="12"
-        BorderBrush="#E5E7EB"
+        BorderBrush="{DynamicResource BorderPrimary}"
         BorderThickness="1"
         Margin="8,0,0,0">
     
@@ -120,8 +120,8 @@
             
             <!-- Header avec actions -->
             <Border Grid.Row="0"
-                    Background="#F9FAFB"
-                    BorderBrush="#E5E7EB"
+                    Background="{DynamicResource BackgroundSecondary}"
+                    BorderBrush="{DynamicResource BorderPrimary}"
                     BorderThickness="0,0,0,1"
                     Padding="24">
                 <Grid RowDefinitions="Auto,Auto">

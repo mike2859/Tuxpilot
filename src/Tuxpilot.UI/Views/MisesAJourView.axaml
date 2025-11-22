@@ -52,10 +52,10 @@
                 </Border>
                 
                 <!-- Liste des mises à jour -->
-                <Border Background="White"
+                <Border Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="12"
                         Padding="24"
-                        BorderBrush="#E5E7EB"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1"
                         IsVisible="{Binding MisesAJourDisponibles}">
                     <DockPanel LastChildFill="True">
@@ -80,7 +80,7 @@
                             <ItemsControl ItemsSource="{Binding Paquets}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="#F9FAFB"
+                                        <Border Background="{DynamicResource BackgroundSecondary}"
                                                 CornerRadius="8"
                                                 Padding="16"
                                                 Margin="0,0,0,8">
@@ -135,10 +135,10 @@
                 </Border>
                 
                 <!-- Message si aucune mise à jour -->
-                <Border Background="White"
+                <Border Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="12"
                         Padding="48,32"
-                        BorderBrush="#E5E7EB"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1"
                         IsVisible="{Binding !MisesAJourDisponibles}">
                     <StackPanel Spacing="16" HorizontalAlignment="Center">
@@ -162,7 +162,7 @@
                 Background="#80000000"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
-            <Border Background="White"
+            <Border Background="{DynamicResource BackgroundPrimary}"
                     CornerRadius="12"
                     Padding="32"
                     MaxWidth="500"
@@ -218,7 +218,7 @@
         Background="#80000000"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
-    <Border Background="White"
+    <Border Background="{DynamicResource BackgroundPrimary}"
             CornerRadius="16"
             Padding="40"
             MaxWidth="500"
@@ -242,7 +242,7 @@
                           FontSize="24"
                           FontWeight="Bold"
                           HorizontalAlignment="Center"
-                          Foreground="#111827"/>
+                          Foreground="{DynamicResource TextPrimary}"/>
             </StackPanel>
             
             <!-- Message -->
@@ -295,7 +295,7 @@
         Background="#80000000"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
-    <Border Background="White"
+    <Border Background="{DynamicResource BackgroundPrimary}"
             CornerRadius="16"
             Padding="32"
             MaxWidth="700"
@@ -336,9 +336,9 @@
             
             <!-- Header console avec bouton expand/collapse -->
             <Border Grid.Row="2"
-                    Background="#F9FAFB"
+                    Background="{DynamicResource BackgroundSecondary}"
                     CornerRadius="8"
-                    BorderBrush="#E5E7EB"
+                    BorderBrush="{DynamicResource BorderPrimary}"
                     BorderThickness="1"
                     Padding="0">
                 <Grid RowDefinitions="Auto,*">

@@ -1,102 +1,69 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- 🎨 BOUTON PRIMARY (Bleu - Action principale) -->
+    <!-- Bouton Primary -->
     <Style Selector="Button.btn-primary">
-        <Setter Property="Background" Value="#3B82F6"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BackgroundPrimary}"/>
         <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
+
     <Style Selector="Button.btn-primary:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#2563EB"/>
-    </Style>
-    <Style Selector="Button.btn-primary:pointerover">
-        <Setter Property="Foreground" Value="White"/>
-    </Style>
-    <Style Selector="Button.btn-primary:pressed /template/ ContentPresenter">
-        <Setter Property="Background" Value="#1D4ED8"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryHover}"/>
     </Style>
 
-    <!-- 🎨 BOUTON SECONDARY (Gris - Action secondaire) -->
+    <!-- Bouton Secondary -->
     <Style Selector="Button.btn-secondary">
-        <Setter Property="Background" Value="#F3F4F6"/>
-        <Setter Property="Foreground" Value="#374151"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="{DynamicResource BackgroundSecondary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
         <Setter Property="Padding" Value="16,10"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderPrimary}"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
+
     <Style Selector="Button.btn-secondary:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#E5E7EB"/>
-    </Style>
-    <Style Selector="Button.btn-secondary:pointerover">
-        <Setter Property="Foreground" Value="#111827"/>
-    </Style>
-    <Style Selector="Button.btn-secondary:pressed /template/ ContentPresenter">
-        <Setter Property="Background" Value="#D1D5DB"/>
+        <Setter Property="Background" Value="{DynamicResource BackgroundTertiary}"/>
     </Style>
 
-    <!-- 🎨 BOUTON OUTLINE (Transparent avec bordure) -->
+    <!-- Bouton Danger -->
+    <Style Selector="Button.btn-danger">
+        <Setter Property="Background" Value="{DynamicResource Danger}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BackgroundPrimary}"/>
+        <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <!-- Bouton Outline -->
     <Style Selector="Button.btn-outline">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#374151"/>
+        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Primary}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="#D1D5DB"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Padding" Value="12,8"/>
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
-    <Style Selector="Button.btn-outline:pointerover">
-        <Setter Property="Background" Value="#F9FAFB"/>
-        <Setter Property="BorderBrush" Value="#9CA3AF"/>
+
+    <Style Selector="Button.btn-outline:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BackgroundPrimary}"/>
     </Style>
 
-    <!-- 🎨 BOUTON DANGER (Rouge - Action destructive) -->
-    <Style Selector="Button.btn-danger">
-        <Setter Property="Background" Value="#EF4444"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Padding" Value="16,10"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Cursor" Value="Hand"/>
-    </Style>
-    <Style Selector="Button.btn-danger:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#DC2626"/>
-    </Style>
-    <Style Selector="Button.btn-danger:pointerover">
-        <Setter Property="Foreground" Value="White"/>
-    </Style>
-
-    <!-- 🎨 BOUTON SUCCESS (Vert - Succès/Validation) -->
-    <Style Selector="Button.btn-success">
-        <Setter Property="Background" Value="#10B981"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Padding" Value="16,10"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Cursor" Value="Hand"/>
-    </Style>
-    <Style Selector="Button.btn-success:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#059669"/>
-    </Style>
-    <Style Selector="Button.btn-success:pointerover">
-        <Setter Property="Foreground" Value="White"/>
-    </Style>
-
-    <!-- 🎨 BOUTON SMALL (Variante petite) -->
+    <!-- Petits boutons -->
     <Style Selector="Button.btn-sm">
-        <Setter Property="Padding" Value="8,6"/>
+        <Setter Property="Padding" Value="12,6"/>
         <Setter Property="FontSize" Value="13"/>
     </Style>
 
-    <!-- 🎨 BOUTON LARGE (Variante grande) -->
+    <!-- Grands boutons -->
     <Style Selector="Button.btn-lg">
         <Setter Property="Padding" Value="20,14"/>
         <Setter Property="FontSize" Value="16"/>

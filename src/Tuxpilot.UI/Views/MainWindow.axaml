@@ -16,36 +16,34 @@
     </Design.DataContext>
 
      <!-- Styles pour les boutons de navigation -->
-    <Window.Styles>
-        <Style Selector="Button.nav-button">
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Padding" Value="20,12"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#6B7280"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        
-        <!-- IMPORTANT : Forcer les couleurs au survol -->
-        <Style Selector="Button.nav-button:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#F3F4F6"/>
-            <Setter Property="Foreground" Value="#111827"/>
-        </Style>
-        
-        <Style Selector="Button.nav-button:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="#E5E7EB"/>
-            <Setter Property="Foreground" Value="#111827"/>
-        </Style>
-    </Window.Styles>
-
+     <Window.Styles>
+         <Style Selector="Button.nav-button">
+             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+             <Setter Property="HorizontalContentAlignment" Value="Left"/>
+             <Setter Property="Padding" Value="20,12"/>
+             <Setter Property="Background" Value="Transparent"/>
+             <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>  <!-- 🆕 CHANGÉ -->
+             <Setter Property="BorderThickness" Value="0"/>
+             <Setter Property="FontSize" Value="14"/>
+             <Setter Property="Cursor" Value="Hand"/>
+         </Style>
+    
+         <Style Selector="Button.nav-button:pointerover /template/ ContentPresenter">
+             <Setter Property="Background" Value="{DynamicResource BackgroundTertiary}"/>  <!-- 🆕 CHANGÉ -->
+             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>  <!-- 🆕 CHANGÉ -->
+         </Style>
+    
+         <Style Selector="Button.nav-button:pressed /template/ ContentPresenter">
+             <Setter Property="Background" Value="{DynamicResource BackgroundSecondary}"/>  <!-- 🆕 CHANGÉ -->
+             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>  <!-- 🆕 CHANGÉ -->
+         </Style>
+     </Window.Styles>
     <Grid ColumnDefinitions="240,*">
         
         <!-- Sidebar gauche -->
         <Border Grid.Column="0" 
-                Background="#FFFFFF"
-                BorderBrush="#E5E7EB" 
+                Background="{DynamicResource BackgroundPrimary}"  
+                BorderBrush="{DynamicResource BorderPrimary}"  
                 BorderThickness="0,0,1,0">
             <StackPanel>
                 
@@ -55,10 +53,10 @@
                            Spacing="12">
                     <TextBlock Text="🐧" FontSize="32"/>
                     <TextBlock Text="TuxCopilot" 
-                              FontSize="20" 
-                              FontWeight="Bold"
-                              Foreground="#111827"
-                              VerticalAlignment="Center"/>
+                               FontSize="20" 
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource TextPrimary}"  
+                               VerticalAlignment="Center"/>
                 </StackPanel>
                 
                 <!-- Menu de navigation -->
@@ -98,13 +96,37 @@
                     </Button>
                 </StackPanel>
                 
+                <!-- 🆕 Bouton Thème en bas -->
+                <Border Margin="16,32,16,16"
+                        Padding="12"
+                        Background="{DynamicResource BackgroundSecondary}"
+                        BorderBrush="{DynamicResource BorderPrimary}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                    <Button Command="{Binding ChangerThemeCommand}"
+                            HorizontalAlignment="Stretch"
+                            Background="Transparent"
+                            BorderThickness="0">
+                        <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding IconeTheme}"
+                                       FontSize="24"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Changer thème"
+                                       Foreground="{DynamicResource TextPrimary}"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </Border>
+                
             </StackPanel>
         </Border>
         
         <!-- Contenu principal (UserControl dynamique) -->
-        <Border Grid.Column="1" Background="#F9FAFB">
+        <Border Grid.Column="1" Background="{DynamicResource BackgroundSecondary}">  
             <ContentControl Content="{Binding CurrentView}"/>
         </Border>
+        
         
     </Grid>
 </Window>

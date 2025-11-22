@@ -50,10 +50,10 @@
                 </Border>
                 
                 <!-- Liste des éléments nettoyables -->
-                <Border Background="White"
+                <Border Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="12"
                         Padding="24"
-                        BorderBrush="#E5E7EB"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1"
                         IsVisible="{Binding ElementsDisponibles}">
                     <DockPanel LastChildFill="True">
@@ -83,7 +83,7 @@
                             <ItemsControl ItemsSource="{Binding Elements}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="#F9FAFB"
+                                        <Border Background="{DynamicResource BackgroundSecondary}"
                                                 CornerRadius="8"
                                                 Padding="16"
                                                 Margin="0,0,0,8">
@@ -139,10 +139,10 @@
                 </Border>
                 
                 <!-- Message si aucun élément -->
-                <Border Background="White"
+                <Border Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="12"
                         Padding="48,32"
-                        BorderBrush="#E5E7EB"
+                        BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1"
                         IsVisible="{Binding !ElementsDisponibles}">
                     <StackPanel Spacing="16" HorizontalAlignment="Center">
@@ -166,7 +166,7 @@
                 Background="#80000000"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
-            <Border Background="White"
+            <Border Background="{DynamicResource BackgroundPrimary}"
                     CornerRadius="16"
                     Padding="40"
                     MaxWidth="500"
@@ -239,7 +239,7 @@
                 Background="#80000000"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
-            <Border Background="White"
+            <Border Background="{DynamicResource BackgroundPrimary}"
                     CornerRadius="16"
                     Padding="40"
                     MaxWidth="450"
