@@ -134,4 +134,17 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         CurrentView = _serviceProvider.GetRequiredService<ServicesViewModel>();
     }
+    
+    // 🆕 Ajoute cette méthode
+    [RelayCommand]
+    private void NavigateToPlanification()
+    {
+        var planificationViewModel = _serviceProvider.GetRequiredService<PlanificationViewModel>();
+        var planificationView = new PlanificationView
+        {
+            DataContext = planificationViewModel
+        };
+    
+        CurrentView = planificationView;
+    }
 }

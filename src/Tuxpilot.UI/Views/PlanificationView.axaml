@@ -1,0 +1,247 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="using:Tuxpilot.UI.Converters"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             xmlns:enums="using:Tuxpilot.Core.Enums"
+             x:Class="Tuxpilot.UI.Views.PlanificationView"
+             x:DataType="vm:PlanificationViewModel">
+
+    <Design.DataContext>
+        <vm:PlanificationViewModel/>
+    </Design.DataContext>
+    
+    <UserControl.Resources>
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+        <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
+    </UserControl.Resources>
+    
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32" Spacing="24">
+
+            <!-- En-tête -->
+            <Grid>
+                <StackPanel Spacing="8">
+                    <TextBlock Text="⏰ Planification"
+                              Classes="text-h1"
+                              Foreground="{DynamicResource TextPrimary}"/>
+                    <TextBlock Text="Programmez vos tâches système automatiques"
+                              Classes="text-body"
+                              Foreground="{DynamicResource TextSecondary}"/>
+                </StackPanel>
+
+                <Button Classes="btn-primary"
+                       Command="{Binding AfficherAjoutCommand}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="+" FontSize="20" FontWeight="Bold"/>
+                        <TextBlock Text="Ajouter une tâche"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Message de statut -->
+            <Border Background="{DynamicResource BackgroundSecondary}"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="16"
+                    IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding StatusMessage}"
+                          Foreground="{DynamicResource TextSecondary}"/>
+            </Border>
+
+            <!-- Liste des tâches planifiées -->
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="24">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="📋 Tâches planifiées"
+                              Classes="text-h3"
+                              Foreground="{DynamicResource TextPrimary}"/>
+
+                    <ItemsControl ItemsSource="{Binding Taches}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource BackgroundSecondary}"
+                                       BorderBrush="{DynamicResource BorderPrimary}"
+                                       BorderThickness="1"
+                                       CornerRadius="8"
+                                       Padding="20"
+                                       Margin="0,0,0,12">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                        
+                                        <!-- Icône -->
+                                        <TextBlock Grid.Column="0"
+                                                  Text="{Binding Icone}"
+                                                  FontSize="32"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,16,0"/>
+
+                                        <!-- Infos -->
+                                        <StackPanel Grid.Column="1" Spacing="8" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Nom}"
+                                                      FontSize="16"
+                                                      FontWeight="SemiBold"
+                                                      Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBlock Text="{Binding Description}"
+                                                      Classes="text-sm"
+                                                      Foreground="{DynamicResource TextSecondary}"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <TextBlock Text="📅"
+                                                              FontSize="14"/>
+                                                    <TextBlock Text="{Binding JourFormate}"
+                                                              Classes="text-sm"
+                                                              Foreground="{DynamicResource TextMuted}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <TextBlock Text="🕐"
+                                                              FontSize="14"/>
+                                                    <TextBlock Text="{Binding HeureFormatee}"
+                                                              Classes="text-sm"
+                                                              Foreground="{DynamicResource TextMuted}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Toggle Actif/Inactif -->
+                                        <Border Grid.Column="2"
+                                                Background="{Binding Activee, Converter={StaticResource BoolToColorConverter}}"
+                                                CornerRadius="20"
+                                                Padding="12,6"
+                                                Margin="16,0">
+                                            <Button Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PlanificationViewModel)DataContext).ToggleTacheCommand}"
+                                                    CommandParameter="{Binding Id}"
+                                                    Cursor="Hand">
+                                                <TextBlock Text="{Binding Activee, Converter={StaticResource BoolToTextConverter}}"
+                                                           Foreground="{DynamicResource BackgroundPrimary}"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="12"/>
+                                            </Button>
+                                        </Border>
+
+                                        <!-- Bouton Supprimer -->
+                                        <Button Grid.Column="3"
+                                                Classes="btn-danger btn-sm"
+                                                Command="{Binding $parent[ItemsControl].((vm:PlanificationViewModel)DataContext).SupprimerTacheCommand}"
+                                                CommandParameter="{Binding Id}"
+                                                ToolTip.Tip="Supprimer cette tâche" >
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="🗑️" FontSize="14"/>
+                                                <TextBlock Text="Supprimer" 
+                                                           FontSize="12"
+                                                           Foreground="{DynamicResource TextPrimary}"/>  
+                                            </StackPanel>
+                                        </Button>
+                                      
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Message si aucune tâche -->
+                    <StackPanel Spacing="12"
+                               HorizontalAlignment="Center"
+                               Margin="0,32"
+                               IsVisible="{Binding !Taches.Count}">
+                        <TextBlock Text="📭"
+                                  FontSize="48"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Text="Aucune tâche planifiée"
+                                  Classes="text-body"
+                                  Foreground="{DynamicResource TextMuted}"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Text="Cliquez sur 'Ajouter une tâche' pour commencer"
+                                  Classes="text-sm"
+                                  Foreground="{DynamicResource TextMuted}"
+                                  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Dialog d'ajout de tâche -->
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    BorderBrush="{DynamicResource Primary}"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Padding="24"
+                    IsVisible="{Binding ShowAddDialog}">
+                <StackPanel Spacing="20">
+                    <TextBlock Text="➕ Ajouter une tâche planifiée"
+                              Classes="text-h3"
+                              Foreground="{DynamicResource TextPrimary}"/>
+
+                    <!-- Type de tâche -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Type de tâche"
+                                   Classes="text-sm"
+                                   Foreground="{DynamicResource TextSecondary}"/>
+                        <ComboBox ItemsSource="{Binding TypesTaches}"
+                                  SelectedItem="{Binding TypeTacheSelectionnee}"
+                                  HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <!-- Jour -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Jour de la semaine"
+                                  Classes="text-sm"
+                                  Foreground="{DynamicResource TextSecondary}"/>
+                        <ComboBox ItemsSource="{Binding JoursSemaine}"
+                                 SelectedIndex="{Binding JourSelectionne}"
+                                 HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <!-- Heure et Minute -->
+                    <Grid ColumnDefinitions="*,16,*">
+                        <StackPanel Grid.Column="0" Spacing="8">
+                            <TextBlock Text="Heure"
+                                      Classes="text-sm"
+                                      Foreground="{DynamicResource TextSecondary}"/>
+                            <NumericUpDown Value="{Binding HeureSelectionnee}"
+                                          Minimum="0"
+                                          Maximum="23"
+                                          FormatString="00"
+                                          HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Spacing="8">
+                            <TextBlock Text="Minute"
+                                      Classes="text-sm"
+                                      Foreground="{DynamicResource TextSecondary}"/>
+                            <NumericUpDown Value="{Binding MinuteSelectionnee}"
+                                          Minimum="0"
+                                          Maximum="59"
+                                          FormatString="00"
+                                          HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Boutons -->
+                    <Grid ColumnDefinitions="*,16,*">
+                        <Button Grid.Column="0"
+                               Classes="btn-secondary"
+                               Command="{Binding AnnulerAjoutCommand}"
+                               HorizontalAlignment="Stretch">
+                            <TextBlock Text="Annuler"/>
+                        </Button>
+
+                        <Button Grid.Column="2"
+                               Classes="btn-primary"
+                               Command="{Binding AjouterTacheCommand}"
+                               HorizontalAlignment="Stretch">
+                            <TextBlock Text="Ajouter"/>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

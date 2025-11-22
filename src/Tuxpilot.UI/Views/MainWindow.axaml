@@ -94,6 +94,15 @@
                             <TextBlock Text="Services" FontSize="14"/>
                         </StackPanel>
                     </Button>
+                    
+                    <!-- 🆕 Bouton Planification -->
+                    <Button Classes="nav-button"
+                            Command="{Binding NavigateToPlanificationCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="⏰" FontSize="18"/>
+                            <TextBlock Text="Planification" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
                 
                 <!-- 🆕 Bouton Thème en bas -->

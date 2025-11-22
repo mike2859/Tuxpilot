@@ -37,7 +37,9 @@ public partial class App : Application
         services.AddSingleton<IServiceNettoyage, ServiceNettoyage>();
         services.AddSingleton<IServiceDiagnostic, ServiceDiagnostic>();
         services.AddSingleton<IServiceTheme, ServiceTheme>(); 
-
+        services.AddSingleton<IServicePlanification, ServicePlanification>();
+        
+        
         // ViewModels
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<DashboardViewModel>();
@@ -46,7 +48,8 @@ public partial class App : Application
         services.AddTransient<DiagnosticViewModel>();
         services.AddTransient<AssistantIAViewModel>();
         services.AddTransient<ServicesViewModel>();
-
+        services.AddTransient<PlanificationViewModel>(); 
+        
         ServiceProvider = services.BuildServiceProvider();
 
         // 🆕 Charger le thème sauvegardé
