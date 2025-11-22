@@ -147,4 +147,16 @@ public partial class MainWindowViewModel : ViewModelBase
     
         CurrentView = planificationView;
     }
+    // 🆕 Ajoute cette méthode
+    [RelayCommand]
+    private void NavigateToAudit()
+    {
+        var auditViewModel = _serviceProvider.GetRequiredService<AuditSecuriteViewModel>();
+        var auditView = new AuditSecuriteView
+        {
+            DataContext = auditViewModel
+        };
+    
+        CurrentView = auditView;
+    }
 }

@@ -103,6 +103,15 @@
                             <TextBlock Text="Planification" FontSize="14"/>
                         </StackPanel>
                     </Button>
+                    
+                    <!-- 🆕 Bouton Audit Sécurité -->
+                    <Button Classes="nav-button"
+                            Command="{Binding NavigateToAuditCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="🛡️" FontSize="18"/>
+                            <TextBlock Text="Audit Sécurité" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
                 
                 <!-- 🆕 Bouton Thème en bas -->

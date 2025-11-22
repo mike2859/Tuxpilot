@@ -1,0 +1,307 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             x:Class="Tuxpilot.UI.Views.AuditSecuriteView"
+             x:DataType="vm:AuditSecuriteViewModel">
+
+    <Design.DataContext>
+        <vm:AuditSecuriteViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32" Spacing="24">
+
+            <!-- En-tête -->
+            <Grid>
+                <StackPanel Spacing="8">
+                    <TextBlock Text="🛡️ Audit de sécurité"
+                              Classes="text-h1"
+                              Foreground="{DynamicResource TextPrimary}"/>
+                    <TextBlock Text="Évaluez et améliorez la sécurité de votre système"
+                              Classes="text-body"
+                              Foreground="{DynamicResource TextSecondary}"/>
+                </StackPanel>
+
+                <Button Classes="btn-primary"
+                       Command="{Binding LancerAuditCommand}"
+                       IsEnabled="{Binding !IsLoading}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="🔍" FontSize="18"/>
+                        <TextBlock Text="Lancer l'audit"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Message de statut -->
+            <Border Background="{DynamicResource BackgroundSecondary}"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="16"
+                    IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding StatusMessage}"
+                          Foreground="{DynamicResource TextSecondary}"/>
+            </Border>
+
+            <!-- Loader -->
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="48"
+                    IsVisible="{Binding IsLoading}">
+                <StackPanel Spacing="16" HorizontalAlignment="Center">
+                    <TextBlock Text="⏳" 
+                              FontSize="48"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Analyse en cours..."
+                              Classes="text-h3"
+                              Foreground="{DynamicResource TextPrimary}"
+                              HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Score global -->
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="32"
+                    IsVisible="{Binding AuditEffectue}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Score -->
+                    <StackPanel Grid.Column="0" Spacing="8" HorizontalAlignment="Center" Margin="0,0,48,0">
+                        <TextBlock Text="{Binding Rapport.Icone}"
+                                  FontSize="64"
+                                  HorizontalAlignment="Center"/>
+                        <Border CornerRadius="50"
+                               Width="120"
+                               Height="120"
+                               BorderThickness="8">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{Binding Rapport.CouleurScore}"/>
+                            </Border.BorderBrush>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock HorizontalAlignment="Center">
+                                    <Run Text="{Binding Rapport.Score}" FontSize="36" FontWeight="Bold"/>
+                                    <Run Text="/100" FontSize="20" Foreground="{DynamicResource TextMuted}"/>
+                                </TextBlock>
+                                <TextBlock Text="{Binding Rapport.Evaluation}"
+                                          FontSize="14"
+                                          FontWeight="SemiBold"
+                                          HorizontalAlignment="Center"
+                                          Foreground="{DynamicResource TextMuted}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Statistiques -->
+                    <StackPanel Grid.Column="1" Spacing="16" VerticalAlignment="Center">
+                        <TextBlock Text="Résumé de l'audit"
+                                  Classes="text-h3"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                        
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="12">
+                            <!-- Vérifications réussies -->
+                            <Border Grid.Column="0" Grid.Row="0"
+                                   Background="{DynamicResource BackgroundSecondary}"
+                                   BorderBrush="#10B981"
+                                   BorderThickness="2"
+                                   CornerRadius="8"
+                                   Padding="16,12">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Classes="text-sm"
+                                              Foreground="{DynamicResource TextMuted}">
+                                        <Run Text="✅"/>
+                                        <Run Text="Vérifications réussies"/>
+                                    </TextBlock>
+                                    <TextBlock FontSize="24"
+                                              FontWeight="Bold"
+                                              Foreground="{DynamicResource TextPrimary}">
+                                        <Run Text="{Binding Rapport.VerificationsReussies}"/>
+                                        <Run Text="/" FontSize="16" Foreground="{DynamicResource TextMuted}"/>
+                                        <Run Text="{Binding Rapport.TotalVerifications}" FontSize="16" Foreground="{DynamicResource TextMuted}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Problèmes critiques -->
+                            <Border Grid.Column="1" Grid.Row="0"
+                                   Background="{DynamicResource BackgroundSecondary}"
+                                   BorderBrush="#DC2626"
+                                   BorderThickness="2"
+                                   CornerRadius="8"
+                                   Padding="16,12">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="🚨 Critiques"
+                                              Classes="text-sm"
+                                              Foreground="{DynamicResource TextMuted}"/>
+                                    <TextBlock Text="{Binding Rapport.ProblemesCritiques}"
+                                              FontSize="24"
+                                              FontWeight="Bold"
+                                              Foreground="{DynamicResource TextPrimary}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Problèmes élevés -->
+                            <Border Grid.Column="0" Grid.Row="1"
+                                   Background="{DynamicResource BackgroundSecondary}"
+                                   BorderBrush="#EF4444"
+                                   BorderThickness="2"
+                                   CornerRadius="8"
+                                   Padding="16,12">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="🔴 Risques élevés"
+                                              Classes="text-sm"
+                                              Foreground="{DynamicResource TextMuted}"/>
+                                    <TextBlock Text="{Binding Rapport.ProblemesEleves}"
+                                              FontSize="24"
+                                              FontWeight="Bold"
+                                              Foreground="{DynamicResource TextPrimary}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Problèmes moyens -->
+                            <Border Grid.Column="1" Grid.Row="1"
+                                   Background="{DynamicResource BackgroundSecondary}"
+                                   BorderBrush="#F59E0B"
+                                   BorderThickness="2"
+                                   CornerRadius="8"
+                                   Padding="16,12">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="⚠️ Risques moyens"
+                                              Classes="text-sm"
+                                              Foreground="{DynamicResource TextMuted}"/>
+                                    <TextBlock Text="{Binding Rapport.ProblemesMoyens}"
+                                              FontSize="24"
+                                              FontWeight="Bold"
+                                              Foreground="{DynamicResource TextPrimary}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Détails des vérifications -->
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="24"
+                    IsVisible="{Binding AuditEffectue}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="📋 Détails des vérifications"
+                              Classes="text-h3"
+                              Foreground="{DynamicResource TextPrimary}"/>
+
+                    <ItemsControl ItemsSource="{Binding Verifications}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource BackgroundSecondary}"
+                                       BorderThickness="2"
+                                       CornerRadius="8"
+                                       Padding="20"
+                                       Margin="0,0,0,12">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{Binding Couleur}"/>
+                                    </Border.BorderBrush>
+                                    
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <!-- Icône + Niveau -->
+                                        <StackPanel Grid.Column="0" Spacing="8" VerticalAlignment="Center" Margin="0,0,20,0">
+                                            <TextBlock Text="{Binding Icone}"
+                                                      FontSize="36"
+                                                      HorizontalAlignment="Center"/>
+                                            <Border CornerRadius="12"
+                                                   Padding="8,4">
+                                                <Border.Background>
+                                                    <SolidColorBrush Color="{Binding Couleur}"/>
+                                                </Border.Background>
+                                                <TextBlock Text="{Binding NiveauTexte}"
+                                                          FontSize="11"
+                                                          FontWeight="SemiBold"
+                                                          Foreground="{DynamicResource BackgroundPrimary}"
+                                                          HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <!-- Infos -->
+                                        <StackPanel Grid.Column="1" Spacing="8" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Nom}"
+                                                      FontSize="18"
+                                                      FontWeight="SemiBold"
+                                                      Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBlock Text="{Binding Description}"
+                                                      Classes="text-sm"
+                                                      Foreground="{DynamicResource TextSecondary}"/>
+                                            <TextBlock Text="{Binding Details}"
+                                                      Classes="text-sm"
+                                                      Foreground="{DynamicResource TextMuted}"/>
+                                            <Border Background="{DynamicResource BackgroundTertiary}"
+                                                   BorderBrush="{DynamicResource BorderPrimary}"
+                                                   BorderThickness="1"
+                                                   CornerRadius="6"
+                                                   Padding="12,8"
+                                                   Margin="0,8,0,0">
+                                                <TextBlock Text="{Binding Recommandation}"
+                                                          Classes="text-sm"
+                                                          Foreground="{DynamicResource TextPrimary}"
+                                                          TextWrapping="Wrap"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <!-- Bouton Corriger -->
+                                        <Button Grid.Column="2"
+                                               Classes="btn-primary"
+                                               Command="{Binding $parent[ItemsControl].((vm:AuditSecuriteViewModel)DataContext).AppliquerCorrectionCommand}"
+                                               CommandParameter="{Binding CommandeCorrection}"
+                                               VerticalAlignment="Center"
+                                               IsVisible="{Binding CommandeCorrection, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                               Margin="16,0,0,0">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="🔧" FontSize="16"/>
+                                                <TextBlock Text="Corriger"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Message initial -->
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="48"
+                    IsVisible="{Binding !AuditEffectue}">
+                <StackPanel Spacing="16" HorizontalAlignment="Center">
+                    <TextBlock Text="🛡️"
+                              FontSize="64"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Aucun audit effectué"
+                              Classes="text-h3"
+                              Foreground="{DynamicResource TextPrimary}"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Cliquez sur 'Lancer l'audit' pour analyser la sécurité de votre système"
+                              Classes="text-body"
+                              Foreground="{DynamicResource TextSecondary}"
+                              HorizontalAlignment="Center"
+                              TextAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

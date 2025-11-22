@@ -38,7 +38,7 @@ public partial class App : Application
         services.AddSingleton<IServiceDiagnostic, ServiceDiagnostic>();
         services.AddSingleton<IServiceTheme, ServiceTheme>(); 
         services.AddSingleton<IServicePlanification, ServicePlanification>();
-        
+        services.AddSingleton<IServiceSecurite, ServiceSecurite>(); 
         
         // ViewModels
         services.AddTransient<MainWindowViewModel>();
@@ -49,6 +49,7 @@ public partial class App : Application
         services.AddTransient<AssistantIAViewModel>();
         services.AddTransient<ServicesViewModel>();
         services.AddTransient<PlanificationViewModel>(); 
+        services.AddTransient<AuditSecuriteViewModel>();
         
         ServiceProvider = services.BuildServiceProvider();
 
