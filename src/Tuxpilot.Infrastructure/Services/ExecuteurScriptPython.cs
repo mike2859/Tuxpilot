@@ -47,7 +47,12 @@ public class ExecuteurScriptPython
         await process.WaitForExitAsync();
         
         if (process.ExitCode != 0)
-            throw new Exception($"Erreur script: {erreur}");
+        {
+            Console.WriteLine($"[SCRIPT ERROR] Code sortie: {process.ExitCode}");
+            Console.WriteLine($"[SCRIPT ERROR] Stdout: {sortie}");
+            Console.WriteLine($"[SCRIPT ERROR] Stderr: {erreur}");
+            throw new Exception($"Erreur script (code {process.ExitCode}): {erreur}\nStdout: {sortie}");
+        }
         
         return sortie;
     }

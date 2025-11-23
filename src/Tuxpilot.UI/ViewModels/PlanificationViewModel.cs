@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Tuxpilot.Core.Entities;
 using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
+using Tuxpilot.Infrastructure.Services;
 
 namespace Tuxpilot.UI.ViewModels;
 
@@ -16,7 +17,9 @@ namespace Tuxpilot.UI.ViewModels;
 /// </summary>
 public partial class PlanificationViewModel : ViewModelBase
 {
-    private readonly IServicePlanification _servicePlanification;
+    private readonly ServicePlanificationFactory _factory;
+    private IServicePlanification? _servicePlanification;
+
 
     [ObservableProperty]
     private ObservableCollection<TachePlanifiee> _taches = new();
@@ -43,12 +46,22 @@ public partial class PlanificationViewModel : ViewModelBase
     [ObservableProperty]
     private bool _showAddDialog;
 
-    public PlanificationViewModel(IServicePlanification servicePlanification)
+    public PlanificationViewModel(ServicePlanificationFactory factory)
     {
-        _servicePlanification = servicePlanification;
+        _factory = factory;
         _ = ChargerTachesAsync();
+        
     }
 
+    private async Task<IServicePlanification> ObtenirServiceAsync()
+    {
+        if (_servicePlanification == null)
+        {
+            _servicePlanification = await _factory.ObtenirServiceAsync();
+        }
+        return _servicePlanification;
+    }
+    
     /// <summary>
     /// Charger les tâches planifiées
     /// </summary>
@@ -60,7 +73,8 @@ public partial class PlanificationViewModel : ViewModelBase
             IsLoading = true;
             StatusMessage = "Chargement des tâches...";
 
-            var taches = await _servicePlanification.ObtenirTachesAsync();
+            var service = await ObtenirServiceAsync();
+            var taches = await service.ObtenirTachesAsync();
             
             Taches.Clear();
             foreach (var tache in taches)

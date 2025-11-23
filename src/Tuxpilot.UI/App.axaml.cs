@@ -37,8 +37,18 @@ public partial class App : Application
         services.AddSingleton<IServiceNettoyage, ServiceNettoyage>();
         services.AddSingleton<IServiceDiagnostic, ServiceDiagnostic>();
         services.AddSingleton<IServiceTheme, ServiceTheme>(); 
-        services.AddSingleton<IServicePlanification, ServicePlanification>();
+        services.AddSingleton<IServiceDetectionPlanificateur, ServiceDetectionPlanificateur>();
         services.AddSingleton<IServiceSecurite, ServiceSecurite>(); 
+        
+        // Factory de planification
+        services.AddSingleton<ServicePlanificationFactory>();
+
+        // Enregistrer IServicePlanification comme une fonction qui utilise la Factory
+        // services.AddSingleton<IServicePlanification>(provider =>
+        // {
+        //     var factory = provider.GetRequiredService<ServicePlanificationFactory>();
+        //     return factory.ObtenirServiceAsync().GetAwaiter().GetResult();
+        // });
         
         // ViewModels
         services.AddTransient<MainWindowViewModel>();
