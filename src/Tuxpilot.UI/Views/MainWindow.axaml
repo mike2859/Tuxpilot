@@ -112,6 +112,12 @@
                             <TextBlock Text="Audit Sécurité" FontSize="14"/>
                         </StackPanel>
                     </Button>
+                    
+                              
+                    <Button Content="🩺 Licence"
+                            Classes="nav-button"
+                            Command="{Binding NavigateToLicence}"/>
+
                 </StackPanel>
                 
                 <!-- 🆕 Bouton Thème en bas -->

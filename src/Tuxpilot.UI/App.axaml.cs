@@ -39,6 +39,7 @@ public partial class App : Application
         services.AddSingleton<IServiceTheme, ServiceTheme>(); 
         services.AddSingleton<IServiceDetectionPlanificateur, ServiceDetectionPlanificateur>();
         services.AddSingleton<IServiceSecurite, ServiceSecurite>(); 
+        services.AddSingleton<ILicenseService, LicenseService>(); 
         
         // Factory de planification
         services.AddSingleton<ServicePlanificationFactory>();
@@ -60,6 +61,7 @@ public partial class App : Application
         services.AddTransient<ServicesViewModel>();
         services.AddTransient<PlanificationViewModel>(); 
         services.AddTransient<AuditSecuriteViewModel>();
+        services.AddTransient<LicenseActivationViewModel>();
         
         ServiceProvider = services.BuildServiceProvider();
 

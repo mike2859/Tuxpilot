@@ -135,6 +135,17 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentView = _serviceProvider.GetRequiredService<ServicesViewModel>();
     }
     
+    [RelayCommand]
+    public void NavigateToLicence()
+    {
+        var licenseViewModel = _serviceProvider.GetRequiredService<LicenseActivationViewModel>();
+        var licenseView = new LicenseActivationView
+        {
+            DataContext = licenseViewModel
+        };
+        CurrentView = licenseView;
+    }
+    
     // 🆕 Ajoute cette méthode
     [RelayCommand]
     private void NavigateToPlanification()
