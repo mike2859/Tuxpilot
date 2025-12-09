@@ -3,7 +3,9 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tuxpilot.Core.Entities;
 using Tuxpilot.Core.Interfaces.Services;
+using License = Tuxpilot.Core.Entities.License;
 
 namespace Tuxpilot.UI.ViewModels;
 
@@ -13,6 +15,8 @@ namespace Tuxpilot.UI.ViewModels;
 public partial class LicenseActivationViewModel : ViewModelBase
 {
     private readonly ILicenseService _licenseService;
+    
+    public Action? OnLicenseActivated { get; set; }
     
     [ObservableProperty]
     private string _licenseKey = string.Empty;
@@ -67,7 +71,7 @@ public partial class LicenseActivationViewModel : ViewModelBase
             {
                 // Succès
                 IsSuccess = true;
-              //  ActivatedLicense = license;
+                ActivatedLicense = license;  // ✅ DÉCOMMENTÉ
                 
                 // Message selon le type
                 if (license.IsEarlyAccess)
@@ -82,6 +86,10 @@ public partial class LicenseActivationViewModel : ViewModelBase
                 {
                     Message = $"✅ Licence {license.TypeDisplayName} activée avec succès !";
                 }
+                
+                // ✅ NOUVEAU : Callback après 2 secondes
+                await Task.Delay(2000);
+                OnLicenseActivated?.Invoke();
             }
             else
             {
@@ -113,12 +121,16 @@ public partial class LicenseActivationViewModel : ViewModelBase
             var license = await _licenseService.GetCurrentLicenseAsync();
             
             IsSuccess = true;
-            //ActivatedLicense = license.IsValid;
+            ActivatedLicense = license;  // ✅ DÉCOMMENTÉ
+            
             Message = "Mode Community activé !\n\n" +
                      "Fonctionnalités disponibles :\n" +
                      "• Dashboard\n" +
                      "• Monitoring système\n" +
                      "• Mises à jour manuelles";
+            
+            await Task.Delay(2000);
+            OnLicenseActivated?.Invoke();
         }
         catch (Exception ex)
         {

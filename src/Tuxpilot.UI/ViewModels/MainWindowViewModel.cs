@@ -14,6 +14,13 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IServiceTheme _serviceTheme;
+    private readonly ILicenseService _licenseService;
+ 
+    [ObservableProperty]
+    private bool _isProFeatureEnabled;
+
+    [ObservableProperty]
+    private string _proFeatureTooltip = "🔒 Fonctionnalité Pro - Activez une licence Pro pour débloquer";
     
     [ObservableProperty]
     private object? _currentView;
@@ -26,25 +33,50 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public string IconeTheme => EstThemeSombre ? "☀️" : "🌙";
 
-    public MainWindowViewModel(IServiceProvider  serviceProvider, IServiceTheme serviceTheme)
+    public MainWindowViewModel(IServiceProvider serviceProvider, IServiceTheme serviceTheme, ILicenseService licenseService)
     {
         _serviceProvider = serviceProvider;
         _serviceTheme = serviceTheme;
+        _licenseService = licenseService; 
         
         EstThemeSombre = _serviceTheme.ThemeActuel == Theme.Dark;
         
+        // Charger les features
+        _ = LoadFeaturesAsync();
+        
         CurrentView = ObtenirDashboardViewModel();
     }
-
+    
+    /// <summary>
+    /// Charge l'état des features Pro/Community
+    /// </summary>
+    private async Task LoadFeaturesAsync()
+    {
+        // Vérifier si Pro
+        IsProFeatureEnabled = await _licenseService.HasFeatureAsync("ai_assistant_unlimited");
+    
+        // Message selon le statut
+        if (!IsProFeatureEnabled)
+        {
+            ProFeatureTooltip = "🔒 Fonctionnalité Pro - Activez une licence Pro pour débloquer";
+        }
+        else
+        {
+            ProFeatureTooltip = "Fonctionnalité Pro activée ✅";
+        }
+    }
+    
+    /// <summary>
+    /// Recharge les features après activation de licence
+    /// </summary>
+    public async Task RefreshLicenseFeaturesAsync()
+    {
+        await LoadFeaturesAsync();
+    }
 
     private DashboardViewModel ObtenirDashboardViewModel()
     {
         var dashboardViewModel = _serviceProvider.GetRequiredService<DashboardViewModel>();
-        var dashboardView = new DashboardView
-        {
-            DataContext = dashboardViewModel
-        };
-
         return dashboardViewModel;
     }
     
@@ -123,22 +155,48 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentView = diagnosticView;
     }
     
+    /// <summary>
+    /// Commande pour naviguer vers l'Assistant IA (Pro uniquement)
+    /// </summary>
     [RelayCommand]
     private void NavigateToAssistant()
     {
-        CurrentView = _serviceProvider.GetRequiredService<AssistantIAViewModel>();
+        // ✅ CORRIGÉ : Ne pas revérifier à chaque fois, on utilise IsProFeatureEnabled
+        // qui est déjà chargé au démarrage et après activation
+        if (IsProFeatureEnabled)
+        {
+            CurrentView = _serviceProvider.GetRequiredService<AssistantIAViewModel>();
+        }
+        // Sinon, le bouton est désactivé dans le XAML donc on ne devrait jamais arriver ici
     }
     
+    /// <summary>
+    /// Commande pour naviguer vers Services
+    /// </summary>
     [RelayCommand]
     private void NavigateToServices()
     {
         CurrentView = _serviceProvider.GetRequiredService<ServicesViewModel>();
     }
     
+    /// <summary>
+    /// Commande pour naviguer vers l'activation de licence
+    /// </summary>
     [RelayCommand]
     public void NavigateToLicence()
     {
         var licenseViewModel = _serviceProvider.GetRequiredService<LicenseActivationViewModel>();
+        
+        // ✅ CORRIGÉ : Recharger les features après activation
+        licenseViewModel.OnLicenseActivated = async () =>
+        {
+            // Recharger les features pour débloquer les boutons Pro
+            await RefreshLicenseFeaturesAsync();
+            
+            // Retourner au Dashboard
+            NavigateToDashboard();
+        };
+        
         var licenseView = new LicenseActivationView
         {
             DataContext = licenseViewModel
@@ -146,28 +204,37 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentView = licenseView;
     }
     
-    // 🆕 Ajoute cette méthode
+    /// <summary>
+    /// Commande pour naviguer vers la Planification (Pro uniquement)
+    /// </summary>
     [RelayCommand]
     private void NavigateToPlanification()
     {
-        var planificationViewModel = _serviceProvider.GetRequiredService<PlanificationViewModel>();
-        var planificationView = new PlanificationView
+        if (IsProFeatureEnabled)
         {
-            DataContext = planificationViewModel
-        };
-    
-        CurrentView = planificationView;
+            var planificationViewModel = _serviceProvider.GetRequiredService<PlanificationViewModel>();
+            var planificationView = new PlanificationView
+            {
+                DataContext = planificationViewModel
+            };
+            CurrentView = planificationView;
+        }
     }
-    // 🆕 Ajoute cette méthode
+    
+    /// <summary>
+    /// Commande pour naviguer vers l'Audit Sécurité (Pro uniquement)
+    /// </summary>
     [RelayCommand]
     private void NavigateToAudit()
     {
-        var auditViewModel = _serviceProvider.GetRequiredService<AuditSecuriteViewModel>();
-        var auditView = new AuditSecuriteView
+        if (IsProFeatureEnabled)
         {
-            DataContext = auditViewModel
-        };
-    
-        CurrentView = auditView;
+            var auditViewModel = _serviceProvider.GetRequiredService<AuditSecuriteViewModel>();
+            var auditView = new AuditSecuriteView
+            {
+                DataContext = auditViewModel
+            };
+            CurrentView = auditView;
+        }
     }
 }

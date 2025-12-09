@@ -78,38 +78,70 @@
                             Classes="nav-button"
                             Command="{Binding NavigateToDiagnosticCommand}"/>
                     
-                    <Button Classes="nav-button"
-                            Command="{Binding NavigateToAssistantCommand}">
+                    <Button Command="{Binding NavigateToAssistantCommand}"
+                            IsEnabled="{Binding IsProFeatureEnabled}"
+                            ToolTip.Tip="{Binding ProFeatureTooltip}"
+                            Classes="nav-button">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="🤖" FontSize="18"/>
-                            <TextBlock Text="Assistant IA" FontSize="14"/>
+                            <TextBlock Text="🤖" FontSize="20"/>
+                            <StackPanel>
+                                <TextBlock Text="Assistant IA" FontWeight="SemiBold"/>
+                                <TextBlock Text="🔒 Pro" 
+                                           FontSize="11" 
+                                           Foreground="#F59E0B"
+                                           IsVisible="{Binding !IsProFeatureEnabled}"/>
+                            </StackPanel>
                         </StackPanel>
                     </Button>
                     
                     <!-- Bouton Services -->
-                    <Button Classes="nav-button"
-                            Command="{Binding NavigateToServicesCommand}">
+                    <Button Command="{Binding NavigateToServicesCommand}"
+                            IsEnabled="{Binding IsProFeatureEnabled}"
+                            ToolTip.Tip="{Binding ProFeatureTooltip}"
+                            Classes="nav-button">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="⚙️" FontSize="18"/>
-                            <TextBlock Text="Services" FontSize="14"/>
+                            <TextBlock Text="⚙️" FontSize="20"/>
+                            <StackPanel>
+                                <TextBlock Text="Services" FontWeight="SemiBold"/>
+                                <TextBlock Text="🔒 Pro" 
+                                           FontSize="11" 
+                                           Foreground="#F59E0B"
+                                           IsVisible="{Binding !IsProFeatureEnabled}"/>
+                            </StackPanel>
                         </StackPanel>
                     </Button>
                     
                     <!-- 🆕 Bouton Planification -->
-                    <Button Classes="nav-button"
-                            Command="{Binding NavigateToPlanificationCommand}">
+                    <Button Command="{Binding NavigateToPlanificationCommand}"
+                            IsEnabled="{Binding IsProFeatureEnabled}"
+                            ToolTip.Tip="{Binding ProFeatureTooltip}"
+                            Classes="nav-button">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="⏰" FontSize="18"/>
-                            <TextBlock Text="Planification" FontSize="14"/>
+                            <TextBlock Text="⏰" FontSize="20"/>
+                            <StackPanel>
+                                <TextBlock Text="Planification" FontWeight="SemiBold"/>
+                                <TextBlock Text="🔒 Pro" 
+                                           FontSize="11" 
+                                           Foreground="#F59E0B"
+                                           IsVisible="{Binding !IsProFeatureEnabled}"/>
+                            </StackPanel>
                         </StackPanel>
                     </Button>
                     
                     <!-- 🆕 Bouton Audit Sécurité -->
-                    <Button Classes="nav-button"
-                            Command="{Binding NavigateToAuditCommand}">
+                    <Button Command="{Binding NavigateToAuditCommand}"
+                            IsEnabled="{Binding IsProFeatureEnabled}"
+                            ToolTip.Tip="{Binding ProFeatureTooltip}"
+                            Classes="nav-button">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="🛡️" FontSize="18"/>
-                            <TextBlock Text="Audit Sécurité" FontSize="14"/>
+                            <TextBlock Text="🛡️" FontSize="20"/>
+                            <StackPanel>
+                                <TextBlock Text="Audit Sécurité" FontWeight="SemiBold"/>
+                                <TextBlock Text="🔒 Pro" 
+                                           FontSize="11" 
+                                           Foreground="#F59E0B"
+                                           IsVisible="{Binding !IsProFeatureEnabled}"/>
+                            </StackPanel>
                         </StackPanel>
                     </Button>
                     
