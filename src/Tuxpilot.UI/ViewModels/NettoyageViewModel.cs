@@ -5,6 +5,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
+using Avalonia.Media;    
+using Avalonia;
+using Avalonia.Controls;
 
 namespace Tuxpilot.UI.ViewModels;
 
@@ -77,6 +80,48 @@ public partial class NettoyageViewModel : ViewModelBase
     /// </summary>
     public string BorderColor => TailleTotaleMB > 0 ? "#F59E0B" : "#10B981";
     
+    // ✅ AJOUTER CES 2 PROPRIÉTÉS ICI
+    /// <summary>
+    /// Type de message de statut
+    /// </summary>
+    public string MessageStatutType
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(MessageErreur))
+                return "error";
+        
+            if (TailleTotaleMB == 0)
+                return "success";
+        
+            return "warning";
+        }
+    }
+
+    /// <summary>
+    /// Ressource de couleur du texte selon le type de message
+    /// </summary>
+    public IBrush? MessageStatutTextBrush
+    {
+        get
+        {
+            var resourceKey = MessageStatutType switch
+            {
+                "success" => "SuccessTextOnBackground",
+                "warning" => "WarningTextOnBackground",
+                "error" => "ErrorTextOnBackground",
+                _ => "TextPrimary"
+            };
+
+            if (Application.Current?.TryFindResource(resourceKey, out var resource) == true)
+            {
+                return resource as IBrush;
+            }
+
+            return Brushes.Black;
+        }
+    }
+    
     /// <summary>
     /// Indique si des éléments sont disponibles
     /// </summary>
@@ -130,6 +175,8 @@ public partial class NettoyageViewModel : ViewModelBase
         
             // Notifier les propriétés calculées
             OnPropertyChanged(nameof(MessageStatut));
+            OnPropertyChanged(nameof(MessageStatutType));        
+            OnPropertyChanged(nameof(MessageStatutTextBrush));  
             OnPropertyChanged(nameof(ElementsDisponibles));
             OnPropertyChanged(nameof(BackgroundColor));
             OnPropertyChanged(nameof(BorderColor));
@@ -138,6 +185,8 @@ public partial class NettoyageViewModel : ViewModelBase
         {
             MessageErreur = $"Erreur lors de l'analyse : {ex.Message}";
             OnPropertyChanged(nameof(MessageStatut));
+            OnPropertyChanged(nameof(MessageStatutType));       
+            OnPropertyChanged(nameof(MessageStatutTextBrush));  
             await _serviceHistorique.AjouterActionAsync(
                 TypeAction.Clean,
                 $"Échec AnalyserNettoyageAsync : {MessageErreur}",
@@ -170,17 +219,50 @@ public partial class NettoyageViewModel : ViewModelBase
     private async Task ConfirmerNettoyageAsync()
     {
         IsConfirmationVisible = false;
+        IsLoading = true;
+    
+        try
+        {
+            // Nettoyer réellement le système
+            var (success, message) = await _serviceNettoyage.NettoyerAsync();
         
-        // TODO: Implémenter le nettoyage réel
-        // Pour l'instant, juste un message
-        await Task.Delay(2000); // Simuler le nettoyage
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.Clean,
+                message,
+                success
+            );
         
-        IsSuccessVisible = true;
-        await Task.Delay(3000);
-        IsSuccessVisible = false;
+            if (success)
+            {
+                // Afficher le message de succès
+                IsSuccessVisible = true;
+                await Task.Delay(3000);
+                IsSuccessVisible = false;
+            
+                // Rafraîchir l'analyse pour voir la différence
+                await AnalyserAsync();
+            }
+            else
+            {
+                MessageErreur = message;
+                OnPropertyChanged(nameof(MessageStatut));
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageErreur = $"Erreur : {ex.Message}";
+            OnPropertyChanged(nameof(MessageStatut));
         
-        // Rafraîchir l'analyse
-        await AnalyserAsync();
+            await _serviceHistorique.AjouterActionAsync(
+                TypeAction.Clean,
+                $"Échec du nettoyage: {MessageErreur}",
+                false
+            );
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
     
     /// <summary>

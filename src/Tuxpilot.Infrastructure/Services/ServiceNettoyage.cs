@@ -52,4 +52,31 @@ public class ServiceNettoyage : IServiceNettoyage
             };
         }
     }
+    
+    public async Task<(bool Success, string Message)> NettoyerAsync()
+    {
+        try
+        {
+            // Exécuter le script Python en mode nettoyage
+            var resultat = await _executeurScript.ExecuterAsync("cleanup.py", "clean");
+        
+            // Options de désérialisation
+            var options = new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true 
+            };
+        
+            // Désérialiser le résultat
+            var response = JsonSerializer.Deserialize<JsonElement>(resultat, options);
+        
+            var success = response.GetProperty("succes").GetBoolean();
+            var message = response.GetProperty("message").GetString() ?? "Nettoyage terminé";
+        
+            return (success, message);
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Erreur lors du nettoyage : {ex.Message}");
+        }
+    }
 }

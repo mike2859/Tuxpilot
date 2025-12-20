@@ -117,6 +117,12 @@ public partial class App : Application
             
             Resources["Primary"] = new SolidColorBrush(Color.Parse("#3B82F6"));
             Resources["PrimaryHover"] = new SolidColorBrush(Color.Parse("#2563EB"));
+            
+            Resources["SuccessTextOnBackground"] = new SolidColorBrush(Color.Parse("#065F46"));
+            Resources["WarningTextOnBackground"] = new SolidColorBrush(Color.Parse("#92400E"));
+            Resources["ErrorTextOnBackground"] = new SolidColorBrush(Color.Parse("#991B1B"));
+            Resources["InfoTextOnBackground"] = new SolidColorBrush(Color.Parse("#1E40AF"));
+
         }
     }
 }

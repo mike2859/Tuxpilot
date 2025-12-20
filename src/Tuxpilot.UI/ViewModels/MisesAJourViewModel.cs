@@ -6,6 +6,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
+using Avalonia.Media;         
+using Avalonia;
+using Avalonia.Controls;
 
 namespace Tuxpilot.UI.ViewModels;
 
@@ -60,6 +63,7 @@ public partial class MisesAJourViewModel : ViewModelBase
     private double _progressPercent;
     
     
+    
     public ICommand ToggleLogsCommand => new RelayCommand(() => IsLogsExpanded = !IsLogsExpanded);
     
     public MisesAJourViewModel(IServiceMisesAJour serviceMisesAJour, IServiceHistorique  serviceHistorique)
@@ -72,24 +76,59 @@ public partial class MisesAJourViewModel : ViewModelBase
     }
     
     /// <summary>
-    /// Message de statut selon le nombre de mises à jour
+    /// Nom de la ressource d'icône selon le statut
     /// </summary>
-    public string MessageStatut
+    public string MessageStatutIconeResourceKey
     {
         get
         {
             if (!string.IsNullOrEmpty(MessageErreur))
-                return $"❌ {MessageErreur}";
+                return "IconClose";
             
             if (NombreMisesAJour == 0)
-                return "✅ Votre système est à jour !";
+                return "IconCheck";
             
-            if (NombreMisesAJour == 1)
-                return "⚠️ 1 mise à jour disponible";
-            
-            return $"⚠️ {NombreMisesAJour} mises à jour disponibles";
+            return "IconWarning";
         }
     }
+    
+    /// <summary>
+    /// Couleur de l'icône selon le statut
+    /// </summary>
+    public string MessageStatutIconeColor
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(MessageErreur))
+                return "#EF4444";
+            
+            if (NombreMisesAJour == 0)
+                return "#10B981";
+            
+            return "#F59E0B";
+        }
+    }
+    
+    /// <summary>
+    /// Message de statut (texte seulement)
+    /// </summary>
+    public string MessageStatutTexte
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(MessageErreur))
+                return MessageErreur;
+            
+            if (NombreMisesAJour == 0)
+                return "Votre système est à jour !";
+            
+            if (NombreMisesAJour == 1)
+                return "1 mise à jour disponible";
+            
+            return $"{NombreMisesAJour} mises à jour disponibles";
+        }
+    }
+    
     /// <summary>
     /// Indique si des mises à jour sont disponibles
     /// </summary>
@@ -106,6 +145,48 @@ public partial class MisesAJourViewModel : ViewModelBase
     /// </summary>
     public string BorderColor => MisesAJourDisponibles ? "#F59E0B" : "#10B981";
     
+// ✅ AJOUTER CES 2 PROPRIÉTÉS ICI
+    /// <summary>
+    /// Type de message de statut (pour déterminer les couleurs)
+    /// </summary>
+    public string MessageStatutType
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(MessageErreur))
+                return "error";
+        
+            if (NombreMisesAJour == 0)
+                return "success";
+        
+            return "warning";
+        }
+    }
+
+    /// <summary>
+    /// Ressource de couleur du texte selon le type de message
+    /// </summary>
+    public IBrush? MessageStatutTextBrush
+    {
+        get
+        {
+            var resourceKey = MessageStatutType switch
+            {
+                "success" => "SuccessTextOnBackground",
+                "warning" => "WarningTextOnBackground",
+                "error" => "ErrorTextOnBackground",
+                "info" => "InfoTextOnBackground",
+                _ => "TextPrimary"
+            };
+
+            if (Application.Current?.TryFindResource(resourceKey, out var resource) == true)
+            {
+                return resource as IBrush;
+            }
+
+            return Brushes.Black;
+        }
+    }
     
     /// <summary>
     /// Vérifie les mises à jour disponibles
@@ -142,15 +223,23 @@ public partial class MisesAJourViewModel : ViewModelBase
             DerniereMiseAJour = DateTime.Now;
             
             // Notifier les propriétés calculées
-            OnPropertyChanged(nameof(MessageStatut));
+            OnPropertyChanged(nameof(MessageStatutIconeResourceKey));
+            OnPropertyChanged(nameof(MessageStatutIconeColor));
+            OnPropertyChanged(nameof(MessageStatutTexte));
+            OnPropertyChanged(nameof(MessageStatutType));          
+            OnPropertyChanged(nameof(MessageStatutTextBrush));     
             OnPropertyChanged(nameof(MisesAJourDisponibles));
             OnPropertyChanged(nameof(BackgroundColor));     
-            OnPropertyChanged(nameof(BorderColor));   
+            OnPropertyChanged(nameof(BorderColor));
         }
         catch (Exception ex)
         {
             MessageErreur = $"Erreur lors de la vérification : {ex.Message}";
-            OnPropertyChanged(nameof(MessageStatut));
+            OnPropertyChanged(nameof(MessageStatutIconeResourceKey));
+            OnPropertyChanged(nameof(MessageStatutIconeColor));
+            OnPropertyChanged(nameof(MessageStatutTexte));
+            OnPropertyChanged(nameof(MessageStatutType));           
+            OnPropertyChanged(nameof(MessageStatutTextBrush));  
         }
         finally
         {
@@ -181,7 +270,7 @@ private async Task ConfirmerInstallationAsync()
     // Masquer la confirmation
     IsConfirmationVisible = false;
     
-    // 🆕 Afficher la vue avec logs
+    // Afficher la vue avec logs
     IsInstallingWithLogs = true;
     Logs.Clear();
     PackagesInstalled = 0;
@@ -237,13 +326,19 @@ private async Task ConfirmerInstallationAsync()
         {
             // En cas d'erreur
             MessageErreur = message;
-            OnPropertyChanged(nameof(MessageStatut));
+            OnPropertyChanged(nameof(MessageStatutIconeResourceKey));
+            OnPropertyChanged(nameof(MessageStatutIconeColor));
+            OnPropertyChanged(nameof(MessageStatutTexte));
         }
     }
     catch (Exception ex)
     {
         MessageErreur = $"Erreur : {ex.Message}";
-        OnPropertyChanged(nameof(MessageStatut));
+        OnPropertyChanged(nameof(MessageStatutIconeResourceKey));
+        OnPropertyChanged(nameof(MessageStatutIconeColor));
+        OnPropertyChanged(nameof(MessageStatutTexte));
+        OnPropertyChanged(nameof(MessageStatutType));           
+        OnPropertyChanged(nameof(MessageStatutTextBrush));     
         IsInstallingWithLogs = false;
         
         await _serviceHistorique.AjouterActionAsync(

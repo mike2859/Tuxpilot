@@ -34,7 +34,7 @@ public partial class DiagnosticViewModel : ViewModelBase
     private int _nombreLogs;
     
     [ObservableProperty]
-    private ObservableCollection<LogEntry> _logs = new();
+    private ObservableCollection<LogEntryViewModel> _logs = new();
     
     [ObservableProperty]
     private DiskInfo? _disque;
@@ -60,13 +60,13 @@ public partial class DiagnosticViewModel : ViewModelBase
     }
     
     /// <summary>
-    /// Icône selon le score de santé
+    /// Nom de la ressource d'icône selon le score de santé
     /// </summary>
-    public string IconeSante => ScoreSante switch
+    public string IconeSanteResourceKey => ScoreSante switch
     {
-        >= 80 => "✅",
-        >= 60 => "⚠️",
-        _ => "❌"
+        >= 80 => "IconCheck",
+        >= 60 => "IconWarning",
+        _ => "IconClose"
     };
     
     /// <summary>
@@ -143,7 +143,7 @@ public partial class DiagnosticViewModel : ViewModelBase
             
             Logs.Clear();
             foreach (var log in diagnostic.Logs)
-                Logs.Add(log);
+                Logs.Add(new LogEntryViewModel(log));
             
             TopCpu.Clear();
             foreach (var proc in diagnostic.TopCpu)
@@ -154,7 +154,7 @@ public partial class DiagnosticViewModel : ViewModelBase
                 TopRam.Add(proc);
             
             // Notifier les propriétés calculées
-            OnPropertyChanged(nameof(IconeSante));
+            OnPropertyChanged(nameof(IconeSanteResourceKey));
             OnPropertyChanged(nameof(CouleurSante));
             OnPropertyChanged(nameof(BackgroundColor));
             OnPropertyChanged(nameof(BorderColor));

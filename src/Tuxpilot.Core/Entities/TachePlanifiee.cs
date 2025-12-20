@@ -61,12 +61,24 @@ public class TachePlanifiee
     /// <summary>
     /// Icône selon le type
     /// </summary>
-    public string Icone => Type switch
+    // public string Icone => Type switch
+    // {
+    //     TypeTache.MisesAJour => "🔄",
+    //     TypeTache.Nettoyage => "🧹",
+    //     TypeTache.Rapport => "📊",
+    //     _ => "📋"
+    // };
+    
+    
+    /// <summary>
+    /// Nom de la ressource d'icône selon le type
+    /// </summary>
+    public string IconeResourceKey => Type switch
     {
-        TypeTache.MisesAJour => "🔄",
-        TypeTache.Nettoyage => "🧹",
-        TypeTache.Rapport => "📊",
-        _ => "📋"
+        TypeTache.MisesAJour => "IconSync",
+        TypeTache.Nettoyage => "IconCleanup",
+        TypeTache.Rapport => "IconChart",
+        _ => "IconList"
     };
     
     /// <summary>

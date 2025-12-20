@@ -11,6 +11,9 @@
     <None Update="Scripts\validate_license.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\cleanup_root.sh">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <PropertyGroup>

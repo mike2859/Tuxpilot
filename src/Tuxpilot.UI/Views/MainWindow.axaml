@@ -22,20 +22,20 @@
              <Setter Property="HorizontalContentAlignment" Value="Left"/>
              <Setter Property="Padding" Value="20,12"/>
              <Setter Property="Background" Value="Transparent"/>
-             <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>  <!-- 🆕 CHANGÉ -->
+             <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
              <Setter Property="BorderThickness" Value="0"/>
              <Setter Property="FontSize" Value="14"/>
              <Setter Property="Cursor" Value="Hand"/>
          </Style>
     
          <Style Selector="Button.nav-button:pointerover /template/ ContentPresenter">
-             <Setter Property="Background" Value="{DynamicResource BackgroundTertiary}"/>  <!-- 🆕 CHANGÉ -->
-             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>  <!-- 🆕 CHANGÉ -->
+             <Setter Property="Background" Value="{DynamicResource BackgroundTertiary}"/>
+             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
          </Style>
     
          <Style Selector="Button.nav-button:pressed /template/ ContentPresenter">
-             <Setter Property="Background" Value="{DynamicResource BackgroundSecondary}"/>  <!-- 🆕 CHANGÉ -->
-             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>  <!-- 🆕 CHANGÉ -->
+             <Setter Property="Background" Value="{DynamicResource BackgroundSecondary}"/>
+             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
          </Style>
      </Window.Styles>
     <Grid ColumnDefinitions="240,*">
@@ -51,7 +51,9 @@
                 <StackPanel Orientation="Horizontal" 
                            Margin="20" 
                            Spacing="12">
-                    <TextBlock Text="🐧" FontSize="32"/>
+                    <PathIcon Data="{StaticResource IconPenguin}" 
+                              Width="28" Height="28"
+                              Foreground="{DynamicResource TextPrimary}"/>
                     <TextBlock Text="TuxCopilot" 
                                FontSize="20" 
                                FontWeight="Bold"
@@ -62,97 +64,148 @@
                 <!-- Menu de navigation -->
                 <StackPanel Margin="0,20,0,0" Spacing="4">
                     
-                    <Button Content="📊 Vue d'ensemble"
-                            Classes="nav-button"
-                            Command="{Binding NavigateToDashboardCommand}"/>
+                    <!-- Vue d'ensemble -->
+                    <Button Classes="nav-button"
+                            Command="{Binding NavigateToDashboardCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconDashboard}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock Text="Vue d'ensemble"/>
+                        </StackPanel>
+                    </Button>
                     
-                    <Button Content="🔄 Mises à jour"
-                            Classes="nav-button"
-                            Command="{Binding NavigateToUpdatesCommand}"/>
+                    <!-- Mises à jour -->
+                    <Button Classes="nav-button"
+                            Command="{Binding NavigateToUpdatesCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconSync}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock Text="Mises à jour"/>
+                        </StackPanel>
+                    </Button>
                     
-                    <Button Content="🧹 Nettoyage"
-                            Classes="nav-button"
-                            Command="{Binding NavigateToCleanupCommand}"/>
+                    <!-- Nettoyage -->
+                    <Button Classes="nav-button"
+                            Command="{Binding NavigateToCleanupCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconCleanup}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock Text="Nettoyage"/>
+                        </StackPanel>
+                    </Button>
                     
-                    <Button Content="🩺 Diagnostic"
-                            Classes="nav-button"
-                            Command="{Binding NavigateToDiagnosticCommand}"/>
+                    <!-- Diagnostic -->
+                    <Button Classes="nav-button"
+                            Command="{Binding NavigateToDiagnosticCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconDiagnostic}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock Text="Diagnostic"/>
+                        </StackPanel>
+                    </Button>
                     
+                    <!-- Assistant IA -->
                     <Button Command="{Binding NavigateToAssistantCommand}"
                             IsEnabled="{Binding IsProFeatureEnabled}"
                             ToolTip.Tip="{Binding ProFeatureTooltip}"
                             Classes="nav-button">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="🤖" FontSize="20"/>
-                            <StackPanel>
+                            <PathIcon Data="{StaticResource IconRobot}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
                                 <TextBlock Text="Assistant IA" FontWeight="SemiBold"/>
-                                <TextBlock Text="🔒 Pro" 
-                                           FontSize="11" 
-                                           Foreground="#F59E0B"
-                                           IsVisible="{Binding !IsProFeatureEnabled}"/>
+                                <PathIcon Data="{StaticResource IconShieldFilled}" 
+                                          Width="12" Height="12"
+                                          Foreground="#F59E0B"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="Pro" FontSize="11" Foreground="#F59E0B" 
+                                           IsVisible="{Binding !IsProFeatureEnabled}" />
                             </StackPanel>
                         </StackPanel>
                     </Button>
                     
-                    <!-- Bouton Services -->
+                    <!-- Services -->
                     <Button Command="{Binding NavigateToServicesCommand}"
                             IsEnabled="{Binding IsProFeatureEnabled}"
                             ToolTip.Tip="{Binding ProFeatureTooltip}"
                             Classes="nav-button">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="⚙️" FontSize="20"/>
-                            <StackPanel>
+                            <PathIcon Data="{StaticResource IconServices}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
                                 <TextBlock Text="Services" FontWeight="SemiBold"/>
-                                <TextBlock Text="🔒 Pro" 
-                                           FontSize="11" 
-                                           Foreground="#F59E0B"
-                                           IsVisible="{Binding !IsProFeatureEnabled}"/>
+                                <PathIcon Data="{StaticResource IconShieldFilled}" 
+                                          Width="12" Height="12"
+                                          Foreground="#F59E0B"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="Pro" FontSize="11" Foreground="#F59E0B" 
+                                           IsVisible="{Binding !IsProFeatureEnabled}" />
                             </StackPanel>
                         </StackPanel>
                     </Button>
                     
-                    <!-- 🆕 Bouton Planification -->
+                    <!-- Planification -->
                     <Button Command="{Binding NavigateToPlanificationCommand}"
                             IsEnabled="{Binding IsProFeatureEnabled}"
                             ToolTip.Tip="{Binding ProFeatureTooltip}"
                             Classes="nav-button">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="⏰" FontSize="20"/>
-                            <StackPanel>
+                            <PathIcon Data="{StaticResource IconClock}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
                                 <TextBlock Text="Planification" FontWeight="SemiBold"/>
-                                <TextBlock Text="🔒 Pro" 
-                                           FontSize="11" 
-                                           Foreground="#F59E0B"
-                                           IsVisible="{Binding !IsProFeatureEnabled}"/>
+                                <PathIcon Data="{StaticResource IconShieldFilled}" 
+                                          Width="12" Height="12"
+                                          Foreground="#F59E0B"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="Pro" FontSize="11" Foreground="#F59E0B" 
+                                           IsVisible="{Binding !IsProFeatureEnabled}" />
                             </StackPanel>
                         </StackPanel>
                     </Button>
                     
-                    <!-- 🆕 Bouton Audit Sécurité -->
+                    <!-- Audit Sécurité -->
                     <Button Command="{Binding NavigateToAuditCommand}"
                             IsEnabled="{Binding IsProFeatureEnabled}"
                             ToolTip.Tip="{Binding ProFeatureTooltip}"
                             Classes="nav-button">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="🛡️" FontSize="20"/>
-                            <StackPanel>
+                            <PathIcon Data="{StaticResource IconShieldCheck}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
                                 <TextBlock Text="Audit Sécurité" FontWeight="SemiBold"/>
-                                <TextBlock Text="🔒 Pro" 
-                                           FontSize="11" 
-                                           Foreground="#F59E0B"
-                                           IsVisible="{Binding !IsProFeatureEnabled}"/>
+                                <PathIcon Data="{StaticResource IconShieldFilled}" 
+                                          Width="12" Height="12"
+                                          Foreground="#F59E0B"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="Pro" FontSize="11" Foreground="#F59E0B" 
+                                           IsVisible="{Binding !IsProFeatureEnabled}" />
                             </StackPanel>
                         </StackPanel>
                     </Button>
                     
-                              
-                    <Button Content="🩺 Licence"
-                            Classes="nav-button"
-                            Command="{Binding NavigateToLicence}"/>
+                    <!-- Licence -->
+                    <Button Classes="nav-button"
+                            Command="{Binding NavigateToLicence}">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconShield}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock Text="Licence"/>
+                        </StackPanel>
+                    </Button>
 
                 </StackPanel>
                 
-                <!-- 🆕 Bouton Thème en bas -->
+                <!-- Bouton Thème en bas -->
                 <Border Margin="16,32,16,16"
                         Padding="12"
                         Background="{DynamicResource BackgroundSecondary}"
@@ -163,14 +216,21 @@
                             HorizontalAlignment="Stretch"
                             Background="Transparent"
                             BorderThickness="0">
-                        <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-                            <TextBlock Text="{Binding IconeTheme}"
-                                       FontSize="24"
-                                       VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <!-- Soleil (thème sombre actif) -->
+                            <PathIcon Data="{StaticResource IconSun}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"
+                                      IsVisible="{Binding EstThemeSombre}"/>
+    
+                            <!-- Lune (thème clair actif) -->
+                            <PathIcon Data="{StaticResource IconMoon}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"
+                                      IsVisible="{Binding !EstThemeSombre}"/>
+    
                             <TextBlock Text="Changer thème"
-                                       Foreground="{DynamicResource TextPrimary}"
-                                       FontSize="14"
-                                       VerticalAlignment="Center"/>
+                                       Foreground="{DynamicResource TextPrimary}"/>
                         </StackPanel>
                     </Button>
                 </Border>

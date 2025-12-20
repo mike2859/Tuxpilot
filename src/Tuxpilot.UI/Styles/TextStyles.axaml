@@ -1,32 +1,42 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Titres -->
+    <!-- ========================================
+         TITRES / HEADINGS
+         ======================================== -->
+    
+    <!-- H1 - Titre principal de page -->
     <Style Selector="TextBlock.text-h1">
         <Setter Property="FontSize" Value="32"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
     </Style>
 
+    <!-- H2 - Sous-titre de section -->
     <Style Selector="TextBlock.text-h2">
         <Setter Property="FontSize" Value="24"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
     </Style>
 
+    <!-- H3 - Titre de carte/composant -->
     <Style Selector="TextBlock.text-h3">
         <Setter Property="FontSize" Value="18"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
     </Style>
 
-    <!-- Corps de texte -->
+    <!-- ========================================
+         CORPS DE TEXTE / BODY
+         ======================================== -->
+    
+    <!-- Texte standard -->
     <Style Selector="TextBlock.text-body">
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
     </Style>
 
-    <!-- Petits textes -->
+    <!-- Petit texte -->
     <Style Selector="TextBlock.text-sm">
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
@@ -38,19 +48,51 @@
         <Setter Property="Foreground" Value="{DynamicResource TextMuted}"/>
     </Style>
 
-    <!-- Couleurs contextuelles -->
+    <!-- ========================================
+         DONNÉES / DATA DISPLAY
+         ======================================== -->
+    
+    <!-- Label de données (ex: "Distribution:", "Kernel:") -->
+    <Style Selector="TextBlock.text-label">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextMuted}"/>
+    </Style>
+
+    <!-- Valeur de données (ex: "Fedora Linux 41", "6.11.0") -->
+    <Style Selector="TextBlock.text-value">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    </Style>
+
+    <!-- Métrique avec pourcentage (ex: "34%", "12%") -->
+    <Style Selector="TextBlock.text-metric">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <!-- Foreground défini dynamiquement selon la valeur (RamColor, CpuColor, etc.) -->
+    </Style>
+
+    <!-- ========================================
+         COULEURS CONTEXTUELLES / CONTEXTUAL
+         ======================================== -->
+    
+    <!-- Information (bleu) -->
     <Style Selector="TextBlock.text-info">
         <Setter Property="Foreground" Value="{DynamicResource Info}"/>
     </Style>
 
+    <!-- Succès (vert) -->
     <Style Selector="TextBlock.text-success">
         <Setter Property="Foreground" Value="{DynamicResource Success}"/>
     </Style>
 
+    <!-- Danger (rouge) -->
     <Style Selector="TextBlock.text-danger">
         <Setter Property="Foreground" Value="{DynamicResource Danger}"/>
     </Style>
 
+    <!-- Avertissement (orange) -->
     <Style Selector="TextBlock.text-warning">
         <Setter Property="Foreground" Value="{DynamicResource Warning}"/>
     </Style>

@@ -11,4 +11,7 @@ public interface IServiceNettoyage
     /// Analyse les éléments nettoyables du système
     /// </summary>
     Task<CleanupInfo> AnalyserNettoyageAsync();
+    
+    
+    Task<(bool Success, string Message)> NettoyerAsync();
 }

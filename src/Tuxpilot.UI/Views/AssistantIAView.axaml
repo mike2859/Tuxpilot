@@ -18,8 +18,14 @@
         
         <!-- Header -->
         <StackPanel Grid.Row="0" Spacing="8" Margin="32,32,32,16">
-            <TextBlock Classes="text-h1"
-                      Text="🤖 Assistant IA"/>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <PathIcon Data="{StaticResource IconRobot}" 
+                          Width="32" Height="32"
+                          Foreground="{DynamicResource TextPrimary}"/>
+                <TextBlock Classes="text-h1"
+                          Text="Assistant IA"
+                          VerticalAlignment="Center"/>
+            </StackPanel>
             <TextBlock Classes="text-muted"
                       Text="Posez vos questions sur Linux, Fedora, et l'administration système"/>
         </StackPanel>
@@ -41,16 +47,27 @@
                         BorderThickness="0,0,0,1"
                         Padding="16,12">
                     <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Grid.Column="0"
-                                  Classes="text-body"
-                                  Text="💬 Conversation"
-                                  FontWeight="SemiBold"
-                                  VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconChat}" 
+                                      Width="18" Height="18"
+                                      Foreground="{DynamicResource TextPrimary}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Classes="text-body"
+                                      Text="Conversation"
+                                      FontWeight="SemiBold"
+                                      VerticalAlignment="Center"/>
+                        </StackPanel>
                         
                         <Button Grid.Column="1"
                                 Classes="btn-secondary btn-sm"
-                                Content="🗑️ Effacer"
-                                Command="{Binding EffacerHistoriqueCommand}"/>
+                                Command="{Binding EffacerHistoriqueCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Data="{StaticResource IconTrash}" 
+                                          Width="14" Height="14"
+                                          Foreground="{DynamicResource TextPrimary}"/>
+                                <TextBlock Text="Effacer"/>
+                            </StackPanel>
+                        </Button>
                     </Grid>
                 </Border>
                 
@@ -88,7 +105,7 @@
                 </StackPanel>
             </Border>
             
-            <!-- 🆕 ENCART D'ACTION -->
+            <!-- ENCART D'ACTION -->
             <Border Background="#FEF3C7"
                     CornerRadius="12"
                     Padding="16"
@@ -101,11 +118,14 @@
                     
                     <!-- Header -->
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock Text="💡" FontSize="20"/>
+                        <PathIcon Data="{StaticResource IconLightbulb}" 
+                                  Width="20" Height="20"
+                                  Foreground="#92400E"/>
                         <TextBlock Classes="text-body"
                                   Text="Je peux faire ça pour vous !"
                                   FontWeight="Bold"
-                                  Foreground="#92400E"/>
+                                  Foreground="#92400E"
+                                  VerticalAlignment="Center"/>
                     </StackPanel>
                     
                     <!-- Commande -->
@@ -132,16 +152,28 @@
                           IsVisible="{Binding !ActionExecuted}">
                         <Button Grid.Column="0"
                                 Classes="btn-primary"
-                                Content="✅ Exécuter"
                                 Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).ExecuterActionCommand}"
                                 CommandParameter="{Binding}"
-                                HorizontalAlignment="Stretch"/>
+                                HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Data="{StaticResource IconCheck}" 
+                                          Width="14" Height="14"
+                                          Foreground="{DynamicResource BackgroundPrimary}"/>
+                                <TextBlock Text="Exécuter"/>
+                            </StackPanel>
+                        </Button>
                         <Button Grid.Column="1"
                                 Classes="btn-secondary"
-                                Content="❌ Non merci"
                                 Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).RefuserActionCommand}"
                                 CommandParameter="{Binding}"
-                                HorizontalAlignment="Stretch"/>
+                                HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Data="{StaticResource IconClose}" 
+                                          Width="14" Height="14"
+                                          Foreground="{DynamicResource TextPrimary}"/>
+                                <TextBlock Text="Non merci"/>
+                            </StackPanel>
+                        </Button>
                     </Grid>
                     
                     <!-- Résultat -->
@@ -179,24 +211,48 @@
                          Margin="0,0,0,12">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Button Classes="btn-outline btn-sm"
-                            Content="💡 Comment installer des updates ?"
                             Command="{Binding PoserQuestionRapideCommand}"
-                            CommandParameter="Comment installer des mises à jour sur Fedora ?"/>
+                            CommandParameter="Comment installer des mises à jour sur Fedora ?">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="{StaticResource IconLightbulb}" 
+                                      Width="14" Height="14"
+                                      Foreground="{DynamicResource Primary}"/>
+                            <TextBlock Text="Comment installer des updates ?"/>
+                        </StackPanel>
+                    </Button>
                     
                     <Button Classes="btn-outline btn-sm"
-                            Content="❓ C'est quoi dnf5 ?"
                             Command="{Binding PoserQuestionRapideCommand}"
-                            CommandParameter="Qu'est-ce que dnf5 et en quoi c'est différent de dnf ?"/>
+                            CommandParameter="Qu'est-ce que dnf5 et en quoi c'est différent de dnf ?">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="{StaticResource IconQuestion}" 
+                                      Width="14" Height="14"
+                                      Foreground="{DynamicResource Primary}"/>
+                            <TextBlock Text="C'est quoi dnf5 ?"/>
+                        </StackPanel>
+                    </Button>
                     
                     <Button Classes="btn-outline btn-sm"
-                            Content="📋 Voir les logs système"
                             Command="{Binding PoserQuestionRapideCommand}"
-                            CommandParameter="Comment voir les logs système avec journalctl ?"/>
+                            CommandParameter="Comment voir les logs système avec journalctl ?">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="{StaticResource IconList}" 
+                                      Width="14" Height="14"
+                                      Foreground="{DynamicResource Primary}"/>
+                            <TextBlock Text="Voir les logs système"/>
+                        </StackPanel>
+                    </Button>
                     
                     <Button Classes="btn-outline btn-sm"
-                            Content="🧹 Nettoyer le cache"
                             Command="{Binding PoserQuestionRapideCommand}"
-                            CommandParameter="Comment nettoyer le cache des paquets DNF ?"/>
+                            CommandParameter="Comment nettoyer le cache des paquets DNF ?">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="{StaticResource IconCleanup}" 
+                                      Width="14" Height="14"
+                                      Foreground="{DynamicResource Primary}"/>
+                            <TextBlock Text="Nettoyer le cache"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </ScrollViewer>
             
@@ -220,11 +276,17 @@
                 
                 <Button Grid.Column="1"
                         Classes="btn-primary"
-                        Content="➤ Envoyer"
                         Command="{Binding EnvoyerQuestionCommand}"
                         IsEnabled="{Binding !IsStreaming}"
                         Margin="8,0,0,0"
-                        Padding="20,12"/>
+                        Padding="20,12">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconSend}" 
+                                  Width="16" Height="16"
+                                  Foreground="{DynamicResource BackgroundPrimary}"/>
+                        <TextBlock Text="Envoyer"/>
+                    </StackPanel>
+                </Button>
             </Grid>
             
         </Grid>

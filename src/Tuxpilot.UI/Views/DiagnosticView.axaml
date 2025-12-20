@@ -13,8 +13,14 @@
             
             <!-- Header -->
             <StackPanel Spacing="8">
-                <TextBlock Classes="text-h1"
-                          Text="🔍 Diagnostic"/>
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{StaticResource IconDiagnostic}" 
+                              Width="32" Height="32"
+                              Foreground="{DynamicResource TextPrimary}"/>
+                    <TextBlock Classes="text-h1"
+                              Text="Diagnostic"
+                              VerticalAlignment="Center"/>
+                </StackPanel>
                 <TextBlock Classes="text-muted"
                           Text="Vérifiez l'état de santé de votre système Linux"/>
             </StackPanel>
@@ -25,53 +31,61 @@
                         Height="4"/>
             
             <!-- Score de santé global -->
-            <Border Background="{DynamicResource BackgroundPrimary}"
-                    CornerRadius="12"
-                    Padding="32"
-                    BorderBrush="{DynamicResource BorderPrimary}"
-                    BorderThickness="1">
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                    
-                    <!-- Cercle de score -->
-                    <Border Grid.Column="0"
-                            Width="120" Height="120"
-                            CornerRadius="60"
-                            Background="{Binding BackgroundColor}"
-                            BorderBrush="{Binding BorderColor}"
-                            BorderThickness="4">
-                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock Text="{Binding IconeSante}"
-                                      FontSize="40"
-                                      HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding ScoreTexte}"
-                                      FontSize="24"
-                                      FontWeight="Bold"
-                                      Foreground="{Binding CouleurSante}"
-                                      HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-                    
-                    <!-- Message -->
-                    <StackPanel Grid.Column="1"
-                               Margin="24,0,0,0"
-                               VerticalAlignment="Center"
-                               Spacing="8">
-                        <TextBlock Classes="text-h2"
-                                  Text="État du système"/>
-                        <TextBlock Classes="text-body"
-                                  Text="{Binding MessageGlobal}"
-                                  FontSize="16"/>
-                    </StackPanel>
-                    
-                    <!-- Bouton actualiser -->
-                    <Button Grid.Column="2"
-                            Classes="btn-primary"
-                            Content="🔄 Analyser"
-                            Command="{Binding DiagnostiquerCommand}"
-                            VerticalAlignment="Center"/>
-                    
-                </Grid>
-            </Border>
+<Border Background="{DynamicResource BackgroundPrimary}"
+        CornerRadius="12"
+        Padding="32"
+        BorderBrush="{DynamicResource BorderPrimary}"
+        BorderThickness="1">
+    <Grid ColumnDefinitions="Auto,*,Auto">
+        
+        <!-- Cercle de score -->
+        <Border Grid.Column="0"
+                Width="120" Height="120"
+                CornerRadius="60"
+                Background="{Binding BackgroundColor}"
+                BorderBrush="{Binding BorderColor}"
+                BorderThickness="4">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <PathIcon Data="{StaticResource {Binding IconeSanteResourceKey}}"
+                          Width="40" Height="40"
+                          Foreground="{Binding CouleurSante}"
+                          HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding ScoreTexte}"
+                          FontSize="24"
+                          FontWeight="Bold"
+                          Foreground="{Binding CouleurSante}"
+                          HorizontalAlignment="Center"
+                          Margin="0,8,0,0"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Message -->
+        <StackPanel Grid.Column="1"
+                   Margin="24,0,0,0"
+                   VerticalAlignment="Center"
+                   Spacing="8">
+            <TextBlock Classes="text-h2"
+                      Text="État du système"/>
+            <TextBlock Classes="text-body"
+                      Text="{Binding MessageGlobal}"
+                      FontSize="16"/>
+        </StackPanel>
+        
+        <!-- Bouton actualiser -->
+        <Button Grid.Column="2"
+                Classes="btn-primary"
+                Command="{Binding DiagnostiquerCommand}"
+                VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <PathIcon Data="{StaticResource IconRefresh}" 
+                          Width="16" Height="16"
+                          Foreground="{DynamicResource BackgroundPrimary}"/>
+                <TextBlock Text="Analyser"/>
+            </StackPanel>
+        </Button>
+        
+    </Grid>
+</Border>
             
             <!-- Grille des cartes -->
             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="16">
@@ -85,8 +99,15 @@
                         BorderThickness="1">
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="4">
-                            <TextBlock Classes="text-h3"
-                                      Text="💾 Espace disque"/>
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource IconDisk}" 
+                                          Width="20" Height="20"
+                                          Foreground="{DynamicResource TextPrimary}"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Classes="text-h3"
+                                          Text="Espace disque"
+                                          VerticalAlignment="Center"/>
+                            </StackPanel>
                             <TextBlock Classes="text-muted"
                                       Text="{Binding Disque.Partition}"/>
                         </StackPanel>
@@ -141,60 +162,71 @@
                     </StackPanel>
                 </Border>
                 
-                <!-- Services en erreur -->
-                <Border Grid.Column="1" Grid.Row="0"
-                        Background="{DynamicResource BackgroundPrimary}"
-                        CornerRadius="12"
-                        Padding="24"
-                        BorderBrush="{DynamicResource BorderPrimary}"
-                        BorderThickness="1">
-                    <StackPanel Spacing="16">
-                        <StackPanel Spacing="4">
-                            <TextBlock Classes="text-h3"
-                                      Text="⚙️ Services"/>
-                            <TextBlock Classes="text-muted">
-                                <Run Text="{Binding NombreServicesErreur}"/>
-                                <Run Text=" service(s) en erreur"/>
-                            </TextBlock>
-                        </StackPanel>
-                        
-                        <ScrollViewer MaxHeight="200" 
-                                     IsVisible="{Binding ServicesEnErreur}">
-                            <ItemsControl ItemsSource="{Binding Services}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Background="#FEE2E2"
-                                                CornerRadius="6"
-                                                Padding="12"
-                                                Margin="0,0,0,8">
-                                            <StackPanel Spacing="4">
-                                                <TextBlock Classes="text-body"
-                                                          Text="{Binding Nom}"
-                                                          FontWeight="SemiBold"
-                                                          Foreground="#DC2626"/>
-                                                <TextBlock Classes="text-sm"
-                                                          Text="{Binding Description}"
-                                                          TextWrapping="Wrap"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                        
-                        <StackPanel IsVisible="{Binding !ServicesEnErreur}"
-                                   Spacing="8"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center">
-                            <TextBlock Text="✅"
-                                      FontSize="32"
-                                      HorizontalAlignment="Center"/>
-                            <TextBlock Classes="text-muted"
-                                      Text="Tous les services fonctionnent"
-                                      HorizontalAlignment="Center"/>
-                        </StackPanel>
+               <!-- Services en erreur -->
+<Border Grid.Column="1" Grid.Row="0"
+        Background="{DynamicResource BackgroundPrimary}"
+        CornerRadius="12"
+        Padding="24"
+        BorderBrush="{DynamicResource BorderPrimary}"
+        BorderThickness="1">
+    <StackPanel Spacing="16">
+        <StackPanel Orientation="Horizontal" Spacing="12">
+            <PathIcon Data="{StaticResource IconServices}" 
+                      Width="20" Height="20"
+                      Foreground="{DynamicResource TextPrimary}"
+                      VerticalAlignment="Center"/>
+            <TextBlock Classes="text-h3"
+                      Text="Services en erreur"
+                      VerticalAlignment="Center"/>
+        </StackPanel>
+        
+        <StackPanel Spacing="8">
+            <Border Background="#FEE2E2"
+                    CornerRadius="8"
+                    Padding="16,12">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{StaticResource IconAlertCircle}" 
+                              Width="32" Height="32"
+                              Foreground="#DC2626"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock FontSize="32"
+                                  FontWeight="Bold"
+                                  Foreground="#DC2626"
+                                  Text="{Binding NombreServicesErreur}"/>
+                        <TextBlock Classes="text-sm"
+                                  Foreground="#DC2626"
+                                  Text="service(s) en erreur"/>
                     </StackPanel>
-                </Border>
+                </StackPanel>
+            </Border>
+            
+            <!-- ✅ CORRIGÉ : Services au lieu de ServicesErreur -->
+            <ItemsControl ItemsSource="{Binding Services}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{DynamicResource BackgroundSecondary}"
+                                CornerRadius="6"
+                                Padding="12"
+                                Margin="0,0,0,8">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <PathIcon Grid.Column="0"
+                                          Data="{StaticResource IconClose}" 
+                                          Width="16" Height="16"
+                                          Foreground="#DC2626"
+                                          Margin="0,0,8,0"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1"
+                                          Classes="text-body"
+                                          Text="{Binding Nom}"
+                                          FontWeight="Medium"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </StackPanel>
+</Border>
                 
                 <!-- Top processus CPU -->
                 <Border Grid.Column="0" Grid.Row="1"
@@ -204,8 +236,15 @@
                         BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1">
                     <StackPanel Spacing="16">
-                        <TextBlock Classes="text-h3"
-                                  Text="📊 Top CPU"/>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconCpu}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Classes="text-h3"
+                                      Text="Top CPU"
+                                      VerticalAlignment="Center"/>
+                        </StackPanel>
                         
                         <ItemsControl ItemsSource="{Binding TopCpu}">
                             <ItemsControl.ItemTemplate>
@@ -253,8 +292,15 @@
                         BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="1">
                     <StackPanel Spacing="16">
-                        <TextBlock Classes="text-h3"
-                                  Text="💾 Top RAM"/>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconMemory}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Classes="text-h3"
+                                      Text="Top RAM"
+                                      VerticalAlignment="Center"/>
+                        </StackPanel>
                         
                         <ItemsControl ItemsSource="{Binding TopRam}">
                             <ItemsControl.ItemTemplate>
@@ -305,8 +351,15 @@
                     IsVisible="{Binding LogsPresents}">
                 <StackPanel Spacing="16">
                     <StackPanel Spacing="4">
-                        <TextBlock Classes="text-h3"
-                                  Text="📋 Logs récents (24h)"/>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconList}" 
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource TextPrimary}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Classes="text-h3"
+                                      Text="Logs récents (24h)"
+                                      VerticalAlignment="Center"/>
+                        </StackPanel>
                         <TextBlock Classes="text-muted">
                             <Run Text="{Binding NombreLogs}"/>
                             <Run Text=" erreur(s) détectée(s)"/>
@@ -315,33 +368,50 @@
                     
                     <ScrollViewer MaxHeight="300">
                         <ItemsControl ItemsSource="{Binding Logs}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="#FEE2E2"
-                                            CornerRadius="6"
-                                            Padding="12"
-                                            Margin="0,0,0,8">
-                                        <StackPanel Spacing="4">
-                                            <Grid ColumnDefinitions="Auto,*">
-                                                <TextBlock Grid.Column="0"
-                                                          Classes="text-sm"
-                                                          Text="{Binding Timestamp}"
-                                                          Foreground="{DynamicResource TextSecondary}"
-                                                          Width="150"/>
-                                                <TextBlock Grid.Column="1"
-                                                          Classes="text-sm"
-                                                          Text="{Binding Service}"
-                                                          FontWeight="SemiBold"
-                                                          Foreground="#DC2626"/>
-                                            </Grid>
-                                            <TextBlock Classes="text-sm"
-                                                      Text="{Binding Message}"
-                                                      TextWrapping="Wrap"
-                                                      Foreground="#374151"/>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
+                           <ItemsControl ItemsSource="{Binding Logs}">
+    <ItemsControl.ItemTemplate>
+        <DataTemplate>
+            <Border Background="{Binding BackgroundColor}"
+                    CornerRadius="6"
+                    Padding="12"
+                    Margin="0,0,0,8">
+                <StackPanel Spacing="4">
+                    <Grid ColumnDefinitions="Auto,Auto,*">
+                        <!-- Icône de sévérité avec PathIcon -->
+                        <PathIcon Grid.Column="0"
+                                 Data="{StaticResource {Binding IconResourceKey}}"
+                                 Width="16" Height="16"
+                                 Foreground="{Binding IconColor}"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,8,0"/>
+        
+                        <!-- Timestamp avec couleur fixe -->
+                        <TextBlock Grid.Column="1"
+                                  Classes="text-sm"
+                                  Text="{Binding Timestamp}"
+                                  Foreground="#6B7280"
+                                  Width="150"
+                                  VerticalAlignment="Center"/>
+        
+                        <!-- Service avec couleur dynamique -->
+                        <TextBlock Grid.Column="2"
+                                  Classes="text-sm"
+                                  Text="{Binding Service}"
+                                  FontWeight="SemiBold"
+                                  Foreground="{Binding ServiceColor}"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Message avec couleur foncée pour lisibilité -->
+                    <TextBlock Classes="text-sm"
+                              Text="{Binding Message}"
+                              TextWrapping="Wrap"
+                              Foreground="{Binding MessageColor}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </ItemsControl.ItemTemplate>
+</ItemsControl>
                         </ItemsControl>
                     </ScrollViewer>
                 </StackPanel>

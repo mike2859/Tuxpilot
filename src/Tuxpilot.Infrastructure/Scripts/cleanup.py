@@ -253,13 +253,92 @@ def analyser_nettoyage():
             "erreur": str(e)
         }
 
+def nettoyer_systeme():
+    """
+    Nettoie réellement les éléments du système
+    
+    Returns:
+        dict: Résultat du nettoyage
+    """
+    try:
+        gestionnaire = detecter_gestionnaire_paquets()
+
+        # Obtenir le chemin absolu du script shell
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        cleanup_script = os.path.join(script_dir, 'cleanup_root.sh')
+
+        # Vérifier que le script existe
+        if not os.path.exists(cleanup_script):
+            return {
+                "succes": False,
+                "message": f"Script cleanup_root.sh introuvable: {cleanup_script}",
+                "resultats": [],
+                "espaceLibereMB": 0
+            }
+
+        # Appeler pkexec UNE SEULE FOIS avec le script shell
+        result = subprocess.run(
+            ['pkexec', cleanup_script, gestionnaire],
+            capture_output=True,
+            text=True,
+            timeout=180  # 3 minutes max
+        )
+
+        # Parser les résultats
+        resultats = []
+        in_results = False
+
+        for line in result.stdout.strip().split('\n'):
+            if line == "=== RESULTATS ===":
+                in_results = True
+                continue
+            if in_results and line and not line.startswith("Nettoyage terminé"):
+                resultats.append(line)
+
+        # Vérifier le succès
+        success = result.returncode == 0
+        message = "Nettoyage terminé avec succès" if success else "Erreur lors du nettoyage"
+
+        return {
+            "succes": success,
+            "message": message,
+            "resultats": resultats,
+            "espaceLibereMB": 0  # On pourrait calculer l'espace libéré
+        }
+
+    except subprocess.TimeoutExpired:
+        return {
+            "succes": False,
+            "message": "Timeout lors du nettoyage (>3 minutes)",
+            "resultats": [],
+            "espaceLibereMB": 0
+        }
+    except Exception as e:
+        return {
+            "succes": False,
+            "message": f"Erreur lors du nettoyage: {str(e)}",
+            "resultats": [],
+            "espaceLibereMB": 0
+        }
+    
 
 if __name__ == "__main__":
     """Point d'entrée du script"""
-    try:
+    import sys
+
+    # Vérifier les arguments
+    if len(sys.argv) > 1 and sys.argv[1] == "clean":
+        # Mode nettoyage
+        resultat = nettoyer_systeme()
+    else:
+        # Mode analyse (par défaut)
         resultat = analyser_nettoyage()
+
+    try:
         print(json.dumps(resultat, indent=2, ensure_ascii=False))
         sys.exit(0)
     except Exception as e:
         print(json.dumps({"erreur": str(e)}), file=sys.stderr)
         sys.exit(1)
+        
+        

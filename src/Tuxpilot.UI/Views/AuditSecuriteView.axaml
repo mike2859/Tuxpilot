@@ -14,9 +14,15 @@
             <!-- En-tête -->
             <Grid>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="🛡️ Audit de sécurité"
-                              Classes="text-h1"
-                              Foreground="{DynamicResource TextPrimary}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconShieldCheck}" 
+                                  Width="32" Height="32"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="Audit de sécurité"
+                                  Classes="text-h1"
+                                  Foreground="{DynamicResource TextPrimary}"
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
                     <TextBlock Text="Évaluez et améliorez la sécurité de votre système"
                               Classes="text-body"
                               Foreground="{DynamicResource TextSecondary}"/>
@@ -28,7 +34,9 @@
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock Text="🔍" FontSize="18"/>
+                        <PathIcon Data="{StaticResource IconSearch}" 
+                                  Width="18" Height="18"
+                                  Foreground="{DynamicResource BackgroundPrimary}"/>
                         <TextBlock Text="Lancer l'audit"/>
                     </StackPanel>
                 </Button>
@@ -53,8 +61,9 @@
                     Padding="48"
                     IsVisible="{Binding IsLoading}">
                 <StackPanel Spacing="16" HorizontalAlignment="Center">
-                    <TextBlock Text="⏳" 
-                              FontSize="48"
+                    <PathIcon Data="{StaticResource IconHourglass}" 
+                              Width="48" Height="48"
+                              Foreground="{DynamicResource TextPrimary}"
                               HorizontalAlignment="Center"/>
                     <TextBlock Text="Analyse en cours..."
                               Classes="text-h3"
@@ -117,11 +126,15 @@
                                    CornerRadius="8"
                                    Padding="16,12">
                                 <StackPanel Spacing="4">
-                                    <TextBlock Classes="text-sm"
-                                              Foreground="{DynamicResource TextMuted}">
-                                        <Run Text="✅"/>
-                                        <Run Text="Vérifications réussies"/>
-                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{StaticResource IconCheck}" 
+                                                  Width="14" Height="14"
+                                                  Foreground="#10B981"
+                                                  VerticalAlignment="Center"/>
+                                        <TextBlock Text="Vérifications réussies"
+                                                  Classes="text-sm"
+                                                  Foreground="{DynamicResource TextMuted}"/>
+                                    </StackPanel>
                                     <TextBlock FontSize="24"
                                               FontWeight="Bold"
                                               Foreground="{DynamicResource TextPrimary}">
@@ -140,9 +153,15 @@
                                    CornerRadius="8"
                                    Padding="16,12">
                                 <StackPanel Spacing="4">
-                                    <TextBlock Text="🚨 Critiques"
-                                              Classes="text-sm"
-                                              Foreground="{DynamicResource TextMuted}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{StaticResource IconClose}" 
+                                                  Width="14" Height="14"
+                                                  Foreground="#DC2626"
+                                                  VerticalAlignment="Center"/>
+                                        <TextBlock Text="Problèmes critiques"
+                                                  Classes="text-sm"
+                                                  Foreground="{DynamicResource TextMuted}"/>
+                                    </StackPanel>
                                     <TextBlock Text="{Binding Rapport.ProblemesCritiques}"
                                               FontSize="24"
                                               FontWeight="Bold"
@@ -150,7 +169,7 @@
                                 </StackPanel>
                             </Border>
 
-                            <!-- Problèmes élevés -->
+                            <!-- Risques élevés -->
                             <Border Grid.Column="0" Grid.Row="1"
                                    Background="{DynamicResource BackgroundSecondary}"
                                    BorderBrush="#EF4444"
@@ -158,9 +177,15 @@
                                    CornerRadius="8"
                                    Padding="16,12">
                                 <StackPanel Spacing="4">
-                                    <TextBlock Text="🔴 Risques élevés"
-                                              Classes="text-sm"
-                                              Foreground="{DynamicResource TextMuted}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{StaticResource IconFire}" 
+                                                  Width="14" Height="14"
+                                                  Foreground="#EF4444"
+                                                  VerticalAlignment="Center"/>
+                                        <TextBlock Text="Risques élevés"
+                                                  Classes="text-sm"
+                                                  Foreground="{DynamicResource TextMuted}"/>
+                                    </StackPanel>
                                     <TextBlock Text="{Binding Rapport.ProblemesEleves}"
                                               FontSize="24"
                                               FontWeight="Bold"
@@ -176,9 +201,15 @@
                                    CornerRadius="8"
                                    Padding="16,12">
                                 <StackPanel Spacing="4">
-                                    <TextBlock Text="⚠️ Risques moyens"
-                                              Classes="text-sm"
-                                              Foreground="{DynamicResource TextMuted}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{StaticResource IconWarning}" 
+                                                  Width="14" Height="14"
+                                                  Foreground="#F59E0B"
+                                                  VerticalAlignment="Center"/>
+                                        <TextBlock Text="Risques moyens"
+                                                  Classes="text-sm"
+                                                  Foreground="{DynamicResource TextMuted}"/>
+                                    </StackPanel>
                                     <TextBlock Text="{Binding Rapport.ProblemesMoyens}"
                                               FontSize="24"
                                               FontWeight="Bold"
@@ -198,9 +229,15 @@
                     Padding="24"
                     IsVisible="{Binding AuditEffectue}">
                 <StackPanel Spacing="16">
-                    <TextBlock Text="📋 Détails des vérifications"
-                              Classes="text-h3"
-                              Foreground="{DynamicResource TextPrimary}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconList}" 
+                                  Width="24" Height="24"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="Détails des vérifications"
+                                  Classes="text-h3"
+                                  Foreground="{DynamicResource TextPrimary}"
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
 
                     <ItemsControl ItemsSource="{Binding Verifications}">
                         <ItemsControl.ItemTemplate>
@@ -267,7 +304,9 @@
                                                IsVisible="{Binding CommandeCorrection, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                                Margin="16,0,0,0">
                                             <StackPanel Orientation="Horizontal" Spacing="6">
-                                                <TextBlock Text="🔧" FontSize="16"/>
+                                                <PathIcon Data="{StaticResource IconWrench}" 
+                                                          Width="16" Height="16"
+                                                          Foreground="{DynamicResource BackgroundPrimary}"/>
                                                 <TextBlock Text="Corriger"/>
                                             </StackPanel>
                                         </Button>
@@ -287,8 +326,9 @@
                     Padding="48"
                     IsVisible="{Binding !AuditEffectue}">
                 <StackPanel Spacing="16" HorizontalAlignment="Center">
-                    <TextBlock Text="🛡️"
-                              FontSize="64"
+                    <PathIcon Data="{StaticResource IconShieldCheck}" 
+                              Width="64" Height="64"
+                              Foreground="{DynamicResource TextPrimary}"
                               HorizontalAlignment="Center"/>
                     <TextBlock Text="Aucun audit effectué"
                               Classes="text-h3"

@@ -44,4 +44,37 @@ Thumbs.db
 *.AppImage
 *.deb
 *.rpm
+
+# ============================================
+# DOSSIERS DE BUILD (NE JAMAIS VERSIONNER)
+# ============================================
+build/
+bin/
+obj/
+out/
 publish/
+dist/
+
+# ============================================
+# FICHIERS DE CONFIGURATION LOCALE
+# ============================================
+appsettings.Development.json
+appsettings.Local.json
+*.secrets.json
+
+# ============================================
+# FICHIERS DE BASE DE DONNÉES LOCALE
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================
+# FICHIERS SPÉCIFIQUES TUXPILOT
+# ============================================
+# Configuration utilisateur (si créé)
+user-config.json
+license.json
+
+# Fichiers de licence de test
+test-licenses/

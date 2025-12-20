@@ -45,11 +45,11 @@ def verifier_services():
 
 
 def analyser_logs_recents():
-    """Analyse les logs système récents (dernières 24h)"""
+    """Analyse les logs système récents (dernières 24h) avec sévérité"""
     try:
-        # Logs avec priorité error ou warning depuis 24h
+        # Récupérer les logs avec toutes priorités depuis 24h
         result = subprocess.run(
-            ['journalctl', '-p', 'err', '--since', '24 hours ago', '--no-pager', '-n', '50'],
+            ['journalctl', '-p', 'warning', '--since', '24 hours ago', '--no-pager', '-n', '50'],
             capture_output=True,
             text=True,
             timeout=10
@@ -57,21 +57,42 @@ def analyser_logs_recents():
 
         logs = []
         for line in result.stdout.strip().split('\n'):
-            if line.strip() and not line.startswith('--'):
-                # Parser la ligne (format: date heure hostname service: message)
+            if line.strip() and not line.startswith('--') and len(line) > 10:
+                # Parser la ligne (format: mois jour heure hostname service: message)
                 parts = line.split(maxsplit=4)
                 if len(parts) >= 5:
+                    message = parts[4].lower()
+
+                    # Déterminer la sévérité selon le contenu du message
+                    severity = "error"  # Par défaut
+
+                    # Mots-clés pour warnings
+                    warning_keywords = ['warning', 'warn', 'deprecated', 'retry', 'timeout']
+                    if any(keyword in message for keyword in warning_keywords):
+                        severity = "warning"
+
+                    # Mots-clés pour infos
+                    info_keywords = ['started', 'stopped', 'enabled', 'disabled', 'connected', 'success']
+                    if any(keyword in message for keyword in info_keywords):
+                        severity = "info"
+
+                    # Mots-clés pour erreurs critiques
+                    error_keywords = ['error', 'failed', 'fail', 'panic', 'critical', 'fatal', 'crash']
+                    if any(keyword in message for keyword in error_keywords):
+                        severity = "error"
+
                     logs.append({
-                        "timestamp": f"{parts[0]} {parts[1]}",
+                        "timestamp": f"{parts[0]} {parts[1]} {parts[2]}",
                         "service": parts[3].rstrip(':'),
-                        "message": parts[4][:200]  # Limiter la longueur
+                        "message": parts[4][:200],  # Limiter la longueur
+                        "severity": severity
                     })
 
         return {
             "nombreLogs": len(logs),
             "logs": logs[:20]  # Limite à 20 entrées
         }
-    except Exception:
+    except Exception as e:
         return {
             "nombreLogs": 0,
             "logs": []

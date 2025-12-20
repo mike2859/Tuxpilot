@@ -31,8 +31,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool _estThemeSombre;
     
-    public string IconeTheme => EstThemeSombre ? "☀️" : "🌙";
-
     public MainWindowViewModel(IServiceProvider serviceProvider, IServiceTheme serviceTheme, ILicenseService licenseService)
     {
         _serviceProvider = serviceProvider;
@@ -98,7 +96,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     
         // Notifier le changement d'icône
-        OnPropertyChanged(nameof(IconeTheme));
+        OnPropertyChanged(nameof(EstThemeSombre));
     }
     
     /// <summary>

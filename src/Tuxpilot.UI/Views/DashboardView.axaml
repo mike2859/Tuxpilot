@@ -17,9 +17,12 @@
   <ScrollViewer>
         <StackPanel Margin="32" Spacing="24">
             
-            <!-- 🐧 Header avec logo -->
+            <!-- Header avec logo -->
             <StackPanel Orientation="Horizontal" Spacing="16">
-                <TextBlock Text="🐧" FontSize="48" VerticalAlignment="Center"/>
+                <PathIcon Data="{StaticResource IconPenguin}" 
+                          Width="48" Height="48"
+                          Foreground="{DynamicResource TextPrimary}"
+                          VerticalAlignment="Center"/>
                 <StackPanel VerticalAlignment="Center" Spacing="4">
                     <TextBlock Classes="text-h1" Text="Tuxpilot"/>
                     <TextBlock Classes="text-muted" Text="Assistant Linux pour débutants et collectivités"/>
@@ -31,7 +34,7 @@
                         IsVisible="{Binding IsLoading}"
                         Height="4"/>
             
-            <!-- 🆕 SUGGESTION PROACTIVE IA -->
+            <!-- SUGGESTION PROACTIVE IA -->
             <Border Grid.Row="0"
                     IsVisible="{Binding HasSuggestion}"
                     Background="#DBEAFE"
@@ -48,10 +51,11 @@
                             CornerRadius="24"
                             Background="#3B82F6"
                             VerticalAlignment="Top">
-                        <TextBlock Text="🤖" 
-                                   FontSize="24"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                        <PathIcon Data="{StaticResource IconRobot}" 
+                                  Width="24" Height="24"
+                                  Foreground="White"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
                     </Border>
         
                     <!-- Message -->
@@ -59,9 +63,15 @@
                                 Margin="16,0,0,0"
                                 VerticalAlignment="Center"
                                 Spacing="8">
-                        <TextBlock Classes="text-h3"
-                                   Text="💡 Suggestion de l'IA"
-                                   Foreground="#1E40AF"/>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconLightbulb}" 
+                                      Width="20" Height="20"
+                                      Foreground="#1E40AF"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Classes="text-h3"
+                                       Text="Suggestion de l'IA"
+                                       Foreground="#1E40AF"/>
+                        </StackPanel>
                         <TextBlock Classes="text-body"
                                    Text="{Binding SuggestionIA}"
                                    TextWrapping="Wrap"
@@ -71,11 +81,14 @@
                     <!-- Bouton fermer -->
                     <Button Grid.Column="2"
                             Classes="btn-secondary btn-sm"
-                            Content="✕"
                             Command="{Binding FermerSuggestionCommand}"
                             VerticalAlignment="Top"
                             Width="32" Height="32"
-                            Padding="0"/>
+                            Padding="0">
+                        <PathIcon Data="{StaticResource IconClose}" 
+                                  Width="14" Height="14"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                    </Button>
         
                 </Grid>
             </Border>
@@ -87,9 +100,10 @@
                     BorderBrush="#BAE6FD"
                     BorderThickness="1">
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <TextBlock Text="🔄"
-                               FontSize="16"
-                               VerticalAlignment="Center"/>
+                    <PathIcon Data="{StaticResource IconRefresh}" 
+                              Width="16" Height="16"
+                              Foreground="#0284C7"
+                              VerticalAlignment="Center"/>
                     <TextBlock Classes="text-sm text-info"
                                Text="{Binding TimeSinceLastRefresh}"
                                VerticalAlignment="Center"/>
@@ -99,7 +113,7 @@
                 </StackPanel>
             </Border>
             
-            <!-- 🆕 HISTORIQUE DES ACTIONS -->
+            <!-- HISTORIQUE DES ACTIONS -->
 <Border Background="{DynamicResource BackgroundPrimary}"
         CornerRadius="12"
         Padding="20"
@@ -109,14 +123,23 @@
         
         <!-- Header -->
         <Grid ColumnDefinitions="*,Auto">
-            <TextBlock Grid.Column="0"
-                      Classes="text-h3"
-                      Text="📋 Dernières actions"/>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                <PathIcon Data="{StaticResource IconList}" 
+                          Width="22" Height="22"
+                          Foreground="{DynamicResource TextPrimary}"
+                          VerticalAlignment="Center"/>
+                <TextBlock Classes="text-h3"
+                          Text="Dernières actions"
+                          VerticalAlignment="Center"/>
+            </StackPanel>
             <Button Grid.Column="1"
                     Classes="btn-outline btn-sm"
-                    Content="🔄"
                     Command="{Binding ChargerHistoriqueCommand}"
-                    ToolTip.Tip="Actualiser"/>
+                    ToolTip.Tip="Actualiser">
+                <PathIcon Data="{StaticResource IconRefresh}" 
+                          Width="14" Height="14"
+                          Foreground="{DynamicResource TextPrimary}"/>
+            </Button>
         </Grid>
         
         <!-- Liste des actions -->
@@ -132,6 +155,7 @@
                             <!-- Icône -->
                             <TextBlock Grid.Column="0"
                                       Text="{Binding Icone}"
+                                      Foreground="{DynamicResource TextPrimary}"
                                       FontSize="20"
                                       VerticalAlignment="Center"
                                       Margin="0,0,12,0"/>
@@ -166,6 +190,7 @@
         <!-- Message si vide -->
         <TextBlock Classes="text-muted"
                   Text="Aucune action enregistrée pour le moment"
+                  
                   HorizontalAlignment="Center"
                   Margin="0,8,0,0">
             <TextBlock.IsVisible>
@@ -188,9 +213,16 @@
                     BorderThickness="1">
                 <StackPanel Spacing="20">
                     
-                    <TextBlock Text="ℹ️ Informations système" 
-                              FontSize="18" 
-                              FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconInfo}" 
+                                  Width="20" Height="20"
+                                  Foreground="{DynamicResource TextPrimary}"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="Informations système" 
+                                  FontSize="18" 
+                                  FontWeight="SemiBold"
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
                     
                     <!-- Distribution -->
                     <StackPanel Spacing="4">
@@ -232,7 +264,15 @@
                     BorderThickness="1">
                 <StackPanel Spacing="20">
                     
-                    <TextBlock Classes="text-h2" Text="📊 Utilisation des ressources"/>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconChart}" 
+                                  Width="22" Height="22"
+                                  Foreground="{DynamicResource TextPrimary}"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Classes="text-h2" 
+                                   Text="Utilisation des ressources"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                     
                     <!-- RAM avec couleur dynamique -->
                     <StackPanel Spacing="8">
@@ -282,14 +322,19 @@
                     
                     <!-- Bouton actualiser -->
                     <Button Classes="btn-primary"
-                             Content="🔄 Actualiser"
                              Command="{Binding RefreshCommand}"
                              HorizontalAlignment="Left"
-                             Margin="0,8,0,0"/>
+                             Margin="0,8,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconRefresh}" 
+                                      Width="16" Height="16"
+                                      Foreground="{DynamicResource BackgroundPrimary}"/>
+                            <TextBlock Text="Actualiser"/>
+                        </StackPanel>
+                    </Button>
                     
-                    <!-- 🆕 Bouton Demander conseil -->
+                    <!-- Bouton Demander conseil
                     <Button Classes="btn-primary"
-                            Content="💡 Demander conseil"
                             Command="{Binding AnalyserSystemeCommand}"
                             IsEnabled="{Binding !IsAnalyzing}"
                             HorizontalAlignment="Left"
@@ -299,13 +344,26 @@
                                 <Setter Property="Opacity" Value="0.5"/>
                             </Style>
                         </Button.Styles>
-                    </Button>
-                    <!-- Indicateur de chargement IA -->
-                    <TextBlock Classes="text-sm text-info"
-                               Text="🔄 Analyse en cours..."
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconLightbulb}" 
+                                      Width="16" Height="16"
+                                      Foreground="{DynamicResource BackgroundPrimary}"/>
+                            <TextBlock Text="Demander conseil"/>
+                        </StackPanel>
+                    </Button> -->
+                    
+                    <!-- Indicateur de chargement IA 
+                    <StackPanel Orientation="Horizontal" Spacing="8"
                                IsVisible="{Binding IsAnalyzing}"
-                               VerticalAlignment="Center"
-                               Margin="12,8,0,0"/>
+                               Margin="12,8,0,0">
+                        <PathIcon Data="{StaticResource IconRefresh}" 
+                                  Width="14" Height="14"
+                                  Foreground="#0284C7"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Classes="text-sm text-info"
+                                   Text="Analyse en cours..."
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>-->
                 </StackPanel>
             </Border>
             

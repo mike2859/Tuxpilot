@@ -37,9 +37,10 @@
                     
                     <Grid ColumnDefinitions="*,Auto">
                         <TextBlock Grid.Column="0"
-                                  Classes="text-h3"
-                                  Text="{Binding MessageStatut}"
-                                  VerticalAlignment="Center"/>
+                                   Classes="text-h3"
+                                   Text="{Binding MessageStatut}"
+                                   Foreground="{Binding MessageStatutTextBrush}"
+                                   VerticalAlignment="Center"/>
                         
                         <Button Grid.Column="1"
                                 Classes="btn-outline btn-sm"

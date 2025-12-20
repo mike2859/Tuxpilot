@@ -14,4 +14,18 @@
         <StyleInclude Source="/Styles/ButtonStyles.axaml"/>
         <StyleInclude Source="/Styles/TextStyles.axaml"/>
     </Application.Styles>
+             
+     <Application.Resources>
+         <ResourceDictionary>
+             <ResourceDictionary.MergedDictionaries>
+                 <ResourceInclude Source="/Styles/IconResources.axaml"/>
+                 <ResourceInclude Source="/Styles/IconResourcesIA.axaml"/>
+                 <ResourceInclude Source="/Styles/IconResourcesAudit.axaml"/>
+                 <ResourceInclude Source="/Styles/IconResourcesDashboard.axaml"/>
+                 <ResourceInclude Source="/Styles/IconResourcesDiagnostic.axaml"/>
+                 <ResourceInclude Source="/Styles/IconResourcesMisesAJour.axaml"/>
+                 <ResourceInclude Source="/Styles/IconResourcesPlanification.axaml"/>
+             </ResourceDictionary.MergedDictionaries>
+         </ResourceDictionary>
+     </Application.Resources>
 </Application>

@@ -19,9 +19,17 @@
                 
                 <!-- Header -->
                 <StackPanel Spacing="8">
-                    <TextBlock Classes="text-h1"
-                               Text="🔄 Mises à jour"/>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconSync}" 
+                                  Width="32" Height="32"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Classes="text-h1"
+                                   Text="Mises à jour"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                     <TextBlock Classes="text-muted"
+                               Foreground="{DynamicResource TextPrimary}"
                                Text="Gérez les mises à jour de votre système Linux"/>
                 </StackPanel>
                 
@@ -37,17 +45,31 @@
                         Background="{Binding BackgroundColor}"
                         BorderBrush="{Binding BorderColor}">
                     
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Grid.Column="0"
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <PathIcon Grid.Column="0"
+                                  Data="{StaticResource {Binding MessageStatutIconeResourceKey}}"
+                                  Width="24" Height="24"
+                                  Foreground="{Binding MessageStatutIconeColor}"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,12,0"/>
+                        
+                        <TextBlock Grid.Column="1"
                                    Classes="text-h3"
-                                   Text="{Binding MessageStatut}"
+                                   Text="{Binding MessageStatutTexte}"
+                                   Foreground="{Binding MessageStatutTextBrush}"
                                    VerticalAlignment="Center"/>
                         
-                        <Button Grid.Column="1"
+                        <Button Grid.Column="2"
                                 Classes="btn-outline btn-sm"
-                                Content="🔄 Vérifier"
                                 Command="{Binding VerifierMisesAJourCommand}"
-                                Margin="16,0,0,0"/>
+                                Margin="16,0,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <PathIcon Data="{StaticResource IconRefresh}" 
+                                          Width="14" Height="14"
+                                          Foreground="{DynamicResource TextPrimary}"/>
+                                <TextBlock Text="Vérifier"/>
+                            </StackPanel>
+                        </Button>
                     </Grid>
                 </Border>
                 
@@ -64,14 +86,26 @@
                         <Grid DockPanel.Dock="Top" 
                               ColumnDefinitions="*,Auto"
                               Margin="0,0,0,16">
-                            <TextBlock Grid.Column="0"
-                                       Classes="text-h2"
-                                       Text="📦 Paquets disponibles"/>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource IconPackage}" 
+                                          Width="22" Height="22"
+                                          Foreground="{DynamicResource TextPrimary}"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Classes="text-h2"
+                                           Text="Paquets disponibles"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
                             
                             <Button Grid.Column="1"
                                     Classes="btn-primary"
-                                    Content="⬆️ Tout installer"
-                                    Command="{Binding InstallerToutCommand}"/>
+                                    Command="{Binding InstallerToutCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Data="{StaticResource IconUpload}" 
+                                              Width="16" Height="16"
+                                              Foreground="{DynamicResource BackgroundPrimary}"/>
+                                    <TextBlock Text="Tout installer"/>
+                                </StackPanel>
+                            </Button>
                         </Grid>
                         
                         <!-- Liste scrollable -->
@@ -92,8 +126,9 @@
                                                         CornerRadius="8"
                                                         Background="#DBEAFE"
                                                         VerticalAlignment="Center">
-                                                    <TextBlock Text="📦" 
-                                                              FontSize="20"
+                                                    <PathIcon Data="{StaticResource IconPackage}" 
+                                                              Width="20" Height="20"
+                                                              Foreground="#3B82F6"
                                                               HorizontalAlignment="Center"
                                                               VerticalAlignment="Center"/>
                                                 </Border>
@@ -142,8 +177,9 @@
                         BorderThickness="1"
                         IsVisible="{Binding !MisesAJourDisponibles}">
                     <StackPanel Spacing="16" HorizontalAlignment="Center">
-                        <TextBlock Text="✅" 
-                                  FontSize="64"
+                        <PathIcon Data="{StaticResource IconCheck}" 
+                                  Width="64" Height="64"
+                                  Foreground="#10B981"
                                   HorizontalAlignment="Center"/>
                         <TextBlock Classes="text-h2"
                                    Text="Aucune mise à jour disponible"
@@ -157,94 +193,31 @@
             </StackPanel>
         </ScrollViewer>
         
-        <!-- 🆕 DIALOGUE DE CONFIRMATION (overlay) -->
-        <Border IsVisible="{Binding IsConfirmationVisible}"
-                Background="#80000000"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">
-            <Border Background="{DynamicResource BackgroundPrimary}"
-                    CornerRadius="12"
-                    Padding="32"
-                    MaxWidth="500"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    BoxShadow="0 10 25 5 #40000000">
-                <StackPanel Spacing="20">
-                    
-                    <!-- Icône et titre -->
-                    <StackPanel Spacing="12" HorizontalAlignment="Center">
-                        <TextBlock Text="⚠️" 
-                                  FontSize="48"
-                                  HorizontalAlignment="Center"/>
-                        <TextBlock Classes="text-h1"
-                                   Text="Confirmer l'installation"
-                                   HorizontalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    <!-- Message -->
-                    <TextBlock TextWrapping="Wrap"
-                              HorizontalAlignment="Center"
-                              TextAlignment="Center"
-                              Foreground="#374151">
-                        <Run Text="Vous êtes sur le point d'installer "/>
-                        <Run Text="{Binding NombreMisesAJour}" FontWeight="Bold"/>
-                        <Run Text=" mise(s) à jour."/>
-                        <LineBreak/>
-                        <LineBreak/>
-                        <Run Text="Cette opération nécessite des privilèges administrateur."/>
-                        <LineBreak/>
-                        <Run Text="Voulez-vous continuer ?"/>
-                    </TextBlock>
-                    
-                    <!-- Boutons -->
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
-                        <Button Grid.Column="0"
-                                Classes="btn-secondary"
-                                Content="❌ Annuler"
-                                Command="{Binding AnnulerInstallationCommand}"/>
-                        
-                        <Button Grid.Column="1"
-                                Classes="btn-primary"
-                                Content="✅ Installer"
-                                Command="{Binding ConfirmerInstallationCommand}"/>
-                    </Grid>
-                    
-                </StackPanel>
-            </Border>
-        </Border>
-        
-      <!-- 🆕 DIALOGUE DE CONFIRMATION (overlay) -->
+        <!-- DIALOGUE DE CONFIRMATION (overlay) -->
 <Border IsVisible="{Binding IsConfirmationVisible}"
         Background="#80000000"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
     <Border Background="{DynamicResource BackgroundPrimary}"
             CornerRadius="16"
-            Padding="40"
-            MaxWidth="500"
+            Padding="32"
+            MaxWidth="450"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             BoxShadow="0 20 50 10 #60000000">
-        <StackPanel Spacing="24">
+        <StackPanel Spacing="20">
             
-            <!-- Icône et titre -->
-            <StackPanel Spacing="16" HorizontalAlignment="Center">
-                <Border Width="80" Height="80"
-                        CornerRadius="40"
-                        Background="#FEF3C7"
-                        HorizontalAlignment="Center">
-                    <TextBlock Text="⚠️" 
-                              FontSize="48"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
-                </Border>
-                <TextBlock Text="Confirmer l'installation" 
-                          FontSize="24"
-                          FontWeight="Bold"
-                          HorizontalAlignment="Center"
-                          Foreground="{DynamicResource TextPrimary}"/>
-            </StackPanel>
-            
+            <!-- Icône d'avertissement -->
+            <PathIcon Data="{StaticResource IconWarning}" 
+                      Width="48" Height="48"
+                      Foreground="#F59E0B"
+                      HorizontalAlignment="Center"/>
+
+            <!-- Titre -->
+            <TextBlock Classes="text-h2"
+                       Text="Confirmation requise"
+                       HorizontalAlignment="Center"/>
+
             <!-- Message -->
             <StackPanel Spacing="12">
                 <TextBlock Classes="text-body"
@@ -275,22 +248,32 @@
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
                 <Button Grid.Column="0"
                         Classes="btn-secondary"
-                        Content="❌ Annuler"
-                        Command="{Binding AnnulerInstallationCommand}"/>
+                        Command="{Binding AnnulerInstallationCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconClose}" 
+                                  Width="16" Height="16"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="Annuler"/>
+                    </StackPanel>
+                </Button>
     
                 <Button Grid.Column="1"
                         Classes="btn-primary"
-                        Content="✅ Installer"
-                        Command="{Binding ConfirmerInstallationCommand}"/>
+                        Command="{Binding ConfirmerInstallationCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconCheck}" 
+                                  Width="16" Height="16"
+                                  Foreground="{DynamicResource BackgroundPrimary}"/>
+                        <TextBlock Text="Installer"/>
+                    </StackPanel>
+                </Button>
             </Grid>
             
         </StackPanel>
     </Border>
-    
-    
-    
 </Border>
-        <!-- 🆕 OVERLAY LOGS D'INSTALLATION -->
+    
+        <!-- OVERLAY LOGS D'INSTALLATION -->
 <Border IsVisible="{Binding IsInstallingWithLogs}"
         Background="#80000000"
         HorizontalAlignment="Stretch"
@@ -307,9 +290,14 @@
             
             <!-- Titre -->
             <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,20">
-                <TextBlock Classes="text-h2"
-                          Text="⚙️ Installation en cours..."
-                          HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                    <PathIcon Data="{StaticResource IconSettings}" 
+                              Width="24" Height="24"
+                              Foreground="{DynamicResource TextPrimary}"/>
+                    <TextBlock Classes="text-h2"
+                              Text="Installation en cours..."
+                              VerticalAlignment="Center"/>
+                </StackPanel>
                 <TextBlock Classes="text-muted"
                           Text="Veuillez patienter pendant l'installation des mises à jour"
                           HorizontalAlignment="Center"
@@ -352,8 +340,11 @@
                             Padding="12,8"
                             Margin="0">
                         <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconScroll}" 
+                                      Width="16" Height="16"
+                                      Foreground="{DynamicResource TextPrimary}"/>
                             <TextBlock Classes="text-body"
-                                      Text="📜 Console"
+                                      Text="Console"
                                       FontWeight="SemiBold"/>
                             <TextBlock Classes="text-body"
                                       Text="{Binding IsLogsExpanded, Converter={StaticResource BoolToArrowConverter}}"
@@ -392,12 +383,18 @@
             </Border>
             
             <!-- Message info -->
-            <TextBlock Grid.Row="3"
-                      Classes="text-sm text-muted"
-                      Text="⏳ L'installation peut prendre plusieurs minutes selon votre connexion"
-                      HorizontalAlignment="Center"
-                      TextAlignment="Center"
-                      Margin="0,16,0,0"/>
+            <StackPanel Grid.Row="3"
+                       Orientation="Horizontal"
+                       Spacing="8"
+                       HorizontalAlignment="Center"
+                       Margin="0,16,0,0">
+                <PathIcon Data="{StaticResource IconHourglass}" 
+                          Width="16" Height="16"
+                          Foreground="{DynamicResource TextMuted}"/>
+                <TextBlock Classes="text-sm text-muted"
+                          Text="L'installation peut prendre plusieurs minutes selon votre connexion"
+                          TextAlignment="Center"/>
+            </StackPanel>
             
         </Grid>
     </Border>
