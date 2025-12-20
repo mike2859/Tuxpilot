@@ -48,7 +48,6 @@ Thumbs.db
 # ============================================
 # DOSSIERS DE BUILD (NE JAMAIS VERSIONNER)
 # ============================================
-build/
 bin/
 obj/
 out/
