@@ -72,12 +72,19 @@ def verifier_dnf5():
     """Vérifie les mises à jour avec DNF5"""
     try:
         # Vérifier les updates disponibles
-        result = subprocess.run(
-            ['dnf5', 'check-update', '--quiet'],
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
+        # result = subprocess.run(
+        #     ['dnf5', 'check-update', '--quiet'],
+        #     capture_output=True,
+        #     text=True,
+        #     timeout=30
+        # )
+
+        cmd = ['dnf5', 'check-update', '--quiet']
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        except subprocess.TimeoutExpired:
+            result = subprocess.run(cmd + ['--cacheonly'], capture_output=True, text=True, timeout=20)
+
 
         paquets = []
 

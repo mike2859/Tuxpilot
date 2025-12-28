@@ -13,7 +13,7 @@ namespace Tuxpilot.UI.ViewModels;
 /// <summary>
 /// ViewModel pour la vue Dashboard
 /// </summary>
-public partial class DashboardViewModel : ViewModelBase
+public partial class DashboardViewModel : ViewModelBase, IDisposable
 {
     private readonly IServiceSysteme _serviceSysteme;
     private readonly IServiceAssistantIA _serviceIA; 

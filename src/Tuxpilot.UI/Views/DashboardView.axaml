@@ -53,11 +53,11 @@
                             VerticalAlignment="Top">
                         <PathIcon Data="{StaticResource IconRobot}" 
                                   Width="24" Height="24"
-                                  Foreground="White"
+                                  Foreground="{DynamicResource TextPrimary}"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"/>
                     </Border>
-        
+
                     <!-- Message -->
                     <StackPanel Grid.Column="1" 
                                 Margin="16,0,0,0"
@@ -102,7 +102,7 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <PathIcon Data="{StaticResource IconRefresh}" 
                               Width="16" Height="16"
-                              Foreground="#0284C7"
+                              Foreground="{DynamicResource Info}"
                               VerticalAlignment="Center"/>
                     <TextBlock Classes="text-sm text-info"
                                Text="{Binding TimeSinceLastRefresh}"
@@ -112,7 +112,7 @@
                                VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
-            
+
             <!-- HISTORIQUE DES ACTIONS -->
 <Border Background="{DynamicResource BackgroundPrimary}"
         CornerRadius="12"
@@ -177,10 +177,9 @@
                                     VerticalAlignment="Center">
                                 <TextBlock Classes="text-sm"
                                           Text="{Binding Success, Converter={StaticResource BoolToTextConverter}}"
-                                          Foreground="White"
+                                          Foreground="{DynamicResource TextPrimary}"
                                           FontWeight="SemiBold"/>
                             </Border>
-                            
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -377,7 +376,7 @@
                 <TextBlock Classes="text-body" 
                            Text="{Binding StatusMessage}" 
                            FontWeight="Medium"
-                           Foreground="#1E40AF"/>
+                           Foreground="{DynamicResource TextPrimary}"/>
             </Border>
             
         </StackPanel>
