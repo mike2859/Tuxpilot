@@ -82,7 +82,7 @@ public partial class App : Application
     }
 
     // 🆕 Méthode SIMPLE pour appliquer un thème
-    public void AppliquerTheme(Theme theme)
+     public void AppliquerTheme(Theme theme)
     {
         if (theme == Theme.Dark)
         {
@@ -100,6 +100,28 @@ public partial class App : Application
             
             Resources["Primary"] = new SolidColorBrush(Color.Parse("#60A5FA"));
             Resources["PrimaryHover"] = new SolidColorBrush(Color.Parse("#3B82F6"));
+            
+            // 🆕 Backgrounds contextuels (Dark)
+            Resources["BackgroundSuccess"] = new SolidColorBrush(Color.Parse("#064E3B"));
+            Resources["BackgroundWarning"] = new SolidColorBrush(Color.Parse("#78350F"));
+            Resources["BackgroundDanger"] = new SolidColorBrush(Color.Parse("#7F1D1D"));
+            Resources["BackgroundInfo"] = new SolidColorBrush(Color.Parse("#1E3A8A"));
+            
+            // 🆕 Text contextuels (Dark - clairs)
+            Resources["TextSuccess"] = new SolidColorBrush(Color.Parse("#6EE7B7"));
+            Resources["TextWarning"] = new SolidColorBrush(Color.Parse("#FCD34D"));
+            Resources["TextDanger"] = new SolidColorBrush(Color.Parse("#FCA5A5"));
+            Resources["TextInfo"] = new SolidColorBrush(Color.Parse("#93C5FD"));
+            
+            // 🆕 Couleurs sémantiques
+            Resources["Success"] = new SolidColorBrush(Color.Parse("#10B981"));
+            Resources["Warning"] = new SolidColorBrush(Color.Parse("#F59E0B"));
+            Resources["Danger"] = new SolidColorBrush(Color.Parse("#EF4444"));
+            Resources["Info"] = new SolidColorBrush(Color.Parse("#3B82F6"));
+            
+            // 🆕 Overlays
+            Resources["OverlayBackground"] = Color.Parse("#80000000");
+            Resources["ShadowColor"] = Color.Parse("#60000000");
         }
         else
         {
@@ -118,11 +140,33 @@ public partial class App : Application
             Resources["Primary"] = new SolidColorBrush(Color.Parse("#3B82F6"));
             Resources["PrimaryHover"] = new SolidColorBrush(Color.Parse("#2563EB"));
             
-            Resources["SuccessTextOnBackground"] = new SolidColorBrush(Color.Parse("#065F46"));
-            Resources["WarningTextOnBackground"] = new SolidColorBrush(Color.Parse("#92400E"));
-            Resources["ErrorTextOnBackground"] = new SolidColorBrush(Color.Parse("#991B1B"));
-            Resources["InfoTextOnBackground"] = new SolidColorBrush(Color.Parse("#1E40AF"));
-
+            // 🆕 Backgrounds contextuels (Light)
+            Resources["BackgroundSuccess"] = new SolidColorBrush(Color.Parse("#ECFDF5"));
+            Resources["BackgroundWarning"] = new SolidColorBrush(Color.Parse("#FFFBEB"));
+            Resources["BackgroundDanger"] = new SolidColorBrush(Color.Parse("#FEE2E2"));
+            Resources["BackgroundInfo"] = new SolidColorBrush(Color.Parse("#EFF6FF"));
+            
+            // 🆕 Text contextuels (Light - foncés)
+            Resources["TextSuccess"] = new SolidColorBrush(Color.Parse("#047857"));
+            Resources["TextWarning"] = new SolidColorBrush(Color.Parse("#92400E"));
+            Resources["TextDanger"] = new SolidColorBrush(Color.Parse("#991B1B"));
+            Resources["TextInfo"] = new SolidColorBrush(Color.Parse("#1E40AF"));
+            
+            // 🆕 Couleurs sémantiques (identiques pour cohérence)
+            Resources["Success"] = new SolidColorBrush(Color.Parse("#10B981"));
+            Resources["Warning"] = new SolidColorBrush(Color.Parse("#F59E0B"));
+            Resources["Danger"] = new SolidColorBrush(Color.Parse("#EF4444"));
+            Resources["Info"] = new SolidColorBrush(Color.Parse("#3B82F6"));
+            
+            // 🆕 Overlays (identiques - fonctionnent sur les deux thèmes)
+            Resources["OverlayBackground"] = Color.Parse("#80000000");
+            Resources["ShadowColor"] = Color.Parse("#40000000");
+            
+            // ⚠️ ANCIEN (à supprimer - remplacé par les ressources ci-dessus)
+            // Resources["SuccessTextOnBackground"] = new SolidColorBrush(Color.Parse("#065F46"));
+            // Resources["WarningTextOnBackground"] = new SolidColorBrush(Color.Parse("#92400E"));
+            // Resources["ErrorTextOnBackground"] = new SolidColorBrush(Color.Parse("#991B1B"));
+            // Resources["InfoTextOnBackground"] = new SolidColorBrush(Color.Parse("#1E40AF"));
         }
     }
 }
