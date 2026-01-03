@@ -106,10 +106,10 @@
             </Border>
             
             <!-- ENCART D'ACTION -->
-            <Border Background="#FEF3C7"
+            <Border Background="{DynamicResource BackgroundWarning}"
                     CornerRadius="12"
                     Padding="16"
-                    BorderBrush="#F59E0B"
+                    BorderBrush="{DynamicResource Warning}"
                     BorderThickness="2"
                     MaxWidth="600"
                     HorizontalAlignment="Left"
@@ -120,29 +120,29 @@
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <PathIcon Data="{StaticResource IconLightbulb}" 
                                   Width="20" Height="20"
-                                  Foreground="#92400E"/>
+                                  Foreground="{DynamicResource TextWarning}"/>
                         <TextBlock Classes="text-body"
                                   Text="Je peux faire ça pour vous !"
                                   FontWeight="Bold"
-                                  Foreground="#92400E"
+                                  Foreground="{DynamicResource TextWarning}"
                                   VerticalAlignment="Center"/>
                     </StackPanel>
                     
                     <!-- Commande -->
-                    <Border Background="#FFFBEB"
+                    <Border Background="{DynamicResource BackgroundWarning}"
                             CornerRadius="8"
                             Padding="12"
-                            BorderBrush="#FCD34D"
+                            BorderBrush="{DynamicResource Warning}"
                             BorderThickness="1">
                         <StackPanel Spacing="4">
                             <TextBlock Classes="text-sm"
                                       Text="Commande :"
-                                      Foreground="#92400E"
+                                      Foreground="{DynamicResource TextWarning}"
                                       FontWeight="SemiBold"/>
                             <TextBlock Classes="text-body"
                                       Text="{Binding Action.Command}"
                                       FontFamily="monospace"
-                                      Foreground="#78350F"
+                                      Foreground="{DynamicResource TextWarning}"
                                       TextWrapping="Wrap"/>
                         </StackPanel>
                     </Border>
@@ -177,13 +177,13 @@
                     </Grid>
                     
                     <!-- Résultat -->
-                    <Border Background="#D1FAE5"
+                    <Border Background="{DynamicResource BackgroundSuccess}"
                             CornerRadius="8"
                             Padding="12"
                             IsVisible="{Binding ActionExecuted}">
                         <TextBlock Classes="text-body"
                                   Text="{Binding ActionResult}"
-                                  Foreground="#065F46"
+                                  Foreground="{DynamicResource TextSuccess}"
                                   FontWeight="SemiBold"/>
                     </Border>
                     

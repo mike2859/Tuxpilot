@@ -124,11 +124,11 @@
                                                 <Border Grid.Column="0"
                                                         Width="40" Height="40"
                                                         CornerRadius="8"
-                                                        Background="#DBEAFE"
+                                                        Background="{DynamicResource BackgroundInfo}"
                                                         VerticalAlignment="Center">
                                                     <PathIcon Data="{StaticResource IconPackage}" 
                                                               Width="20" Height="20"
-                                                              Foreground="#3B82F6"
+                                                              Foreground="{DynamicResource Primary}"
                                                               HorizontalAlignment="Center"
                                                               VerticalAlignment="Center"/>
                                                 </Border>
@@ -149,7 +149,7 @@
                                                 
                                                 <!-- Badge -->
                                                 <Border Grid.Column="2"
-                                                        Background="#DBEAFE"
+                                                        Background="{DynamicResource BackgroundInfo}"
                                                         CornerRadius="12"
                                                         Padding="10,6"
                                                         VerticalAlignment="Center"
@@ -179,13 +179,14 @@
                     <StackPanel Spacing="16" HorizontalAlignment="Center">
                         <PathIcon Data="{StaticResource IconCheck}" 
                                   Width="64" Height="64"
-                                  Foreground="#10B981"
+                                  Foreground="{DynamicResource TextSuccess}"
                                   HorizontalAlignment="Center"/>
                         <TextBlock Classes="text-h2"
                                    Text="Aucune mise à jour disponible"
                                    HorizontalAlignment="Center"/>
-                        <TextBlock Classes="text-muted"
+                        <TextBlock Classes="text-h1" 
                                    Text="Votre système est à jour !"
+                                    Foreground="{DynamicResource TextPrimary}"
                                    HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
@@ -195,7 +196,7 @@
         
         <!-- DIALOGUE DE CONFIRMATION (overlay) -->
 <Border IsVisible="{Binding IsConfirmationVisible}"
-        Background="#80000000"
+        Background="{DynamicResource OverlayBackground}"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
     <Border Background="{DynamicResource BackgroundPrimary}"
@@ -210,7 +211,7 @@
             <!-- Icône d'avertissement -->
             <PathIcon Data="{StaticResource IconWarning}" 
                       Width="48" Height="48"
-                      Foreground="#F59E0B"
+                      Foreground="{DynamicResource Warning}"
                       HorizontalAlignment="Center"/>
 
             <!-- Titre -->
@@ -225,7 +226,7 @@
                            HorizontalAlignment="Center"
                            TextAlignment="Center">
                     <Run Text="Vous êtes sur le point d'installer "/>
-                    <Run Text="{Binding NombreMisesAJour}" FontWeight="Bold" Foreground="#F59E0B"/>
+                    <Run Text="{Binding NombreMisesAJour}" FontWeight="Bold" Foreground="{DynamicResource Warning}"/>
                     <Run Text=" mise(s) à jour."/>
                 </TextBlock>
 
@@ -275,7 +276,7 @@
     
         <!-- OVERLAY LOGS D'INSTALLATION -->
 <Border IsVisible="{Binding IsInstallingWithLogs}"
-        Background="#80000000"
+        Background="{DynamicResource OverlayBackground}"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
     <Border Background="{DynamicResource BackgroundPrimary}"
@@ -309,8 +310,8 @@
                 <ProgressBar Value="{Binding ProgressPercent}"
                             Height="8"
                             CornerRadius="4"
-                            Foreground="#3B82F6"
-                            Background="#E5E7EB"/>
+                            Foreground="{DynamicResource Primary}"
+                            Background="{DynamicResource BorderPrimary}"/>
                 <TextBlock Classes="text-sm"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"

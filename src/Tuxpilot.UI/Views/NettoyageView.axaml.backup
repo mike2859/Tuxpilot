@@ -1,0 +1,276 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             x:Class="Tuxpilot.UI.Views.NettoyageView"
+             x:DataType="vm:NettoyageViewModel">
+    
+    
+    <Design.DataContext>
+        <vm:NettoyageViewModel/>
+    </Design.DataContext>
+
+    <Grid>
+        
+        <!-- Contenu principal -->
+        <ScrollViewer>
+            <StackPanel Margin="32" Spacing="24">
+                
+                <!-- Header -->
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="text-h1"
+                              Text="🧹 Nettoyage"/>
+                    <TextBlock Classes="text-muted"
+                              Text="Libérez de l'espace disque en nettoyant votre système"/>
+                </StackPanel>
+                
+                <!-- Indicateur de chargement -->
+                <ProgressBar IsIndeterminate="True"
+                            IsVisible="{Binding IsLoading}"
+                            Height="4"/>
+                
+                <!-- Message de statut -->
+                <Border CornerRadius="8"
+                        Padding="16"
+                        BorderThickness="2"
+                        Background="{Binding BackgroundColor}"
+                        BorderBrush="{Binding BorderColor}">
+                    
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0"
+                                   Classes="text-h3"
+                                   Text="{Binding MessageStatut}"
+                                   Foreground="{Binding MessageStatutTextBrush}"
+                                   VerticalAlignment="Center"/>
+                        
+                        <Button Grid.Column="1"
+                                Classes="btn-outline btn-sm"
+                                Content="🔄 Analyser"
+                                Command="{Binding AnalyserCommand}"
+                                Margin="16,0,0,0"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Liste des éléments nettoyables -->
+                <Border Background="{DynamicResource BackgroundPrimary}"
+                        CornerRadius="12"
+                        Padding="24"
+                        BorderBrush="{DynamicResource BorderPrimary}"
+                        BorderThickness="1"
+                        IsVisible="{Binding ElementsDisponibles}">
+                    <DockPanel LastChildFill="True">
+                        
+                        <!-- Header avec bouton -->
+                        <Grid DockPanel.Dock="Top" 
+                              ColumnDefinitions="*,Auto"
+                              Margin="0,0,0,16">
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock Classes="text-h2"
+                                          Text="📋 Éléments nettoyables"/>
+                                <TextBlock Classes="text-muted">
+                                    <Run Text="{Binding TailleTotaleMB}"/>
+                                    <Run Text=" MB peuvent être libérés"/>
+                                </TextBlock>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1"
+                                    Classes="btn-primary"
+                                    Content="🧹 Nettoyer"
+                                    Command="{Binding NettoyerCommand}"/>
+                        </Grid>
+                        
+                        <!-- Liste scrollable -->
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                     VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Elements}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource BackgroundSecondary}"
+                                                CornerRadius="8"
+                                                Padding="16"
+                                                Margin="0,0,0,8">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                
+                                                <!-- Icône -->
+                                                <Border Grid.Column="0"
+                                                        Width="40" Height="40"
+                                                        CornerRadius="8"
+                                                        Background="#DBEAFE"
+                                                        VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Icone}" 
+                                                              FontSize="20"
+                                                              HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                                </Border>
+                                                
+                                                <!-- Infos -->
+                                                <StackPanel Grid.Column="1" 
+                                                           Margin="16,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           Spacing="4">
+                                                    <TextBlock Classes="text-body"
+                                                              Text="{Binding Nom}"
+                                                              FontWeight="SemiBold"/>
+                                                    <TextBlock Classes="text-muted"
+                                                              Text="{Binding Description}"/>
+                                                    <TextBlock Classes="text-sm"
+                                                              Text="{Binding Chemin}"/>
+                                                </StackPanel>
+                                                
+                                                <!-- Taille -->
+                                                <Border Grid.Column="2"
+                                                        Background="#FEF3C7"
+                                                        CornerRadius="12"
+                                                        Padding="10,6"
+                                                        VerticalAlignment="Center"
+                                                        Margin="16,0,0,0">
+                                                    <TextBlock Classes="text-sm"
+                                                              Text="{Binding TailleTexte}"
+                                                              FontWeight="SemiBold"
+                                                              Foreground="#F59E0B"/>
+                                                </Border>
+                                                
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        
+                    </DockPanel>
+                </Border>
+                
+                <!-- Message si aucun élément -->
+                <Border Background="{DynamicResource BackgroundPrimary}"
+                        CornerRadius="12"
+                        Padding="48,32"
+                        BorderBrush="{DynamicResource BorderPrimary}"
+                        BorderThickness="1"
+                        IsVisible="{Binding !ElementsDisponibles}">
+                    <StackPanel Spacing="16" HorizontalAlignment="Center">
+                        <TextBlock Text="✨" 
+                                  FontSize="64"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Classes="text-h2"
+                                  Text="Système propre !"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Classes="text-muted"
+                                  Text="Aucun nettoyage nécessaire pour le moment"
+                                  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- DIALOGUE DE CONFIRMATION -->
+        <Border IsVisible="{Binding IsConfirmationVisible}"
+                Background="#80000000"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    CornerRadius="16"
+                    Padding="40"
+                    MaxWidth="500"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BoxShadow="0 20 50 10 #60000000">
+                <StackPanel Spacing="24">
+                    
+                    <!-- Icône et titre -->
+                    <StackPanel Spacing="16" HorizontalAlignment="Center">
+                        <Border Width="80" Height="80"
+                                CornerRadius="40"
+                                Background="#FEF3C7"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="🧹" 
+                                      FontSize="48"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Classes="text-h1"
+                                  Text="Confirmer le nettoyage"
+                                  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Message -->
+                    <StackPanel Spacing="12">
+                        <TextBlock Classes="text-body"
+                                  TextWrapping="Wrap"
+                                  HorizontalAlignment="Center"
+                                  TextAlignment="Center">
+                            <Run Text="Vous êtes sur le point de nettoyer "/>
+                            <Run Text="{Binding TailleTotaleMB}" FontWeight="Bold" Foreground="#F59E0B"/>
+                            <Run Text=" MB de données."/>
+                        </TextBlock>
+                        
+                        <TextBlock Classes="text-muted"
+                                  Text="Cette opération nécessite des privilèges administrateur."
+                                  TextWrapping="Wrap"
+                                  HorizontalAlignment="Center"
+                                  TextAlignment="Center"/>
+                        
+                        <TextBlock Classes="text-body"
+                                  Text="Voulez-vous continuer ?"
+                                  TextWrapping="Wrap"
+                                  HorizontalAlignment="Center"
+                                  TextAlignment="Center"
+                                  FontWeight="SemiBold"
+                                  Margin="0,8,0,0"/>
+                    </StackPanel>
+                    
+                    <!-- Boutons -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
+                        <Button Grid.Column="0"
+                                Classes="btn-secondary"
+                                Content="❌ Annuler"
+                                Command="{Binding AnnulerNettoyageCommand}"/>
+                        
+                        <Button Grid.Column="1"
+                                Classes="btn-primary"
+                                Content="✅ Nettoyer"
+                                Command="{Binding ConfirmerNettoyageCommand}"/>
+                    </Grid>
+                    
+                </StackPanel>
+            </Border>
+        </Border>
+        
+        <!-- MESSAGE DE SUCCÈS -->
+        <Border IsVisible="{Binding IsSuccessVisible}"
+                Background="#80000000"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    CornerRadius="16"
+                    Padding="40"
+                    MaxWidth="450"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BoxShadow="0 20 50 10 #60000000">
+                <StackPanel Spacing="20" HorizontalAlignment="Center">
+                    
+                    <Border Width="80" Height="80"
+                            CornerRadius="40"
+                            Background="#ECFDF5"
+                            HorizontalAlignment="Center">
+                        <TextBlock Text="✨" 
+                                  FontSize="48"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                    </Border>
+                    
+                    <TextBlock Classes="text-h1"
+                              Text="Nettoyage réussi !"
+                              HorizontalAlignment="Center"/>
+                    
+                    <TextBlock Classes="text-muted"
+                              Text="Votre système a été nettoyé avec succès."
+                              TextAlignment="Center"
+                              TextWrapping="Wrap"
+                              HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Border>
+        
+    </Grid>
+</UserControl>

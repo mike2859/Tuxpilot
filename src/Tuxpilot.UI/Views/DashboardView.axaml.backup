@@ -1,0 +1,384 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="using:Tuxpilot.UI.Converters"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             x:Class="Tuxpilot.UI.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+    <Design.DataContext>
+        <vm:DashboardViewModel/>
+    </Design.DataContext>
+
+    <UserControl.Resources>
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+        <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
+    </UserControl.Resources>
+    
+  <ScrollViewer>
+        <StackPanel Margin="32" Spacing="24">
+            
+            <!-- Header avec logo -->
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <PathIcon Data="{StaticResource IconPenguin}" 
+                          Width="48" Height="48"
+                          Foreground="{DynamicResource TextPrimary}"
+                          VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center" Spacing="4">
+                    <TextBlock Classes="text-h1" Text="Tuxpilot"/>
+                    <TextBlock Classes="text-muted" Text="Assistant Linux pour débutants et collectivités"/>
+                </StackPanel>
+            </StackPanel>
+            
+            <!-- Indicateur de chargement -->
+            <ProgressBar IsIndeterminate="True"
+                        IsVisible="{Binding IsLoading}"
+                        Height="4"/>
+            
+            <!-- SUGGESTION PROACTIVE IA -->
+            <Border Grid.Row="0"
+                    IsVisible="{Binding HasSuggestion}"
+                    Background="#DBEAFE"
+                    CornerRadius="12"
+                    Padding="20"
+                    Margin="32,16,32,16"
+                    BorderBrush="#3B82F6"
+                    BorderThickness="2">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+        
+                    <!-- Icône -->
+                    <Border Grid.Column="0"
+                            Width="48" Height="48"
+                            CornerRadius="24"
+                            Background="#3B82F6"
+                            VerticalAlignment="Top">
+                        <PathIcon Data="{StaticResource IconRobot}" 
+                                  Width="24" Height="24"
+                                  Foreground="{DynamicResource TextPrimary}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Message -->
+                    <StackPanel Grid.Column="1" 
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconLightbulb}" 
+                                      Width="20" Height="20"
+                                      Foreground="#1E40AF"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Classes="text-h3"
+                                       Text="Suggestion de l'IA"
+                                       Foreground="#1E40AF"/>
+                        </StackPanel>
+                        <TextBlock Classes="text-body"
+                                   Text="{Binding SuggestionIA}"
+                                   TextWrapping="Wrap"
+                                   Foreground="#1E3A8A"/>
+                    </StackPanel>
+        
+                    <!-- Bouton fermer -->
+                    <Button Grid.Column="2"
+                            Classes="btn-secondary btn-sm"
+                            Command="{Binding FermerSuggestionCommand}"
+                            VerticalAlignment="Top"
+                            Width="32" Height="32"
+                            Padding="0">
+                        <PathIcon Data="{StaticResource IconClose}" 
+                                  Width="14" Height="14"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                    </Button>
+        
+                </Grid>
+            </Border>
+            
+            <!-- Info dernière mise à jour -->
+            <Border Background="#F0F9FF"
+                    CornerRadius="8"
+                    Padding="12,10"
+                    BorderBrush="#BAE6FD"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{StaticResource IconRefresh}" 
+                              Width="16" Height="16"
+                              Foreground="{DynamicResource Info}"
+                              VerticalAlignment="Center"/>
+                    <TextBlock Classes="text-sm text-info"
+                               Text="{Binding TimeSinceLastRefresh}"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Classes="text-sm text-muted"
+                               Text="• Actualisation automatique toutes les 10s"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- HISTORIQUE DES ACTIONS -->
+<Border Background="{DynamicResource BackgroundPrimary}"
+        CornerRadius="12"
+        Padding="20"
+        BorderBrush="{DynamicResource BorderPrimary}"
+        BorderThickness="1">
+    <StackPanel Spacing="16">
+        
+        <!-- Header -->
+        <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                <PathIcon Data="{StaticResource IconList}" 
+                          Width="22" Height="22"
+                          Foreground="{DynamicResource TextPrimary}"
+                          VerticalAlignment="Center"/>
+                <TextBlock Classes="text-h3"
+                          Text="Dernières actions"
+                          VerticalAlignment="Center"/>
+            </StackPanel>
+            <Button Grid.Column="1"
+                    Classes="btn-outline btn-sm"
+                    Command="{Binding ChargerHistoriqueCommand}"
+                    ToolTip.Tip="Actualiser">
+                <PathIcon Data="{StaticResource IconRefresh}" 
+                          Width="14" Height="14"
+                          Foreground="{DynamicResource TextPrimary}"/>
+            </Button>
+        </Grid>
+        
+        <!-- Liste des actions -->
+        <ItemsControl ItemsSource="{Binding DernieresActions}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="{DynamicResource BackgroundSecondary}"
+                            CornerRadius="8"
+                            Padding="12"
+                            Margin="0,0,0,8">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            
+                            <!-- Icône -->
+                            <TextBlock Grid.Column="0"
+                                      Text="{Binding Icone}"
+                                      Foreground="{DynamicResource TextPrimary}"
+                                      FontSize="20"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,12,0"/>
+                            
+                            <!-- Description -->
+                            <StackPanel Grid.Column="1" Spacing="4">
+                                <TextBlock Classes="text-body"
+                                          Text="{Binding Description}"
+                                          FontWeight="Medium"/>
+                                <TextBlock Classes="text-sm text-muted"
+                                          Text="{Binding DateFormatee}"/>
+                            </StackPanel>
+                            
+                            <!-- Statut -->
+                            <Border Grid.Column="2"
+                                    Background="{Binding Success, Converter={StaticResource BoolToColorConverter}}"
+                                    CornerRadius="12"
+                                    Padding="8,4"
+                                    VerticalAlignment="Center">
+                                <TextBlock Classes="text-sm"
+                                          Text="{Binding Success, Converter={StaticResource BoolToTextConverter}}"
+                                          Foreground="{DynamicResource TextPrimary}"
+                                          FontWeight="SemiBold"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+        <!-- Message si vide -->
+        <TextBlock Classes="text-muted"
+                  Text="Aucune action enregistrée pour le moment"
+                  
+                  HorizontalAlignment="Center"
+                  Margin="0,8,0,0">
+            <TextBlock.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="DernieresActions.Count"/>
+                    <Binding Source="0"/>
+                </MultiBinding>
+            </TextBlock.IsVisible>
+        </TextBlock>
+        
+    </StackPanel>
+</Border>
+
+            
+            <!-- Informations système -->
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    CornerRadius="12"
+                    Padding="24"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1">
+                <StackPanel Spacing="20">
+                    
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconInfo}" 
+                                  Width="20" Height="20"
+                                  Foreground="{DynamicResource TextPrimary}"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="Informations système" 
+                                  FontSize="18" 
+                                  FontWeight="SemiBold"
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Distribution -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="text-label" Text="Distribution"/>
+                        <TextBlock Classes="text-value" Text="{Binding SystemInfo.Distribution}"/>
+                    </StackPanel>
+                    
+                    <!-- Kernel -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="text-label" Text="Kernel"/>
+                        <TextBlock Classes="text-value" Text="{Binding SystemInfo.KernelVersion}"/>
+                    </StackPanel>
+                    
+                    <!-- Gestionnaire de paquets -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="text-label" Text="Gestionnaire de paquets"/>
+                        <TextBlock Classes="text-value" Text="{Binding SystemInfo.PackageManager}"/>
+                    </StackPanel>
+                    
+                    <!-- Processeur -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="text-label" Text="Processeur"/>
+                        <TextBlock Classes="text-value" Text="{Binding SystemInfo.CpuModel}"/>
+                        <TextBlock Classes="text-muted">
+                            <Run Text="{Binding SystemInfo.CpuCores}"/>
+                            <Run Text=" cœurs • "/>
+                            <Run Text="{Binding SystemInfo.CpuThreads}"/>
+                            <Run Text=" threads"/>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- Utilisation des ressources -->
+            <Border Background="{DynamicResource BackgroundPrimary}"
+                    CornerRadius="12"
+                    Padding="24"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1">
+                <StackPanel Spacing="20">
+                    
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconChart}" 
+                                  Width="22" Height="22"
+                                  Foreground="{DynamicResource TextPrimary}"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Classes="text-h2" 
+                                   Text="Utilisation des ressources"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- RAM avec couleur dynamique -->
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            
+                            <TextBlock Grid.Column="0" Classes="text-body" Text="Mémoire RAM"/>
+                            <TextBlock Grid.Column="1" Classes="text-metric" 
+                                       Text="{Binding SystemInfo.RamUsageText}"
+                                       Foreground="{Binding SystemInfo.RamColor}"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding SystemInfo.RamPercent}" 
+                                    Maximum="100"
+                                    Height="12"
+                                    CornerRadius="6"
+                                    Foreground="{Binding SystemInfo.RamColor}"/>
+                    </StackPanel>
+                    
+                    <!-- CPU avec couleur dynamique -->
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Classes="text-body" Text="Processeur (CPU)"/>
+                            <TextBlock Grid.Column="1" Classes="text-metric" 
+                                       Text="{Binding SystemInfo.CpuUsageText}"
+                                       Foreground="{Binding SystemInfo.CpuColor}"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding SystemInfo.CpuPercent}" 
+                                    Maximum="100"
+                                    Height="12"
+                                    CornerRadius="6"
+                                    Foreground="{Binding SystemInfo.CpuColor}"/>
+                    </StackPanel>
+                    
+                    <!-- Disque avec couleur dynamique -->
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Classes="text-body" Text="Espace disque"/>
+                            <TextBlock Grid.Column="1" Classes="text-metric" 
+                                       Text="{Binding SystemInfo.DiskUsageText}"
+                                       Foreground="{Binding SystemInfo.DiskColor}"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding SystemInfo.DiskPercent}" 
+                                    Maximum="100"
+                                    Height="12"
+                                    CornerRadius="6"
+                                    Foreground="{Binding SystemInfo.DiskColor}"/>
+                    </StackPanel>
+                    
+                    <!-- Bouton actualiser -->
+                    <Button Classes="btn-primary"
+                             Command="{Binding RefreshCommand}"
+                             HorizontalAlignment="Left"
+                             Margin="0,8,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconRefresh}" 
+                                      Width="16" Height="16"
+                                      Foreground="{DynamicResource BackgroundPrimary}"/>
+                            <TextBlock Text="Actualiser"/>
+                        </StackPanel>
+                    </Button>
+                    
+                    <!-- Bouton Demander conseil
+                    <Button Classes="btn-primary"
+                            Command="{Binding AnalyserSystemeCommand}"
+                            IsEnabled="{Binding !IsAnalyzing}"
+                            HorizontalAlignment="Left"
+                            Margin="12,8,0,0">
+                        <Button.Styles>
+                            <Style Selector="Button[IsEnabled=False]">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Style>
+                        </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconLightbulb}" 
+                                      Width="16" Height="16"
+                                      Foreground="{DynamicResource BackgroundPrimary}"/>
+                            <TextBlock Text="Demander conseil"/>
+                        </StackPanel>
+                    </Button> -->
+                    
+                    <!-- Indicateur de chargement IA 
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                               IsVisible="{Binding IsAnalyzing}"
+                               Margin="12,8,0,0">
+                        <PathIcon Data="{StaticResource IconRefresh}" 
+                                  Width="14" Height="14"
+                                  Foreground="#0284C7"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Classes="text-sm text-info"
+                                   Text="Analyse en cours..."
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>-->
+                </StackPanel>
+            </Border>
+            
+            <!-- Message de statut -->
+            <Border Background="#EFF6FF"
+                    CornerRadius="8"
+                    Padding="16"
+                    BorderBrush="#3B82F6"
+                    BorderThickness="2"
+                    IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Classes="text-body" 
+                           Text="{Binding StatusMessage}" 
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource TextPrimary}"/>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

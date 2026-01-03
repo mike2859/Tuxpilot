@@ -181,20 +181,20 @@
         </StackPanel>
         
         <StackPanel Spacing="8">
-            <Border Background="#FEE2E2"
+            <Border Background="{DynamicResource BackgroundDanger}"
                     CornerRadius="8"
                     Padding="16,12">
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <PathIcon Data="{StaticResource IconAlertCircle}" 
                               Width="32" Height="32"
-                              Foreground="#DC2626"/>
+                              Foreground="{DynamicResource Danger}"/>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock FontSize="32"
                                   FontWeight="Bold"
-                                  Foreground="#DC2626"
+                                  Foreground="{DynamicResource Danger}"
                                   Text="{Binding NombreServicesErreur}"/>
                         <TextBlock Classes="text-sm"
-                                  Foreground="#DC2626"
+                                  Foreground="{DynamicResource Danger}"
                                   Text="service(s) en erreur"/>
                     </StackPanel>
                 </StackPanel>
@@ -212,7 +212,7 @@
                                 <PathIcon Grid.Column="0"
                                           Data="{StaticResource IconClose}" 
                                           Width="16" Height="16"
-                                          Foreground="#DC2626"
+                                          Foreground="{DynamicResource Danger}"
                                           Margin="0,0,8,0"
                                           VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1"
@@ -265,13 +265,13 @@
                                                 </TextBlock>
                                             </StackPanel>
                                             <Border Grid.Column="1"
-                                                    Background="#DBEAFE"
+                                                    Background="{DynamicResource BackgroundInfo}"
                                                     CornerRadius="8"
                                                     Padding="8,4"
                                                     VerticalAlignment="Center">
                                                 <TextBlock Classes="text-sm"
                                                           FontWeight="SemiBold"
-                                                          Foreground="#1E40AF">
+                                                          Foreground="{DynamicResource TextInfo}">
                                                     <Run Text="{Binding Cpu}"/>
                                                     <Run Text="%"/>
                                                 </TextBlock>
@@ -321,13 +321,13 @@
                                                 </TextBlock>
                                             </StackPanel>
                                             <Border Grid.Column="1"
-                                                    Background="#FEF3C7"
+                                                    Background="{DynamicResource BackgroundWarning}"
                                                     CornerRadius="8"
                                                     Padding="8,4"
                                                     VerticalAlignment="Center">
                                                 <TextBlock Classes="text-sm"
                                                           FontWeight="SemiBold"
-                                                          Foreground="#F59E0B">
+                                                          Foreground="{DynamicResource Warning}">
                                                     <Run Text="{Binding Ram}"/>
                                                     <Run Text="%"/>
                                                 </TextBlock>
@@ -389,7 +389,7 @@
                         <TextBlock Grid.Column="1"
                                   Classes="text-sm"
                                   Text="{Binding Timestamp}"
-                                  Foreground="#6B7280"
+                                  Foreground="{DynamicResource TextMuted}"
                                   Width="150"
                                   VerticalAlignment="Center"/>
         

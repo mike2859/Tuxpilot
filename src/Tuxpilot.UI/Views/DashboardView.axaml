@@ -37,11 +37,11 @@
             <!-- SUGGESTION PROACTIVE IA -->
             <Border Grid.Row="0"
                     IsVisible="{Binding HasSuggestion}"
-                    Background="#DBEAFE"
+                    Background="{DynamicResource BackgroundInfo}"
                     CornerRadius="12"
                     Padding="20"
                     Margin="32,16,32,16"
-                    BorderBrush="#3B82F6"
+                    BorderBrush="{DynamicResource Primary}"
                     BorderThickness="2">
                 <Grid ColumnDefinitions="Auto,*,Auto">
         
@@ -49,7 +49,7 @@
                     <Border Grid.Column="0"
                             Width="48" Height="48"
                             CornerRadius="24"
-                            Background="#3B82F6"
+                            Background="{DynamicResource Primary}"
                             VerticalAlignment="Top">
                         <PathIcon Data="{StaticResource IconRobot}" 
                                   Width="24" Height="24"
@@ -66,16 +66,16 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <PathIcon Data="{StaticResource IconLightbulb}" 
                                       Width="20" Height="20"
-                                      Foreground="#1E40AF"
+                                      Foreground="{DynamicResource TextInfo}"
                                       VerticalAlignment="Center"/>
                             <TextBlock Classes="text-h3"
                                        Text="Suggestion de l'IA"
-                                       Foreground="#1E40AF"/>
+                                       Foreground="{DynamicResource TextInfo}"/>
                         </StackPanel>
                         <TextBlock Classes="text-body"
                                    Text="{Binding SuggestionIA}"
                                    TextWrapping="Wrap"
-                                   Foreground="#1E3A8A"/>
+                                   Foreground="{DynamicResource TextInfo}"/>
                     </StackPanel>
         
                     <!-- Bouton fermer -->
@@ -94,18 +94,19 @@
             </Border>
             
             <!-- Info dernière mise à jour -->
-            <Border Background="#F0F9FF"
+            <Border Background="{DynamicResource BackgroundInfo}"
                     CornerRadius="8"
                     Padding="12,10"
-                    BorderBrush="#BAE6FD"
+                    BorderBrush="{DynamicResource BorderPrimary}"
                     BorderThickness="1">
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <PathIcon Data="{StaticResource IconRefresh}" 
                               Width="16" Height="16"
                               Foreground="{DynamicResource Info}"
                               VerticalAlignment="Center"/>
-                    <TextBlock Classes="text-sm text-info"
-                               Text="{Binding TimeSinceLastRefresh}"
+                  <TextBlock Classes="text-sm"
+                                Foreground="{DynamicResource TextInfo}"
+                                Text="{Binding TimeSinceLastRefresh}"
                                VerticalAlignment="Center"/>
                     <TextBlock Classes="text-sm text-muted"
                                Text="• Actualisation automatique toutes les 10s"
@@ -357,7 +358,7 @@
                                Margin="12,8,0,0">
                         <PathIcon Data="{StaticResource IconRefresh}" 
                                   Width="14" Height="14"
-                                  Foreground="#0284C7"
+                                  Foreground="{DynamicResource Info}"
                                   VerticalAlignment="Center"/>
                         <TextBlock Classes="text-sm text-info"
                                    Text="Analyse en cours..."
@@ -367,10 +368,10 @@
             </Border>
             
             <!-- Message de statut -->
-            <Border Background="#EFF6FF"
+            <Border Background="{DynamicResource BackgroundInfo}"
                     CornerRadius="8"
                     Padding="16"
-                    BorderBrush="#3B82F6"
+                    BorderBrush="{DynamicResource Primary}"
                     BorderThickness="2"
                     IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                 <TextBlock Classes="text-body" 

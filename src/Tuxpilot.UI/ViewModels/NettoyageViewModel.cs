@@ -73,12 +73,12 @@ public partial class NettoyageViewModel : ViewModelBase
     /// <summary>
     /// Couleur de fond du message
     /// </summary>
-    public string BackgroundColor => TailleTotaleMB > 0 ? "#FEF3C7" : "#ECFDF5";
+    public string BackgroundColor => TailleTotaleMB > 0 ? "BackgroundWarning" : "BackgroundSuccess";
     
     /// <summary>
     /// Couleur de bordure du message
     /// </summary>
-    public string BorderColor => TailleTotaleMB > 0 ? "#F59E0B" : "#10B981";
+    public string BorderColor => TailleTotaleMB > 0 ? "Warning" : "Success";
     
     // ✅ AJOUTER CES 2 PROPRIÉTÉS ICI
     /// <summary>

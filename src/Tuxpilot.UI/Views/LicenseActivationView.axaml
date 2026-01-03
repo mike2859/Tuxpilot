@@ -26,10 +26,11 @@
                     <TextBlock Text="Bienvenue sur Tuxpilot" 
                               FontSize="28" 
                               FontWeight="Bold"
-                              HorizontalAlignment="Center"/>
+                              HorizontalAlignment="Center"
+                              Foreground="{DynamicResource TextPrimary}" />
                     <TextBlock Text="Activez votre licence pour commencer" 
                               FontSize="16" 
-                              Foreground="#94a3b8"
+                              Foreground="{DynamicResource TextMuted}"
                               HorizontalAlignment="Center"/>
                 </StackPanel>
                 
@@ -41,7 +42,8 @@
                     <StackPanel Spacing="8">
                         <TextBlock Text="Clé de licence" 
                                   FontSize="14" 
-                                  FontWeight="SemiBold"/>
+                                  FontWeight="SemiBold" 
+                                  Foreground="{DynamicResource TextPrimary}"/>
                         <TextBox Text="{Binding LicenseKey}" 
                                 Watermark="EA-2024-XXXX-XXXX"
                                 FontFamily="Consolas, monospace"
@@ -51,7 +53,7 @@
                                 MaxLength="20"/>
                         <TextBlock Text="Format: EA-2024-ABCD-1234 (reçue par email)" 
                                   FontSize="12" 
-                                  Foreground="#64748b"/>
+                                  Foreground="{DynamicResource TextSecondary}"/>
                     </StackPanel>
                     
                     <!-- Bouton Activer -->
@@ -59,7 +61,7 @@
                            Command="{Binding ActivateLicenseCommand}"
                            IsEnabled="{Binding !IsActivating}"
                            HorizontalAlignment="Stretch"
-                           Background="#3b82f6"
+                           Background="{DynamicResource Primary}"
                            Foreground="White"
                            Padding="16"
                            FontSize="16"
@@ -71,15 +73,15 @@
                          Margin="0,8,0,8">
                         <Border Grid.Column="0" 
                                Height="1" 
-                               Background="#334155" 
+                               Background="{DynamicResource BackgroundTertiary}" 
                                VerticalAlignment="Center"/>
                         <TextBlock Grid.Column="1" 
                                   Text="ou" 
-                                  Foreground="#64748b" 
+                                  Foreground="{DynamicResource TextSecondary}" 
                                   Margin="16,0"/>
                         <Border Grid.Column="2" 
                                Height="1" 
-                               Background="#334155" 
+                               Background="{DynamicResource BackgroundTertiary}" 
                                VerticalAlignment="Center"/>
                     </Grid>
                     
@@ -87,21 +89,21 @@
                     <Button Content="Continuer avec la version Community (gratuite)"
                            Command="{Binding UseCommunityCommand}"
                            HorizontalAlignment="Stretch"
-                           Background="#1e293b"
-                           Foreground="White"
+                           Background="{DynamicResource BackgroundSecondary}"
+                           Foreground="{DynamicResource TextPrimary}"                         
                            Padding="16"
                            FontSize="14"
                            CornerRadius="8"/>
                     
                     <!-- Message d'erreur -->
-                    <Border Background="#FEE2E2" 
+                    <Border Background="{DynamicResource BackgroundDanger}" 
                            CornerRadius="8" 
                            Padding="16"
-                           BorderBrush="#DC2626"
+                           BorderBrush="{DynamicResource Danger}"
                            BorderThickness="2"
                            IsVisible="{Binding IsError}">
                         <TextBlock Text="{Binding Message}" 
-                                  Foreground="#991B1B"
+                                  Foreground="{DynamicResource TextDanger}"
                                   TextWrapping="Wrap"/>
                     </Border>
                     
@@ -113,17 +115,17 @@
                                     Width="200" 
                                     Height="4"/>
                         <TextBlock Text="Validation en cours..." 
-                                  Foreground="#94a3b8"
+                                  Foreground="{DynamicResource TextMuted}"
                                   FontSize="14"/>
                     </StackPanel>
                     
                 </StackPanel>
                 
                 <!-- Message de succès -->
-                <Border Background="#D1FAE5" 
+                <Border Background="{DynamicResource BackgroundSuccess}" 
                        CornerRadius="12" 
                        Padding="32"
-                       BorderBrush="#10B981"
+                       BorderBrush="{DynamicResource Success}"
                        BorderThickness="2"
                        IsVisible="{Binding IsSuccess}">
                     <StackPanel Spacing="20">
@@ -133,7 +135,7 @@
                                   HorizontalAlignment="Center"/>
                         
                         <TextBlock Text="{Binding Message}" 
-                                  Foreground="#065F46"
+                                  Foreground="{DynamicResource TextSuccess}"
                                   FontSize="14"
                                   TextWrapping="Wrap"
                                   TextAlignment="Center"
@@ -143,18 +145,18 @@
                         <StackPanel Spacing="8" 
                                    IsVisible="{Binding ActivatedLicense, Converter={x:Static ObjectConverters.IsNotNull}}">
                             <TextBlock Text="Type de licence :" 
-                                      Foreground="#047857" 
+                                      Foreground="{DynamicResource TextSuccess}" 
                                       FontSize="14"
                                       HorizontalAlignment="Center"/>
                             <!--<TextBlock Text="{Binding ActivatedLicense.TypeDisplayName}" 
-                                      Foreground="#065F46" 
+                                      Foreground="{DynamicResource TextSuccess}" 
                                       FontSize="20"
                                       FontWeight="Bold"
                                       HorizontalAlignment="Center"/>-->
                         </StackPanel>
                         
                         <Button Content="🚀 Commencer à utiliser Tuxpilot"
-                               Background="#10B981"
+                               Background="{DynamicResource Success}"
                                Foreground="White"
                                Padding="16"
                                FontSize="16"
@@ -166,19 +168,19 @@
                 </Border>
                 
                 <!-- Infos Early Access en bas -->
-                <Border Background="#FEF3C7" 
+                <Border Background="{DynamicResource BackgroundWarning}" 
                        CornerRadius="8" 
                        Padding="16"
-                       BorderBrush="#F59E0B"
+                       BorderBrush="{DynamicResource Warning}"
                        BorderThickness="1"
                        IsVisible="{Binding !IsSuccess}">
                     <StackPanel Spacing="8">
                         <TextBlock Text="🎁 Programme Early Access" 
-                                  Foreground="#92400E" 
+                                  Foreground="{DynamicResource TextWarning}" 
                                   FontSize="14"
                                   FontWeight="SemiBold"/>
                         <TextBlock TextWrapping="Wrap" 
-                                  Foreground="#78350F"
+                                  Foreground="{DynamicResource TextWarning}"
                                   FontSize="13">
                             • 1 an de version Pro gratuite (180€)
                             <LineBreak/>

@@ -121,7 +121,7 @@
                             <!-- Vérifications réussies -->
                             <Border Grid.Column="0" Grid.Row="0"
                                    Background="{DynamicResource BackgroundSecondary}"
-                                   BorderBrush="#10B981"
+                                   BorderBrush="{DynamicResource Success}"
                                    BorderThickness="2"
                                    CornerRadius="8"
                                    Padding="16,12">
@@ -129,7 +129,7 @@
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <PathIcon Data="{StaticResource IconCheck}" 
                                                   Width="14" Height="14"
-                                                  Foreground="#10B981"
+                                                  Foreground="{DynamicResource Success}"
                                                   VerticalAlignment="Center"/>
                                         <TextBlock Text="Vérifications réussies"
                                                   Classes="text-sm"
@@ -148,7 +148,7 @@
                             <!-- Problèmes critiques -->
                             <Border Grid.Column="1" Grid.Row="0"
                                    Background="{DynamicResource BackgroundSecondary}"
-                                   BorderBrush="#DC2626"
+                                   BorderBrush="{DynamicResource Danger}"
                                    BorderThickness="2"
                                    CornerRadius="8"
                                    Padding="16,12">
@@ -156,7 +156,7 @@
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <PathIcon Data="{StaticResource IconClose}" 
                                                   Width="14" Height="14"
-                                                  Foreground="#DC2626"
+                                                  Foreground="{DynamicResource Danger}"
                                                   VerticalAlignment="Center"/>
                                         <TextBlock Text="Problèmes critiques"
                                                   Classes="text-sm"
@@ -172,7 +172,7 @@
                             <!-- Risques élevés -->
                             <Border Grid.Column="0" Grid.Row="1"
                                    Background="{DynamicResource BackgroundSecondary}"
-                                   BorderBrush="#EF4444"
+                                   BorderBrush="{DynamicResource Danger}"
                                    BorderThickness="2"
                                    CornerRadius="8"
                                    Padding="16,12">
@@ -180,7 +180,7 @@
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <PathIcon Data="{StaticResource IconFire}" 
                                                   Width="14" Height="14"
-                                                  Foreground="#EF4444"
+                                                  Foreground="{DynamicResource Danger}"
                                                   VerticalAlignment="Center"/>
                                         <TextBlock Text="Risques élevés"
                                                   Classes="text-sm"
@@ -196,7 +196,7 @@
                             <!-- Problèmes moyens -->
                             <Border Grid.Column="1" Grid.Row="1"
                                    Background="{DynamicResource BackgroundSecondary}"
-                                   BorderBrush="#F59E0B"
+                                   BorderBrush="{DynamicResource Warning}"
                                    BorderThickness="2"
                                    CornerRadius="8"
                                    Padding="16,12">
@@ -204,7 +204,7 @@
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <PathIcon Data="{StaticResource IconWarning}" 
                                                   Width="14" Height="14"
-                                                  Foreground="#F59E0B"
+                                                  Foreground="{DynamicResource Warning}"
                                                   VerticalAlignment="Center"/>
                                         <TextBlock Text="Risques moyens"
                                                   Classes="text-sm"

@@ -1,0 +1,198 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             x:Class="Tuxpilot.UI.Views.LicenseActivationView"
+             x:DataType="vm:LicenseActivationViewModel">
+
+    <Design.DataContext>
+        <vm:LicenseActivationViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*" Background="{DynamicResource BackgroundPrimary}">
+        
+        <!-- Contenu principal centré -->
+        <Border MaxWidth="600" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Padding="40">
+            
+            <StackPanel Spacing="32">
+                
+                <!-- Logo et titre -->
+                <StackPanel Spacing="16" HorizontalAlignment="Center">
+                    <TextBlock Text="🛡️" 
+                              FontSize="64" 
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Bienvenue sur Tuxpilot" 
+                              FontSize="28" 
+                              FontWeight="Bold"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Activez votre licence pour commencer" 
+                              FontSize="16" 
+                              Foreground="#94a3b8"
+                              HorizontalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- Formulaire d'activation -->
+                <StackPanel Spacing="20" 
+                           IsVisible="{Binding !IsSuccess}">
+                    
+                    <!-- Input clé de licence -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Clé de licence" 
+                                  FontSize="14" 
+                                  FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding LicenseKey}" 
+                                Watermark="EA-2024-XXXX-XXXX"
+                                FontFamily="Consolas, monospace"
+                                FontSize="16"
+                                Padding="12"
+                                CornerRadius="8"
+                                MaxLength="20"/>
+                        <TextBlock Text="Format: EA-2024-ABCD-1234 (reçue par email)" 
+                                  FontSize="12" 
+                                  Foreground="#64748b"/>
+                    </StackPanel>
+                    
+                    <!-- Bouton Activer -->
+                    <Button Content="🔓 Activer la licence"
+                           Command="{Binding ActivateLicenseCommand}"
+                           IsEnabled="{Binding !IsActivating}"
+                           HorizontalAlignment="Stretch"
+                           Background="#3b82f6"
+                           Foreground="White"
+                           Padding="16"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           CornerRadius="8"/>
+                    
+                    <!-- Séparateur -->
+                    <Grid ColumnDefinitions="*,Auto,*" 
+                         Margin="0,8,0,8">
+                        <Border Grid.Column="0" 
+                               Height="1" 
+                               Background="#334155" 
+                               VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" 
+                                  Text="ou" 
+                                  Foreground="#64748b" 
+                                  Margin="16,0"/>
+                        <Border Grid.Column="2" 
+                               Height="1" 
+                               Background="#334155" 
+                               VerticalAlignment="Center"/>
+                    </Grid>
+                    
+                    <!-- Bouton Community -->
+                    <Button Content="Continuer avec la version Community (gratuite)"
+                           Command="{Binding UseCommunityCommand}"
+                           HorizontalAlignment="Stretch"
+                           Background="#1e293b"
+                           Foreground="White"
+                           Padding="16"
+                           FontSize="14"
+                           CornerRadius="8"/>
+                    
+                    <!-- Message d'erreur -->
+                    <Border Background="#FEE2E2" 
+                           CornerRadius="8" 
+                           Padding="16"
+                           BorderBrush="#DC2626"
+                           BorderThickness="2"
+                           IsVisible="{Binding IsError}">
+                        <TextBlock Text="{Binding Message}" 
+                                  Foreground="#991B1B"
+                                  TextWrapping="Wrap"/>
+                    </Border>
+                    
+                    <!-- Loading -->
+                    <StackPanel Spacing="12" 
+                               HorizontalAlignment="Center"
+                               IsVisible="{Binding IsActivating}">
+                        <ProgressBar IsIndeterminate="True" 
+                                    Width="200" 
+                                    Height="4"/>
+                        <TextBlock Text="Validation en cours..." 
+                                  Foreground="#94a3b8"
+                                  FontSize="14"/>
+                    </StackPanel>
+                    
+                </StackPanel>
+                
+                <!-- Message de succès -->
+                <Border Background="#D1FAE5" 
+                       CornerRadius="12" 
+                       Padding="32"
+                       BorderBrush="#10B981"
+                       BorderThickness="2"
+                       IsVisible="{Binding IsSuccess}">
+                    <StackPanel Spacing="20">
+                        
+                        <TextBlock Text="✅" 
+                                  FontSize="48" 
+                                  HorizontalAlignment="Center"/>
+                        
+                        <TextBlock Text="{Binding Message}" 
+                                  Foreground="#065F46"
+                                  FontSize="14"
+                                  TextWrapping="Wrap"
+                                  TextAlignment="Center"
+                                  HorizontalAlignment="Center"/>
+                        
+                        <!-- Infos licence -->
+                        <StackPanel Spacing="8" 
+                                   IsVisible="{Binding ActivatedLicense, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <TextBlock Text="Type de licence :" 
+                                      Foreground="#047857" 
+                                      FontSize="14"
+                                      HorizontalAlignment="Center"/>
+                            <!--<TextBlock Text="{Binding ActivatedLicense.TypeDisplayName}" 
+                                      Foreground="#065F46" 
+                                      FontSize="20"
+                                      FontWeight="Bold"
+                                      HorizontalAlignment="Center"/>-->
+                        </StackPanel>
+                        
+                        <Button Content="🚀 Commencer à utiliser Tuxpilot"
+                               Background="#10B981"
+                               Foreground="White"
+                               Padding="16"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               CornerRadius="8"
+                               HorizontalAlignment="Center"/>
+                        
+                    </StackPanel>
+                </Border>
+                
+                <!-- Infos Early Access en bas -->
+                <Border Background="#FEF3C7" 
+                       CornerRadius="8" 
+                       Padding="16"
+                       BorderBrush="#F59E0B"
+                       BorderThickness="1"
+                       IsVisible="{Binding !IsSuccess}">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="🎁 Programme Early Access" 
+                                  Foreground="#92400E" 
+                                  FontSize="14"
+                                  FontWeight="SemiBold"/>
+                        <TextBlock TextWrapping="Wrap" 
+                                  Foreground="#78350F"
+                                  FontSize="13">
+                            • 1 an de version Pro gratuite (180€)
+                            <LineBreak/>
+                            • 50% de réduction à vie après (7,50€/mois au lieu de 15€)
+                            <LineBreak/>
+                            • Accès prioritaire aux nouvelles fonctionnalités
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                
+            </StackPanel>
+            
+        </Border>
+        
+    </Grid>
+
+</UserControl>

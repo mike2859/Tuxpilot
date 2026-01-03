@@ -74,9 +74,9 @@ public partial class DiagnosticViewModel : ViewModelBase
     /// </summary>
     public string CouleurSante => ScoreSante switch
     {
-        >= 80 => "#10B981",
-        >= 60 => "#F59E0B",
-        _ => "#EF4444"
+        >= 80 => "Success",
+        >= 60 => "Warning",
+        _ => "Danger"
     };
     
     /// <summary>
@@ -84,19 +84,19 @@ public partial class DiagnosticViewModel : ViewModelBase
     /// </summary>
     public string BackgroundColor => ScoreSante switch
     {
-        >= 80 => "#ECFDF5",
-        >= 60 => "#FEF3C7",
-        _ => "#FEE2E2"
+        >= 80 => "BackgroundSuccess",
+        >= 50 => "BackgroundWarning",
+        _ => "BackgroundDanger"
     };
-    
+        
     /// <summary>
     /// Couleur de bordure du message
     /// </summary>
     public string BorderColor => ScoreSante switch
     {
-        >= 80 => "#10B981",
-        >= 60 => "#F59E0B",
-        _ => "#EF4444"
+        >= 80 => "Success",
+        >= 50 => "Warning",
+        _ => "Danger"
     };
     
     /// <summary>

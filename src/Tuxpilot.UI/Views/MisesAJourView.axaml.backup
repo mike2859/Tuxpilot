@@ -1,0 +1,404 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tuxpilot.UI.ViewModels"
+             xmlns:converters="using:Tuxpilot.UI.Converters"
+             x:Class="Tuxpilot.UI.Views.MisesAJourView"
+             x:DataType="vm:MisesAJourViewModel">
+
+    <Design.DataContext>
+        <vm:MisesAJourViewModel/>
+    </Design.DataContext>
+    
+    <UserControl.Resources>
+        <converters:BoolToArrowConverter x:Key="BoolToArrowConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <!-- Contenu principal -->
+        <ScrollViewer>
+            <StackPanel Margin="32" Spacing="24">
+                
+                <!-- Header -->
+                <StackPanel Spacing="8">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconSync}" 
+                                  Width="32" Height="32"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Classes="text-h1"
+                                   Text="Mises à jour"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Classes="text-muted"
+                               Foreground="{DynamicResource TextPrimary}"
+                               Text="Gérez les mises à jour de votre système Linux"/>
+                </StackPanel>
+                
+                <!-- Indicateur de chargement -->
+                <ProgressBar IsIndeterminate="True"
+                            IsVisible="{Binding IsLoading}"
+                            Height="4"/>
+                
+                <!-- Message de statut -->
+                <Border CornerRadius="8"
+                        Padding="16"
+                        BorderThickness="2"
+                        Background="{Binding BackgroundColor}"
+                        BorderBrush="{Binding BorderColor}">
+                    
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <PathIcon Grid.Column="0"
+                                  Data="{StaticResource {Binding MessageStatutIconeResourceKey}}"
+                                  Width="24" Height="24"
+                                  Foreground="{Binding MessageStatutIconeColor}"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,12,0"/>
+                        
+                        <TextBlock Grid.Column="1"
+                                   Classes="text-h3"
+                                   Text="{Binding MessageStatutTexte}"
+                                   Foreground="{Binding MessageStatutTextBrush}"
+                                   VerticalAlignment="Center"/>
+                        
+                        <Button Grid.Column="2"
+                                Classes="btn-outline btn-sm"
+                                Command="{Binding VerifierMisesAJourCommand}"
+                                Margin="16,0,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <PathIcon Data="{StaticResource IconRefresh}" 
+                                          Width="14" Height="14"
+                                          Foreground="{DynamicResource TextPrimary}"/>
+                                <TextBlock Text="Vérifier"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+                
+                <!-- Liste des mises à jour -->
+                <Border Background="{DynamicResource BackgroundPrimary}"
+                        CornerRadius="12"
+                        Padding="24"
+                        BorderBrush="{DynamicResource BorderPrimary}"
+                        BorderThickness="1"
+                        IsVisible="{Binding MisesAJourDisponibles}">
+                    <DockPanel LastChildFill="True">
+                        
+                        <!-- Header avec bouton -->
+                        <Grid DockPanel.Dock="Top" 
+                              ColumnDefinitions="*,Auto"
+                              Margin="0,0,0,16">
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource IconPackage}" 
+                                          Width="22" Height="22"
+                                          Foreground="{DynamicResource TextPrimary}"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Classes="text-h2"
+                                           Text="Paquets disponibles"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1"
+                                    Classes="btn-primary"
+                                    Command="{Binding InstallerToutCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Data="{StaticResource IconUpload}" 
+                                              Width="16" Height="16"
+                                              Foreground="{DynamicResource BackgroundPrimary}"/>
+                                    <TextBlock Text="Tout installer"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        
+                        <!-- Liste scrollable -->
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                     VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Paquets}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource BackgroundSecondary}"
+                                                CornerRadius="8"
+                                                Padding="16"
+                                                Margin="0,0,0,8">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                
+                                                <!-- Icône -->
+                                                <Border Grid.Column="0"
+                                                        Width="40" Height="40"
+                                                        CornerRadius="8"
+                                                        Background="#DBEAFE"
+                                                        VerticalAlignment="Center">
+                                                    <PathIcon Data="{StaticResource IconPackage}" 
+                                                              Width="20" Height="20"
+                                                              Foreground="#3B82F6"
+                                                              HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                                </Border>
+                                                
+                                                <!-- Infos -->
+                                                <StackPanel Grid.Column="1" 
+                                                           Margin="16,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           Spacing="4">
+                                                    <TextBlock Classes="text-body"
+                                                               Text="{Binding Nom}"
+                                                               FontWeight="SemiBold"/>
+                                                    <TextBlock Classes="text-muted"
+                                                               Text="{Binding VersionText}"/>
+                                                    <TextBlock Classes="text-sm"
+                                                               Text="{Binding Depot, StringFormat='Dépôt: {0}'}"/>
+                                                </StackPanel>
+                                                
+                                                <!-- Badge -->
+                                                <Border Grid.Column="2"
+                                                        Background="#DBEAFE"
+                                                        CornerRadius="12"
+                                                        Padding="10,6"
+                                                        VerticalAlignment="Center"
+                                                        Margin="16,0,0,0">
+                                                    <TextBlock Classes="text-sm text-info"
+                                                               Text="Nouveau"
+                                                               FontWeight="SemiBold"/>
+                                                </Border>
+                                                
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        
+                    </DockPanel>
+                </Border>
+                
+                <!-- Message si aucune mise à jour -->
+                <Border Background="{DynamicResource BackgroundPrimary}"
+                        CornerRadius="12"
+                        Padding="48,32"
+                        BorderBrush="{DynamicResource BorderPrimary}"
+                        BorderThickness="1"
+                        IsVisible="{Binding !MisesAJourDisponibles}">
+                    <StackPanel Spacing="16" HorizontalAlignment="Center">
+                        <PathIcon Data="{StaticResource IconCheck}" 
+                                  Width="64" Height="64"
+                                  Foreground="#10B981"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Classes="text-h2"
+                                   Text="Aucune mise à jour disponible"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Classes="text-muted"
+                                   Text="Votre système est à jour !"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- DIALOGUE DE CONFIRMATION (overlay) -->
+<Border IsVisible="{Binding IsConfirmationVisible}"
+        Background="#80000000"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+    <Border Background="{DynamicResource BackgroundPrimary}"
+            CornerRadius="16"
+            Padding="32"
+            MaxWidth="450"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            BoxShadow="0 20 50 10 #60000000">
+        <StackPanel Spacing="20">
+            
+            <!-- Icône d'avertissement -->
+            <PathIcon Data="{StaticResource IconWarning}" 
+                      Width="48" Height="48"
+                      Foreground="#F59E0B"
+                      HorizontalAlignment="Center"/>
+
+            <!-- Titre -->
+            <TextBlock Classes="text-h2"
+                       Text="Confirmation requise"
+                       HorizontalAlignment="Center"/>
+
+            <!-- Message -->
+            <StackPanel Spacing="12">
+                <TextBlock Classes="text-body"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center">
+                    <Run Text="Vous êtes sur le point d'installer "/>
+                    <Run Text="{Binding NombreMisesAJour}" FontWeight="Bold" Foreground="#F59E0B"/>
+                    <Run Text=" mise(s) à jour."/>
+                </TextBlock>
+
+                <TextBlock Classes="text-muted"
+                           Text="Cette opération nécessite des privilèges administrateur."
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"/>
+
+                <TextBlock Classes="text-body"
+                           Text="Voulez-vous continuer ?"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           FontWeight="SemiBold"
+                           Margin="0,8,0,0"/>
+            </StackPanel>
+            
+            <!-- Boutons avec styles fixes -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
+                <Button Grid.Column="0"
+                        Classes="btn-secondary"
+                        Command="{Binding AnnulerInstallationCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconClose}" 
+                                  Width="16" Height="16"
+                                  Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="Annuler"/>
+                    </StackPanel>
+                </Button>
+    
+                <Button Grid.Column="1"
+                        Classes="btn-primary"
+                        Command="{Binding ConfirmerInstallationCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconCheck}" 
+                                  Width="16" Height="16"
+                                  Foreground="{DynamicResource BackgroundPrimary}"/>
+                        <TextBlock Text="Installer"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+            
+        </StackPanel>
+    </Border>
+</Border>
+    
+        <!-- OVERLAY LOGS D'INSTALLATION -->
+<Border IsVisible="{Binding IsInstallingWithLogs}"
+        Background="#80000000"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+    <Border Background="{DynamicResource BackgroundPrimary}"
+            CornerRadius="16"
+            Padding="32"
+            MaxWidth="700"
+            MaxHeight="600"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            BoxShadow="0 20 50 10 #60000000">
+        <Grid RowDefinitions="Auto,Auto,*,Auto">
+            
+            <!-- Titre -->
+            <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,20">
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                    <PathIcon Data="{StaticResource IconSettings}" 
+                              Width="24" Height="24"
+                              Foreground="{DynamicResource TextPrimary}"/>
+                    <TextBlock Classes="text-h2"
+                              Text="Installation en cours..."
+                              VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Classes="text-muted"
+                          Text="Veuillez patienter pendant l'installation des mises à jour"
+                          HorizontalAlignment="Center"
+                          TextAlignment="Center"/>
+            </StackPanel>
+            
+            <!-- Barre de progression -->
+            <Grid Grid.Row="1" Margin="0,0,0,16">
+                <ProgressBar Value="{Binding ProgressPercent}"
+                            Height="8"
+                            CornerRadius="4"
+                            Foreground="#3B82F6"
+                            Background="#E5E7EB"/>
+                <TextBlock Classes="text-sm"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Margin="0,16,0,0">
+                    <Run Text="{Binding PackagesInstalled}"/>
+                    <Run Text=" / "/>
+                    <Run Text="{Binding TotalPackages}"/>
+                    <Run Text=" paquets"/>
+                </TextBlock>
+            </Grid>
+            
+            <!-- Header console avec bouton expand/collapse -->
+            <Border Grid.Row="2"
+                    Background="{DynamicResource BackgroundSecondary}"
+                    CornerRadius="8"
+                    BorderBrush="{DynamicResource BorderPrimary}"
+                    BorderThickness="1"
+                    Padding="0">
+                <Grid RowDefinitions="Auto,*">
+                    
+                    <!-- Header cliquable -->
+                    <Button Grid.Row="0"
+                            Classes="btn-secondary"
+                            Command="{Binding ToggleLogsCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="12,8"
+                            Margin="0">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="{StaticResource IconScroll}" 
+                                      Width="16" Height="16"
+                                      Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock Classes="text-body"
+                                      Text="Console"
+                                      FontWeight="SemiBold"/>
+                            <TextBlock Classes="text-body"
+                                      Text="{Binding IsLogsExpanded, Converter={StaticResource BoolToArrowConverter}}"
+                                      FontSize="12"/>
+                        </StackPanel>
+                    </Button>
+                    
+                    <!-- Zone de logs scrollable -->
+                    <ScrollViewer  x:Name="LogsScrollViewer"
+                                   Grid.Row="1"
+                                   IsVisible="{Binding IsLogsExpanded}"
+                                   MaxHeight="300"
+                                   VerticalScrollBarVisibility="Auto"
+                                   Padding="12">
+                        <ItemsControl ItemsSource="{Binding Logs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" 
+                                               Spacing="8"
+                                               Margin="0,2">
+                                        <TextBlock Text="{Binding Icon}"
+                                                  FontSize="14"
+                                                  VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Message}"
+                                                  FontSize="13"
+                                                  Foreground="{Binding Color}"
+                                                  TextWrapping="Wrap"
+                                                  VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    
+                </Grid>
+            </Border>
+            
+            <!-- Message info -->
+            <StackPanel Grid.Row="3"
+                       Orientation="Horizontal"
+                       Spacing="8"
+                       HorizontalAlignment="Center"
+                       Margin="0,16,0,0">
+                <PathIcon Data="{StaticResource IconHourglass}" 
+                          Width="16" Height="16"
+                          Foreground="{DynamicResource TextMuted}"/>
+                <TextBlock Classes="text-sm text-muted"
+                          Text="L'installation peut prendre plusieurs minutes selon votre connexion"
+                          TextAlignment="Center"/>
+            </StackPanel>
+            
+        </Grid>
+    </Border>
+</Border>
+    </Grid>
+    
+</UserControl>

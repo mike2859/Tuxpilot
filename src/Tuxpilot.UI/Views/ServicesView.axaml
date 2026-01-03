@@ -62,7 +62,7 @@
                                         Cursor="Hand">
                                     <Button.Styles>
                                         <Style Selector="Button:pointerover">
-                                            <Setter Property="Background" Value="#F9FAFB"/>
+                                            <Setter Property="Background" Value="{DynamicResource BackgroundSecondary}"/>
                                         </Style>
                                     </Button.Styles>
                                     
@@ -174,12 +174,12 @@
             <ScrollViewer Grid.Row="1" 
                          Padding="24"
                          VerticalScrollBarVisibility="Auto">
-                <Border Background="#1E1E1E"
+                <Border Background="{DynamicResource BackgroundPrimary}"
                         CornerRadius="8"
                         Padding="16">
                     <TextBlock Classes="text-sm"
                               Text="{Binding Logs}"
-                              Foreground="#D4D4D4"
+                              Foreground="{DynamicResource TextSecondary}"
                               FontFamily="monospace"
                               TextWrapping="Wrap"/>
                 </Border>

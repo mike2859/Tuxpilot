@@ -12,11 +12,11 @@ public class BoolToColorConverter : IValueConverter
         if (value is bool success)
         {
             return success 
-                ? new SolidColorBrush(Color.Parse("#10B981")) // Vert
-                : new SolidColorBrush(Color.Parse("#EF4444")); // Rouge
+                ? new SolidColorBrush(Color.Parse("Success")) // Vert
+                : new SolidColorBrush(Color.Parse("Danger")); // Rouge
         }
         
-        return new SolidColorBrush(Color.Parse("#6B7280")); // Gris par défaut
+        return new SolidColorBrush(Color.Parse("TextMuted")); // Gris par défaut
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

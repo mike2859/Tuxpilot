@@ -100,12 +100,12 @@ public partial class MisesAJourViewModel : ViewModelBase
         get
         {
             if (!string.IsNullOrEmpty(MessageErreur))
-                return "#EF4444";
+                return "Danger";
             
             if (NombreMisesAJour == 0)
-                return "#10B981";
+                return "Success";
             
-            return "#F59E0B";
+            return "Warning";
         }
     }
     
@@ -138,12 +138,12 @@ public partial class MisesAJourViewModel : ViewModelBase
     /// <summary>
     /// Couleur de fond du message de statut
     /// </summary>
-    public string BackgroundColor => MisesAJourDisponibles ? "#FEF3C7" : "#ECFDF5";
+    public string BackgroundColor => MisesAJourDisponibles ? "BackgroundWarning" : "BackgroundSuccess";
 
     /// <summary>
     /// Couleur de bordure du message de statut
     /// </summary>
-    public string BorderColor => MisesAJourDisponibles ? "#F59E0B" : "#10B981";
+    public string BorderColor => MisesAJourDisponibles ? "Warning" : "Success";
     
 // ✅ AJOUTER CES 2 PROPRIÉTÉS ICI
     /// <summary>

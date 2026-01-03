@@ -78,23 +78,24 @@
          ======================================== -->
     
     <!-- Information (bleu) -->
-    <Style Selector="TextBlock.text-info">
-        <Setter Property="Foreground" Value="{DynamicResource Info}"/>
-    </Style>
+   <!-- Information (bleu) -->
+<Style Selector="TextBlock.text-info">
+    <Setter Property="Foreground" Value="{DynamicResource TextInfo}"/>
+</Style>
 
-    <!-- Succès (vert) -->
-    <Style Selector="TextBlock.text-success">
-        <Setter Property="Foreground" Value="{DynamicResource Success}"/>
-    </Style>
+<!-- Succès (vert) -->
+<Style Selector="TextBlock.text-success">
+    <Setter Property="Foreground" Value="{DynamicResource TextSuccess}"/>
+</Style>
 
-    <!-- Danger (rouge) -->
-    <Style Selector="TextBlock.text-danger">
-        <Setter Property="Foreground" Value="{DynamicResource Danger}"/>
-    </Style>
+<!-- Danger (rouge) -->
+<Style Selector="TextBlock.text-danger">
+    <Setter Property="Foreground" Value="{DynamicResource TextDanger}"/>
+</Style>
 
-    <!-- Avertissement (orange) -->
-    <Style Selector="TextBlock.text-warning">
-        <Setter Property="Foreground" Value="{DynamicResource Warning}"/>
-    </Style>
+<!-- Avertissement (orange) -->
+<Style Selector="TextBlock.text-warning">
+    <Setter Property="Foreground" Value="{DynamicResource TextWarning}"/>
+</Style>
 
 </Styles>

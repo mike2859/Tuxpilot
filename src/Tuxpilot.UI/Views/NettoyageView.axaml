@@ -66,10 +66,15 @@
                             <StackPanel Grid.Column="0" Spacing="4">
                                 <TextBlock Classes="text-h2"
                                           Text="📋 Éléments nettoyables"/>
-                                <TextBlock Classes="text-muted">
+                                <TextBlock Classes="text-muted"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding TailleTotaleMB, StringFormat={}{0} MB peuvent être libérés}"/>
+
+                                <!-- <TextBlock Classes="text-muted"
+                                    Foreground="{DynamicResource TextPrimary}">
                                     <Run Text="{Binding TailleTotaleMB}"/>
                                     <Run Text=" MB peuvent être libérés"/>
-                                </TextBlock>
+                                </TextBlock> -->
                             </StackPanel>
                             
                             <Button Grid.Column="1"
@@ -94,7 +99,7 @@
                                                 <Border Grid.Column="0"
                                                         Width="40" Height="40"
                                                         CornerRadius="8"
-                                                        Background="#DBEAFE"
+                                                        Background="{DynamicResource BackgroundInfo}"
                                                         VerticalAlignment="Center">
                                                     <TextBlock Text="{Binding Icone}" 
                                                               FontSize="20"
@@ -118,7 +123,7 @@
                                                 
                                                 <!-- Taille -->
                                                 <Border Grid.Column="2"
-                                                        Background="#FEF3C7"
+                                                        Background="{DynamicResource BackgroundWarning}"
                                                         CornerRadius="12"
                                                         Padding="10,6"
                                                         VerticalAlignment="Center"
@@ -126,7 +131,7 @@
                                                     <TextBlock Classes="text-sm"
                                                               Text="{Binding TailleTexte}"
                                                               FontWeight="SemiBold"
-                                                              Foreground="#F59E0B"/>
+                                                              Foreground="{DynamicResource Warning}"/>
                                                 </Border>
                                                 
                                             </Grid>
@@ -164,7 +169,7 @@
         
         <!-- DIALOGUE DE CONFIRMATION -->
         <Border IsVisible="{Binding IsConfirmationVisible}"
-                Background="#80000000"
+                Background="{DynamicResource OverlayBackground}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
             <Border Background="{DynamicResource BackgroundPrimary}"
@@ -180,7 +185,7 @@
                     <StackPanel Spacing="16" HorizontalAlignment="Center">
                         <Border Width="80" Height="80"
                                 CornerRadius="40"
-                                Background="#FEF3C7"
+                                Background="{DynamicResource BackgroundWarning}"
                                 HorizontalAlignment="Center">
                             <TextBlock Text="🧹" 
                                       FontSize="48"
@@ -199,7 +204,7 @@
                                   HorizontalAlignment="Center"
                                   TextAlignment="Center">
                             <Run Text="Vous êtes sur le point de nettoyer "/>
-                            <Run Text="{Binding TailleTotaleMB}" FontWeight="Bold" Foreground="#F59E0B"/>
+                            <Run Text="{Binding TailleTotaleMB}" FontWeight="Bold" Foreground="{DynamicResource Warning}"/>
                             <Run Text=" MB de données."/>
                         </TextBlock>
                         
@@ -237,7 +242,7 @@
         
         <!-- MESSAGE DE SUCCÈS -->
         <Border IsVisible="{Binding IsSuccessVisible}"
-                Background="#80000000"
+                Background="{DynamicResource OverlayBackground}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
             <Border Background="{DynamicResource BackgroundPrimary}"
@@ -251,7 +256,7 @@
                     
                     <Border Width="80" Height="80"
                             CornerRadius="40"
-                            Background="#ECFDF5"
+                            Background="{DynamicResource BackgroundSuccess}"
                             HorizontalAlignment="Center">
                         <TextBlock Text="✨" 
                                   FontSize="48"
