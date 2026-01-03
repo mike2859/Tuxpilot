@@ -118,7 +118,8 @@
                                       Width="20" Height="20"
                                       Foreground="{DynamicResource TextPrimary}"/>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <TextBlock Text="Assistant IA" FontWeight="SemiBold"/>
+                                <TextBlock Text="Assistant IA" FontWeight="SemiBold" 
+                                            Foreground="{DynamicResource TextPrimary}"/>
                                 <PathIcon Data="{StaticResource IconShieldFilled}" 
                                           Width="12" Height="12"
                                           Foreground="#F59E0B"
@@ -139,7 +140,8 @@
                                       Width="20" Height="20"
                                       Foreground="{DynamicResource TextPrimary}"/>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <TextBlock Text="Services" FontWeight="SemiBold"/>
+                                <TextBlock Text="Services" FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextPrimary}"/>
                                 <PathIcon Data="{StaticResource IconShieldFilled}" 
                                           Width="12" Height="12"
                                           Foreground="#F59E0B"
@@ -160,7 +162,8 @@
                                       Width="20" Height="20"
                                       Foreground="{DynamicResource TextPrimary}"/>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <TextBlock Text="Planification" FontWeight="SemiBold"/>
+                                <TextBlock Text="Planification" FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextPrimary}"/>
                                 <PathIcon Data="{StaticResource IconShieldFilled}" 
                                           Width="12" Height="12"
                                           Foreground="#F59E0B"
@@ -181,7 +184,8 @@
                                       Width="20" Height="20"
                                       Foreground="{DynamicResource TextPrimary}"/>
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <TextBlock Text="Audit Sécurité" FontWeight="SemiBold"/>
+                                <TextBlock Text="Audit Sécurité" FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextPrimary}"/>
                                 <PathIcon Data="{StaticResource IconShieldFilled}" 
                                           Width="12" Height="12"
                                           Foreground="#F59E0B"
