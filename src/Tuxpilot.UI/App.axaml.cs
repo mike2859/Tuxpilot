@@ -40,6 +40,7 @@ public partial class App : Application
         services.AddSingleton<IServiceDetectionPlanificateur, ServiceDetectionPlanificateur>();
         services.AddSingleton<IServiceSecurite, ServiceSecurite>(); 
         services.AddSingleton<ILicenseService, LicenseService>(); 
+        services.AddSingleton<IServiceContexteSysteme, ServiceContexteSysteme>(); 
         
         // Factory de planification
         services.AddSingleton<ServicePlanificationFactory>();

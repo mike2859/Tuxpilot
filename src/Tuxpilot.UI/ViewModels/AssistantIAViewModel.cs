@@ -20,7 +20,8 @@ public partial class AssistantIAViewModel : ViewModelBase
     private readonly IServiceAssistantIA _serviceIA;
     private readonly IServiceCommandes _serviceCommandes;
     private readonly IServiceHistorique _serviceHistorique;
-    
+    private readonly IServiceContexteSysteme _contexte;
+
     [ObservableProperty]
     private ObservableCollection<ChatMessageViewModel> _messages = new();
     
@@ -36,14 +37,19 @@ public partial class AssistantIAViewModel : ViewModelBase
     [ObservableProperty]
     private string _messagePlaceholder = "Posez une question ou demandez une action (ex: Installe VLC)";
     
+    [ObservableProperty] private string _etatContexte = "Contexte : non chargé";
+    [ObservableProperty] private DateTimeOffset? _contexteDate;
+
     public AssistantIAViewModel(
         IServiceAssistantIA serviceIA,
         IServiceCommandes serviceCommandes,
-        IServiceHistorique serviceHistorique)
+        IServiceHistorique serviceHistorique,
+        IServiceContexteSysteme contexte)
     {
         _serviceIA = serviceIA;
         _serviceCommandes = serviceCommandes;
         _serviceHistorique = serviceHistorique;
+        _contexte = contexte;
         
         // Message de bienvenue
         Messages.Add(new ChatMessageViewModel(
@@ -58,6 +64,28 @@ public partial class AssistantIAViewModel : ViewModelBase
             "Posez-moi vos questions !",
             isUser: false
         ));
+    }
+
+    [RelayCommand]
+    private async Task RafraichirContexteAsync()
+    {
+        try
+        {
+            IsLoading = true;
+            EtatContexte = "🔄 Rafraîchissement du contexte…";
+
+            var snap = await _contexte.GetSnapshotAsync(forceRefresh: true);
+            ContexteDate = snap.CapturedAt;
+            EtatContexte = $"✅ Contexte à jour ({snap.CapturedAt.LocalDateTime:HH:mm})";
+        }
+        catch (Exception ex)
+        {
+            EtatContexte = $"❌ Contexte indisponible : {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
     
     [RelayCommand]
@@ -82,8 +110,16 @@ public partial class AssistantIAViewModel : ViewModelBase
         {
             IsStreaming = true;
 
+            var snap = await _contexte.GetSnapshotAsync(forceRefresh: ShouldForceRefresh(question));
+            ContexteDate = snap.CapturedAt;
+            EtatContexte = $"✅ Contexte prêt ({snap.CapturedAt.LocalDateTime:HH:mm})";
+
+            var contexteJson = JsonSerializer.Serialize(snap, new JsonSerializerOptions { WriteIndented = false });
+
+            var reponse = await _serviceIA.DemanderAsync(question, contexteJson);
+
             // Demander à l'IA
-            var reponse = await _serviceIA.DemanderAsync(question);
+           // var reponse = await _serviceIA.DemanderAsync(question);
 
             // Retirer le message de chargement
             Messages.Remove(messageIA);
@@ -130,6 +166,12 @@ public partial class AssistantIAViewModel : ViewModelBase
         {
             IsStreaming = false;
         }
+    }
+
+    private static bool ShouldForceRefresh(string q)
+    {
+        q = q.ToLowerInvariant();
+        return q.Contains("analyse") || q.Contains("mon système") || q.Contains("sécur") || q.Contains("audit") || q.Contains("ports") || q.Contains("firewall");
     }
     
     /// <summary>

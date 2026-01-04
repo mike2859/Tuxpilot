@@ -10,6 +10,7 @@ public interface IServiceAssistantIA
     /// Envoie une question à l'assistant IA et reçoit la réponse
     /// </summary>
     Task<string> DemanderAsync(string question);
+    Task<string> DemanderAsync(string question, string? contexteJson);
     
     Task DemanderAvecStreamingAsync(string question, Action<string> onTokenReceived);
     
@@ -21,4 +22,5 @@ public interface IServiceAssistantIA
         double pourcentageCpu, 
         double pourcentageDisque,
         int nombreMisesAJour);
+
 }

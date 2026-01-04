@@ -23,69 +23,78 @@ public class ServiceOllama : IServiceAssistantIA
         };
     }
     
-   public async Task<string> DemanderAsync(string question)
+  public Task<string> DemanderAsync(string question)
 {
-    try
-    {
-        // 🆕 Nouveau prompt avec détection d'actions
-        var systemPrompt = @"Tu es un assistant Linux expert qui aide les utilisateurs francophones.
+    var prompt = $"""
+Tu es TuxPilot, assistant Linux francophone.
 
-IMPORTANT - DÉTECTION D'ACTIONS :
-Si l'utilisateur demande d'INSTALLER, SUPPRIMER, EXÉCUTER une commande, ou FAIRE quelque chose, tu dois répondre au format JSON suivant :
+Question utilisateur :
+{question}
+""";
 
-{
-  ""type"": ""action"",
-  ""action"": ""install"" ou ""remove"" ou ""execute"",
-  ""command"": ""la commande complète"",
-  ""package"": ""nom du paquet si applicable"",
-  ""explanation"": ""Explication courte de ce qui sera fait"",
-  ""needsSudo"": true ou false
-}
-
-Exemples de requêtes ACTION :
-- ""Installe VLC"" → JSON avec action: install, command: ""dnf install vlc""
-- ""Comment installer VLC ?"" → JSON avec action: install
-- ""Supprime Firefox"" → JSON avec action: remove
-- ""Redémarre Apache"" → JSON avec action: execute, command: ""systemctl restart httpd""
-
-Exemples de requêtes NORMALES (pas JSON) :
-- ""C'est quoi VLC ?"" → Réponse texte normale
-- ""Comment fonctionne dnf ?"" → Réponse texte normale
-- ""Quelle est la différence entre..."" → Réponse texte normale
-
-Si la requête est une ACTION, réponds UNIQUEMENT avec le JSON, rien d'autre.
-Si c'est une question normale, réponds en texte comme d'habitude.";
-
-        var fullPrompt = $"{systemPrompt}\n\nQuestion de l'utilisateur : {question}";
-        
-        var requestBody = new
-        {
-            model = _modele,
-            prompt = fullPrompt,
-            stream = false
-        };
-        
-        var response = await _httpClient.PostAsJsonAsync(
-            $"{_urlOllama}/api/generate",
-            requestBody
-        );
-        
-        response.EnsureSuccessStatusCode();
-        
-        var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
-        
-        return result?.Response ?? "Désolé, je n'ai pas pu générer une réponse.";
-    }
-    catch (HttpRequestException ex)
-    {
-        return $"❌ Erreur de connexion à Ollama : {ex.Message}\n\nAssurez-vous qu'Ollama est démarré avec : ollama serve";
-    }
-    catch (Exception ex)
-    {
-        return $"❌ Erreur : {ex.Message}";
-    }
+    return DemanderInterneAsync(prompt);
 }
     
+
+
+    private async Task<string> DemanderInterneAsync(string prompt)
+    {
+        try
+        {
+            var requestBody = new
+            {
+                model = _modele,
+                prompt = prompt,
+                stream = false
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(
+                $"{_urlOllama}/api/generate",
+                requestBody
+            );
+
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
+
+            return result?.Response ?? "Désolé, je n'ai pas pu générer de réponse.";
+        }
+        catch (HttpRequestException ex)
+        {
+            return $"❌ Erreur de connexion à Ollama : {ex.Message}\n\nVérifiez que Ollama est lancé (`ollama serve`).";
+        }
+        catch (Exception ex)
+        {
+            return $"❌ Erreur : {ex.Message}";
+        }
+    }
+
+    public Task<string> DemanderAsync(string question, string? contexteJson)
+    {
+        var systemPrompt = @"Tu es TuxPilot, assistant Linux francophone.
+
+    RÈGLES CRITIQUES :
+    - Utilise UNIQUEMENT le CONTEXTE SYSTEME fourni.
+    - Si une info manque, dis-le clairement et propose comment l'obtenir.
+    - Ne devine pas, n'invente rien.
+    - Si une action système est demandée, réponds UNIQUEMENT en JSON d'action.";
+
+        var contextBlock = string.IsNullOrWhiteSpace(contexteJson)
+            ? "CONTEXTE SYSTEME : (non disponible)"
+            : $"CONTEXTE SYSTEME (JSON) :\n{contexteJson}";
+
+        var prompt = $"""
+    {systemPrompt}
+
+    {contextBlock}
+
+    Question utilisateur :
+    {question}
+    """;
+
+        return DemanderInterneAsync(prompt);
+    }
+
     public async Task DemanderAvecStreamingAsync(string question, Action<string> onTokenReceived)
     {
         try
@@ -197,6 +206,9 @@ Réponds en 2-3 phrases MAX, avec des emojis. Soit concret et actionnable.";
             return $"❌ Impossible d'analyser le système : {ex.Message}";
         }
     }
+
+   
+
 
     // Classes pour désérialiser les réponses Ollama
     private class OllamaResponse

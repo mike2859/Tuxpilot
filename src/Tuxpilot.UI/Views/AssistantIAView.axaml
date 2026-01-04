@@ -46,7 +46,7 @@
                         BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="0,0,0,1"
                         Padding="16,12">
-                    <Grid ColumnDefinitions="*,Auto">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
                             <PathIcon Data="{StaticResource IconChat}" 
                                       Width="18" Height="18"
@@ -67,6 +67,23 @@
                                           Foreground="{DynamicResource TextPrimary}"/>
                                 <TextBlock Text="Effacer"/>
                             </StackPanel>
+                        </Button>
+
+                        <TextBlock Grid.Column="1"
+                                Classes="text-muted"
+                                Text="{Binding EtatContexte}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,12,0"/>
+
+                        <Button Grid.Column="2"
+                                Classes="btn-secondary btn-sm"
+                                Command="{Binding RafraichirContexteCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="{StaticResource IconRefresh}"
+                                    Width="14" Height="14"
+                                    Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock Text="Actualiser"/>
+                        </StackPanel>
                         </Button>
                     </Grid>
                 </Border>
@@ -258,7 +275,7 @@
             
             <!-- Champ de saisie -->
             <Grid Grid.Row="1"
-                  ColumnDefinitions="*,Auto">
+                  ColumnDefinitions="*,Auto,">
                 <TextBox Grid.Column="0"
                          Text="{Binding QuestionUtilisateur}"
                          Watermark="{Binding MessagePlaceholder}"
