@@ -52,6 +52,12 @@ public class VerificationSecurite
     /// Points maximum possibles
     /// </summary>
     public int PointsMax { get; set; } = 20;
+
+    public string Id { get; set; } = string.Empty;
+    public string Categorie { get; set; } = string.Empty;
+    public string Impact { get; set; } = string.Empty;
+    public string Preuve { get; set; } = string.Empty;
+    public bool AutoFixSafe { get; set; }
     
     /// <summary>
     /// Icône selon le niveau de risque
@@ -69,16 +75,15 @@ public class VerificationSecurite
     /// <summary>
     /// Couleur selon le niveau de risque
     /// </summary>
-    public string Couleur => Niveau switch
+    public string CouleurKey => Niveau switch
     {
-        NiveauRisque.Aucun => "#10B981",      // Vert
-        NiveauRisque.Faible => "#3B82F6",     // Bleu
-        NiveauRisque.Moyen => "#F59E0B",      // Orange
-        NiveauRisque.Eleve => "#EF4444",      // Rouge
-        NiveauRisque.Critique => "#DC2626",   // Rouge foncé
-        _ => "#6B7280"
+        NiveauRisque.Aucun => "Success",
+        NiveauRisque.Faible => "Info",
+        NiveauRisque.Moyen => "Warning",
+        NiveauRisque.Eleve => "Danger",
+        NiveauRisque.Critique => "Danger",
+        _ => "TextMuted"
     };
-    
     /// <summary>
     /// Texte du niveau
     /// </summary>

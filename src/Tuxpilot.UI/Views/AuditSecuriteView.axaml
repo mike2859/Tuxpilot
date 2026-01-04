@@ -2,11 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Tuxpilot.UI.ViewModels"
              x:Class="Tuxpilot.UI.Views.AuditSecuriteView"
+             xmlns:conv="clr-namespace:Tuxpilot.UI.Converters"
              x:DataType="vm:AuditSecuriteViewModel">
 
     <Design.DataContext>
         <vm:AuditSecuriteViewModel/>
     </Design.DataContext>
+    <UserControl.Resources>
+    <conv:ResourceKeyToBrushConverter x:Key="ResKeyToBrush" />
+    </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="32" Spacing="24">
@@ -50,7 +54,7 @@
                     Padding="16"
                     IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                 <TextBlock Text="{Binding StatusMessage}"
-                          Foreground="{DynamicResource TextSecondary}"/>
+                        Foreground="{DynamicResource TextPrimary}" />
             </Border>
 
             <!-- Loader -->
@@ -239,7 +243,10 @@
                                   VerticalAlignment="Center"/>
                     </StackPanel>
 
-                    <ItemsControl ItemsSource="{Binding Verifications}">
+<ToggleSwitch IsChecked="{Binding AfficherUniquementProblemes}"/>
+<ToggleSwitch IsChecked="{Binding AfficherUniquementCritiques}"/>
+
+                    <ItemsControl ItemsSource="{Binding VerificationsFiltrees}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="{DynamicResource BackgroundSecondary}"
@@ -248,7 +255,7 @@
                                        Padding="20"
                                        Margin="0,0,0,12">
                                     <Border.BorderBrush>
-                                        <SolidColorBrush Color="{Binding Couleur}"/>
+                                          <Binding Path="CouleurKey" Converter="{StaticResource ResKeyToBrush}" />
                                     </Border.BorderBrush>
                                     
                                     <Grid ColumnDefinitions="Auto,*,Auto">
@@ -259,13 +266,13 @@
                                                       HorizontalAlignment="Center"/>
                                             <Border CornerRadius="12"
                                                    Padding="8,4">
-                                                <Border.Background>
-                                                    <SolidColorBrush Color="{Binding Couleur}"/>
-                                                </Border.Background>
+                                                <Border.BorderBrush>
+                                                    <Binding Path="CouleurKey" Converter="{StaticResource ResKeyToBrush}" />
+                                                </Border.BorderBrush>
                                                 <TextBlock Text="{Binding NiveauTexte}"
                                                           FontSize="11"
                                                           FontWeight="SemiBold"
-                                                          Foreground="{DynamicResource BackgroundPrimary}"
+                                                          Foreground="{DynamicResource TextPrimary}"
                                                           HorizontalAlignment="Center"/>
                                             </Border>
                                         </StackPanel>

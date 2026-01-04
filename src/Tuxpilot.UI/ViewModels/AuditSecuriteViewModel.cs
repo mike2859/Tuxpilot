@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tuxpilot.Core.Entities;
+using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
 
 namespace Tuxpilot.UI.ViewModels;
@@ -23,6 +26,18 @@ public partial class AuditSecuriteViewModel : ViewModelBase
     private ObservableCollection<VerificationSecurite> _verifications = new();
 
     [ObservableProperty]
+    private ObservableCollection<VerificationSecurite> _verificationsFiltrees = new();
+
+    [ObservableProperty]
+    private bool _afficherUniquementProblemes;
+
+    [ObservableProperty]
+    private bool _afficherUniquementCritiques;
+
+    [ObservableProperty]
+    private string? _categorieSelectionnee;
+
+    [ObservableProperty]
     private bool _isLoading;
 
     [ObservableProperty]
@@ -35,6 +50,15 @@ public partial class AuditSecuriteViewModel : ViewModelBase
     {
         _serviceSecurite = serviceSecurite;
     }
+
+    partial void OnAfficherUniquementProblemesChanged(bool value)
+    => AppliquerFiltres();
+
+    partial void OnAfficherUniquementCritiquesChanged(bool value)
+        => AppliquerFiltres();
+
+    partial void OnCategorieSelectionneeChanged(string? value)
+        => AppliquerFiltres();
 
     /// <summary>
     /// Lancer l'audit de sécurité
@@ -52,9 +76,9 @@ public partial class AuditSecuriteViewModel : ViewModelBase
 
             Verifications.Clear();
             foreach (var verif in Rapport.Verifications)
-            {
                 Verifications.Add(verif);
-            }
+
+            AppliquerFiltres();
 
             AuditEffectue = true;
             StatusMessage = $"✅ Audit terminé - Score : {Rapport.Score}/100";
@@ -100,4 +124,29 @@ public partial class AuditSecuriteViewModel : ViewModelBase
             StatusMessage = $"❌ Erreur : {ex.Message}";
         }
     }
+
+    private void AppliquerFiltres()
+    {
+        VerificationsFiltrees.Clear();
+
+        if (Verifications == null)
+            return;
+
+        IEnumerable<VerificationSecurite> query = Verifications;
+
+        if (AfficherUniquementProblemes)
+            query = query.Where(v => !v.Reussie);
+
+        if (AfficherUniquementCritiques)
+            query = query.Where(v =>
+                v.Niveau == NiveauRisque.Eleve ||
+                v.Niveau == NiveauRisque.Critique);
+
+        if (!string.IsNullOrWhiteSpace(CategorieSelectionnee))
+            query = query.Where(v => v.Categorie == CategorieSelectionnee);
+
+        foreach (var v in query)
+            VerificationsFiltrees.Add(v);
+    }
+
 }

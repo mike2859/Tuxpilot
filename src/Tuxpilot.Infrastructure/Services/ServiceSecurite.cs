@@ -106,7 +106,22 @@ public class ServiceSecurite : IServiceSecurite
         if (json.TryGetProperty("recommandation", out var reco))
             verif.Recommandation = reco.GetString() ?? "";
 
-        if (json.TryGetProperty("commande_correction", out var cmd) && cmd.ValueKind != System.Text.Json.JsonValueKind.Null)
+        if (json.TryGetProperty("id", out var id))
+            verif.Id = id.GetString() ?? "";
+
+        if (json.TryGetProperty("categorie", out var cat))
+            verif.Categorie = cat.GetString() ?? "";
+
+        if (json.TryGetProperty("impact", out var impact))
+            verif.Impact = impact.GetString() ?? "";
+
+        if (json.TryGetProperty("preuve", out var preuve))
+            verif.Preuve = preuve.GetString() ?? "";
+
+        if (json.TryGetProperty("auto_fix_safe", out var safe))
+            verif.AutoFixSafe = safe.GetBoolean();
+
+         if (json.TryGetProperty("commande_correction", out var cmd) && cmd.ValueKind != System.Text.Json.JsonValueKind.Null)
             verif.CommandeCorrection = cmd.GetString();
 
         return verif;
