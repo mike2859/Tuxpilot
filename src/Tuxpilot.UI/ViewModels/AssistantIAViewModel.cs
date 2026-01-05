@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tuxpilot.Core.Entities;
 using Tuxpilot.Core.Enums;
 using Tuxpilot.Core.Interfaces.Services;
 using Tuxpilot.UI.Models;
@@ -21,6 +22,8 @@ public partial class AssistantIAViewModel : ViewModelBase
     private readonly IServiceCommandes _serviceCommandes;
     private readonly IServiceHistorique _serviceHistorique;
     private readonly IServiceContexteSysteme _contexte;
+
+    private readonly IServiceAssistantIASetup _setup;
 
     [ObservableProperty]
     private ObservableCollection<ChatMessageViewModel> _messages = new();
@@ -40,16 +43,26 @@ public partial class AssistantIAViewModel : ViewModelBase
     [ObservableProperty] private string _etatContexte = "Contexte : non chargé";
     [ObservableProperty] private DateTimeOffset? _contexteDate;
 
+    [ObservableProperty] private bool _ollamaReady;
+    [ObservableProperty] private string _ollamaStatusMessage = "IA : statut inconnu";
+    [ObservableProperty] private ObservableCollection<OllamaSetupAction> _ollamaActions = new();
+    [ObservableProperty] private string _modeleChoisi = "llama3.1:8b";
+
+[ObservableProperty] private bool _ollamaNotReady = true;
+partial void OnOllamaReadyChanged(bool value) => OllamaNotReady = !value;
+
     public AssistantIAViewModel(
         IServiceAssistantIA serviceIA,
         IServiceCommandes serviceCommandes,
         IServiceHistorique serviceHistorique,
-        IServiceContexteSysteme contexte)
+        IServiceContexteSysteme contexte,
+        IServiceAssistantIASetup setup)
     {
         _serviceIA = serviceIA;
         _serviceCommandes = serviceCommandes;
         _serviceHistorique = serviceHistorique;
         _contexte = contexte;
+        _setup = setup;
         
         // Message de bienvenue
         Messages.Add(new ChatMessageViewModel(
@@ -64,6 +77,49 @@ public partial class AssistantIAViewModel : ViewModelBase
             "Posez-moi vos questions !",
             isUser: false
         ));
+
+
+         _ = ChargerEtatOllamaAsync(true);
+    }
+
+    [RelayCommand]
+    private async Task ChargerEtatOllamaAsync(bool force = false)
+    {
+        try
+        {
+            var status = await _setup.GetStatusAsync(ModeleChoisi, forceRefresh: force);
+
+            OllamaReady = status.Ready;
+            OllamaStatusMessage = status.Message ?? "Statut inconnu";
+
+            OllamaActions.Clear();
+            foreach (var a in status.Actions ?? new())
+                OllamaActions.Add(a);
+        }
+        catch (Exception ex)
+        {
+            OllamaReady = false;
+            OllamaStatusMessage = $"Setup IA indisponible : {ex.Message}";
+            OllamaActions.Clear();
+        }
+    }
+
+    [RelayCommand]
+    private async Task ExecuterOllamaActionAsync(OllamaSetupAction action)
+    {
+        if (action == null) return;
+
+        IsLoading = true;
+        try
+        {
+            var (ok, output) = await _setup.ExecuterActionAsync(action);
+            Messages.Add(new ChatMessageViewModel(
+                ok ? $"✅ {action.Label}\n{output}" : $"❌ {action.Label}\n{output}",
+                isUser: false));
+
+            await ChargerEtatOllamaAsync(true);
+        }
+        finally { IsLoading = false; }
     }
 
     [RelayCommand]
@@ -116,6 +172,18 @@ public partial class AssistantIAViewModel : ViewModelBase
 
             var contexteJson = JsonSerializer.Serialize(snap, new JsonSerializerOptions { WriteIndented = false });
 
+            await ChargerEtatOllamaAsync(false);
+
+            if (!OllamaReady)
+            {
+                Messages.Remove(messageIA);
+                Messages.Add(new ChatMessageViewModel(
+                    $"⚠️ IA non prête : {OllamaStatusMessage}\nUtilisez les actions proposées (Installer / Démarrer / Télécharger modèle).",
+                    isUser: false));
+                return;
+            }
+
+           
             var reponse = await _serviceIA.DemanderAsync(question, contexteJson);
 
             // Demander à l'IA

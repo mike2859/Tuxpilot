@@ -46,7 +46,7 @@
                         BorderBrush="{DynamicResource BorderPrimary}"
                         BorderThickness="0,0,0,1"
                         Padding="16,12">
-                    <Grid ColumnDefinitions="*,Auto,Auto">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
                             <PathIcon Data="{StaticResource IconChat}" 
                                       Width="18" Height="18"
@@ -69,11 +69,11 @@
                             </StackPanel>
                         </Button>
 
-                        <TextBlock Grid.Column="1"
-                                Classes="text-muted"
-                                Text="{Binding EtatContexte}"
-                                VerticalAlignment="Center"
-                                Margin="0,0,12,0"/>
+                         <TextBlock Grid.Column="2"
+                            Classes="text-muted"
+                            Text="{Binding EtatContexte}"
+                            VerticalAlignment="Center"
+                            Margin="0,0,12,0"/>
 
                         <Button Grid.Column="2"
                                 Classes="btn-secondary btn-sm"
@@ -93,124 +93,178 @@
                              x:Name="MessagesScrollViewer"
                              Padding="16"
                              VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Messages}">
-                        <ItemsControl.ItemTemplate>
-    <DataTemplate>
-        <StackPanel Spacing="8" Margin="0,0,0,12">
-            
-            <!-- Message principal -->
-            <Border Background="{Binding BackgroundColor}"
-                    CornerRadius="12"
-                    Padding="16"
-                    MaxWidth="600"
-                    HorizontalAlignment="{Binding IsUser, Converter={StaticResource BoolToAlignmentConverter}}">
-                <StackPanel Spacing="8">
-                    <!-- Icône et nom -->
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock Text="{Binding Icone}"
-                                  FontSize="16"/>
-                        <TextBlock Classes="text-body"
-                                  Text="{Binding IsUser, Converter={StaticResource BoolToNameConverter}}"
-                                  FontWeight="SemiBold"/>
-                    </StackPanel>
-                    
-                    <!-- Message -->
-                    <TextBlock Classes="text-body"
-                              Text="{Binding Texte}"
-                              TextWrapping="Wrap"
-                              Foreground="{Binding TextColor}"/>
-                </StackPanel>
-            </Border>
-            
-            <!-- ENCART D'ACTION -->
-            <Border Background="#FEF3C7"
-                    CornerRadius="12"
-                    Padding="16"
-                    BorderBrush="#F59E0B"
-                    BorderThickness="2"
-                    MaxWidth="600"
-                    HorizontalAlignment="Left"
-                    IsVisible="{Binding HasAction}">
-                <StackPanel Spacing="12">
-                    
-                    <!-- Header -->
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <PathIcon Data="{StaticResource IconLightbulb}" 
-                                  Width="20" Height="20"
-                                  Foreground="#92400E"/>
-                        <TextBlock Classes="text-body"
-                                  Text="Je peux faire ça pour vous !"
-                                  FontWeight="Bold"
-                                  Foreground="#92400E"
-                                  VerticalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    <!-- Commande -->
-                    <Border Background="#FFFBEB"
-                            CornerRadius="8"
-                            Padding="12"
-                            BorderBrush="#FCD34D"
-                            BorderThickness="1">
-                        <StackPanel Spacing="4">
-                            <TextBlock Classes="text-sm"
-                                      Text="Commande :"
-                                      Foreground="#92400E"
-                                      FontWeight="SemiBold"/>
-                            <TextBlock Classes="text-body"
-                                      Text="{Binding Action.Command}"
-                                      FontFamily="monospace"
-                                      Foreground="#78350F"
-                                      TextWrapping="Wrap"/>
+
+                    <StackPanel Spacing="12">
+
+                    <!-- Setup Ollama (visible quand IA non prête) -->
+                    <Border Padding="12"
+                            CornerRadius="10"
+                            Background="{DynamicResource BackgroundSecondary}"
+                            BorderBrush="{DynamicResource BorderPrimary}"
+                            BorderThickness="1"
+                            IsVisible="{Binding OllamaNotReady}">
+                        <StackPanel Spacing="8">
+                        <TextBlock Text="{Binding OllamaStatusMessage}"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextPrimary}"/>
+
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Modèle :" VerticalAlignment="Center"
+                                    Foreground="{DynamicResource TextSecondary}"/>
+                            <TextBox Width="220" Text="{Binding ModeleChoisi}" />
+                            <Button Classes="btn-secondary btn-sm"
+                                    Command="{Binding ChargerEtatOllamaCommand}"
+                                    Content="Vérifier"/>
+                        </StackPanel>
+
+                        <ItemsControl ItemsSource="{Binding OllamaActions}">
+                            <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel LastChildFill="False">
+                                <StackPanel DockPanel.Dock="Left" Spacing="2">
+                                    <TextBlock Text="{Binding Label}" FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextPrimary}"/>
+                                    <TextBlock Text="{Binding Notes}" FontSize="12"
+                                            Foreground="{DynamicResource TextSecondary}"/>
+                                </StackPanel>
+
+                                <Button DockPanel.Dock="Right"
+                                        Classes="btn-primary btn-sm"
+                                        Content="Appliquer"
+                                        Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).ExecuterOllamaActionCommand}"
+                                        CommandParameter="{Binding}"/>
+                                </DockPanel>
+                            </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Certaines actions demandent votre mot de passe (pkexec)."
+                                    FontSize="12"
+                                    Foreground="{DynamicResource TextSecondary}"/>
                         </StackPanel>
                     </Border>
-                    
-                    <!-- Boutons -->
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8"
-                          IsVisible="{Binding !ActionExecuted}">
-                        <Button Grid.Column="0"
-                                Classes="btn-primary"
-                                Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).ExecuterActionCommand}"
-                                CommandParameter="{Binding}"
-                                HorizontalAlignment="Stretch">
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <PathIcon Data="{StaticResource IconCheck}" 
-                                          Width="14" Height="14"
-                                          Foreground="{DynamicResource BackgroundPrimary}"/>
-                                <TextBlock Text="Exécuter"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Grid.Column="1"
-                                Classes="btn-secondary"
-                                Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).RefuserActionCommand}"
-                                CommandParameter="{Binding}"
-                                HorizontalAlignment="Stretch">
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <PathIcon Data="{StaticResource IconClose}" 
-                                          Width="14" Height="14"
-                                          Foreground="{DynamicResource TextPrimary}"/>
-                                <TextBlock Text="Non merci"/>
-                            </StackPanel>
-                        </Button>
-                    </Grid>
-                    
-                    <!-- Résultat -->
-                    <Border Background="#D1FAE5"
-                            CornerRadius="8"
-                            Padding="12"
-                            IsVisible="{Binding ActionExecuted}">
-                        <TextBlock Classes="text-body"
-                                  Text="{Binding ActionResult}"
-                                  Foreground="#065F46"
-                                  FontWeight="SemiBold"/>
-                    </Border>
-                    
-                </StackPanel>
-            </Border>
-            
-        </StackPanel>
-    </DataTemplate>
-</ItemsControl.ItemTemplate>
+
+
+                    <ItemsControl ItemsSource="{Binding Messages}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Spacing="8" Margin="0,0,0,12">
+                                    
+                                    <!-- Message principal -->
+                                    <Border Background="{Binding BackgroundColor}"
+                                            CornerRadius="12"
+                                            Padding="16"
+                                            MaxWidth="600"
+                                            HorizontalAlignment="{Binding IsUser, Converter={StaticResource BoolToAlignmentConverter}}">
+                                        <StackPanel Spacing="8">
+                                            <!-- Icône et nom -->
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="{Binding Icone}"
+                                                        FontSize="16"/>
+                                                <TextBlock Classes="text-body"
+                                                        Text="{Binding IsUser, Converter={StaticResource BoolToNameConverter}}"
+                                                        FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                            
+                                            <!-- Message -->
+                                            <TextBlock Classes="text-body"
+                                                    Text="{Binding Texte}"
+                                                    TextWrapping="Wrap"
+                                                    Foreground="{Binding TextColor}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    
+                                    <!-- ENCART D'ACTION -->
+                                    <Border Background="#FEF3C7"
+                                            CornerRadius="12"
+                                            Padding="16"
+                                            BorderBrush="#F59E0B"
+                                            BorderThickness="2"
+                                            MaxWidth="600"
+                                            HorizontalAlignment="Left"
+                                            IsVisible="{Binding HasAction}">
+                                        <StackPanel Spacing="12">
+                                            
+                                            <!-- Header -->
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <PathIcon Data="{StaticResource IconLightbulb}" 
+                                                        Width="20" Height="20"
+                                                        Foreground="#92400E"/>
+                                                <TextBlock Classes="text-body"
+                                                        Text="Je peux faire ça pour vous !"
+                                                        FontWeight="Bold"
+                                                        Foreground="#92400E"
+                                                        VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            
+                                            <!-- Commande -->
+                                            <Border Background="#FFFBEB"
+                                                    CornerRadius="8"
+                                                    Padding="12"
+                                                    BorderBrush="#FCD34D"
+                                                    BorderThickness="1">
+                                                <StackPanel Spacing="4">
+                                                    <TextBlock Classes="text-sm"
+                                                            Text="Commande :"
+                                                            Foreground="#92400E"
+                                                            FontWeight="SemiBold"/>
+                                                    <TextBlock Classes="text-body"
+                                                            Text="{Binding Action.Command}"
+                                                            FontFamily="monospace"
+                                                            Foreground="#78350F"
+                                                            TextWrapping="Wrap"/>
+                                                </StackPanel>
+                                            </Border>
+                                            
+                                            <!-- Boutons -->
+                                            <Grid ColumnDefinitions="*,*" ColumnSpacing="8"
+                                                IsVisible="{Binding !ActionExecuted}">
+                                                <Button Grid.Column="0"
+                                                        Classes="btn-primary"
+                                                        Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).ExecuterActionCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        HorizontalAlignment="Stretch">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <PathIcon Data="{StaticResource IconCheck}" 
+                                                                Width="14" Height="14"
+                                                                Foreground="{DynamicResource BackgroundPrimary}"/>
+                                                        <TextBlock Text="Exécuter"/>
+                                                    </StackPanel>
+                                                </Button>
+                                                <Button Grid.Column="1"
+                                                        Classes="btn-secondary"
+                                                        Command="{Binding $parent[ItemsControl].((vm:AssistantIAViewModel)DataContext).RefuserActionCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        HorizontalAlignment="Stretch">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <PathIcon Data="{StaticResource IconClose}" 
+                                                                Width="14" Height="14"
+                                                                Foreground="{DynamicResource TextPrimary}"/>
+                                                        <TextBlock Text="Non merci"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </Grid>
+                                            
+                                            <!-- Résultat -->
+                                            <Border Background="#D1FAE5"
+                                                    CornerRadius="8"
+                                                    Padding="12"
+                                                    IsVisible="{Binding ActionExecuted}">
+                                                <TextBlock Classes="text-body"
+                                                        Text="{Binding ActionResult}"
+                                                        Foreground="#065F46"
+                                                        FontWeight="SemiBold"/>
+                                            </Border>
+                                            
+                                        </StackPanel>
+                                    </Border>
+                                    
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
+                    </StackPanel>
                 </ScrollViewer>
                 
             </Grid>

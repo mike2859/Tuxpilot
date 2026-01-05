@@ -12,14 +12,21 @@ namespace Tuxpilot.Infrastructure.Services;
 public class ServiceOllama : IServiceAssistantIA
 {
     private readonly HttpClient _httpClient;
-    private readonly string _modele = "mistral"; // Modèle par défaut
-    private readonly string _urlOllama = "http://localhost:11434"; // Port par défaut d'Ollama
+    private readonly string _modele = "llama3.1:8b"; // Modèle par défaut
+    private readonly string _urlOllama = "http://127.0.0.1:11434"; // Port par défaut d'Ollama
     
     public ServiceOllama()
     {
-        _httpClient = new HttpClient
+        var handler = new HttpClientHandler
         {
-            Timeout = TimeSpan.FromMinutes(5) // Timeout long pour les réponses LLM
+            UseProxy = false,
+            Proxy = null
+        };
+
+        _httpClient = new HttpClient(handler)
+        {
+            BaseAddress = new Uri(_urlOllama),
+            Timeout = TimeSpan.FromSeconds(120)
         };
     }
     
@@ -48,10 +55,7 @@ Question utilisateur :
                 stream = false
             };
 
-            var response = await _httpClient.PostAsJsonAsync(
-                $"{_urlOllama}/api/generate",
-                requestBody
-            );
+            var response = await _httpClient.PostAsJsonAsync("/api/generate", requestBody);
 
             response.EnsureSuccessStatusCode();
 
